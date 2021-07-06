@@ -1,0 +1,118 @@
+@import '~bulma/sass/utilities/_all';
+
+// カスタム色リスト
+$brown: #7b5544;
+$brown-white: #ddaa77;
+$brown-whiter: #955E4B;
+$brown-yellow: #FFDD99;
+$brown-red: #80220b;
+$brown-deep: #6a4433;
+$brown-dark: #3a190c;
+$brown-black: #4a1f0f;
+$brown-bg: #ffd8b2;
+$white: #FFFFFF;
+
+// 通常色設定
+$primary: $brown-white;
+$background: $brown-bg;
+$link: $brown-whiter;
+$info: $brown-deep;
+$danger: $brown-red;
+$dark: $brown-dark;
+$warning: $brown-yellow;
+$blue: #3298dc;
+$green: #00d1b2;
+$success: #ddaa77;
+
+// ナビゲーションバー
+$navbar-burger-color: $white;
+$navbar-background-color: $brown;
+$navbar-item-color: $white;
+$navbar-item-active-color: $white;
+$navbar-item-hover-color: $white;
+$navbar-item-hover-background-color: $brown-deep;
+$navbar-dropdown-background-color: $brown;
+$navbar-dropdown-item-color: $brown;
+$navbar-dropdown-item-hover-color: $white;
+$navbar-dropdown-item-hover-background-color: $brown-deep;
+$navbar-dropdown-item-active-color: $brown-deep;
+$navbar-dropdown-item-active-background-color: $brown-deep;
+$navbar-divider-background-color: $brown-deep;
+$dropdown-item-hover: $brown-deep;
+$dropdown-item-hover-background-color: $brown;
+
+// タイトル/サブタイトル
+$title-color: $brown-deep;
+$subtitle-color: $brown-deep;
+$title-family: 'Arvo';
+$subtitle-family: 'Arvo';
+
+// 一般テキスト
+$text: $brown-black;
+$text-strong: $brown-dark;
+
+// ニュース枠の色
+$message-header-background-color: $brown;
+$message-background-color: #FEFEFE;
+
+// フォームのプレースホルダ
+$input-placeholder-color: #CACACA;
+
+// 検索結果ページのページネーション
+$pagination-current-background-color: $brown-deep;
+
+// マイページのボタンにホバーしたときの色
+$panel-block-hover-background-color: $brown-white;
+
+body {
+  background-image: repeating-linear-gradient(to right, #ffe9dc, #ffe9dc 18px, #FFECE0 18px, #FFECE0 33px );
+}
+
+main {
+    min-height:97vh;
+}
+
+@media (min-width: 600px) {
+    /* width */
+    body::-webkit-scrollbar {
+      width: 15px;
+    }
+
+    /* Track */
+    body::-webkit-scrollbar-track {
+      background: #ffd8b2;
+    }
+
+    /* Handle */
+    body::-webkit-scrollbar-thumb {
+      background: #ddaa77;
+    }
+
+    /* Handle on hover */
+    body::-webkit-scrollbar-thumb:hover {
+      background: #4a1f0f;
+    }
+}
+
+/* Navbar: メニューバーのドロップダウンアイコン(Bulmaのどうしようもない仕様を無理やり上書き)*/
+.navbar-link::after {
+    border: 2px solid #fff !important;
+    border-right: 0 !important;
+    border-top: 0 !important;
+    content: " ";
+    display: block;
+    height: .5em;
+    pointer-events: none;
+    position: absolute;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -webkit-transform-origin: center;
+    transform-origin: center;
+    width: .5em;
+    margin-top: -.375em;
+    right: 1.125em;
+    top: 50%;
+}
+
+@import '~bulma';
+@import '~buefy/src/scss/buefy';

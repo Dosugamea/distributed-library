@@ -28,6 +28,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/assets/style.scss',
+    '~/assets/usagi.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -71,6 +73,10 @@ export default {
       scope: process.env.SITE_URL,
       start_url: process.env.SITE_URL
     }
+  },
+
+  publicRuntimeConfig: {
+    SITE_NAME: process.env.SITE_NAME
   },
 
   // Content module configuration: https://go.nuxtjs.dev/config-content
