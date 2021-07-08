@@ -48,6 +48,11 @@ export default {
 
   components: {
     Card
+  },
+
+  mounted () {
+    console.log(this.$ipfs)
+    console.log(this.$orbitdb)
   }
 }
 </script>
