@@ -2622,6 +2622,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/bn.js@*":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.0.tgz#32c5d271503a12653c62cf4d2b45e6eab8cebc68"
+  integrity sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/body-parser@*":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.0.tgz#0685b3c47eb3006ffed117cdd55164b61f80538f"
@@ -2679,6 +2686,13 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.6.tgz#0b7018723084918a865eff99249c490505df2163"
   integrity sha512-7fDOJFA/x8B+sO1901BmHlf5dE1cxBU8mRXj8QOEDnn16hhGJv/IHxJtZhvsabZsIMn0eLIyeOKAeqSNJJYTpA==
 
+"@types/elliptic@^6.4.6":
+  version "6.4.13"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.13.tgz#7e8ac814f748deb01a712e5147b128caf9dffa2d"
+  integrity sha512-e8iyLJ8vMLpWxXpVWrIt0ujqsfHWgVe5XAz9IMhBYoDirK6th7J+mHjzp797OLc62ZX419nrlwwzsNAA0a0mKg==
+  dependencies:
+    "@types/bn.js" "*"
+
 "@types/eslint@^7.2.6":
   version "7.2.13"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.13.tgz#e0ca7219ba5ded402062ad6f926d491ebb29dd53"
@@ -2698,6 +2712,11 @@
   integrity sha512-EdSN0x+Y0/lBv7YAb8IU4Jgm6DWM+Bqtz7o5qozl96fzaqdqbdfHS5qjdpFeIv7xQ8jSLyjMMNShgYtMajEHyQ==
   dependencies:
     "@types/node" "*"
+
+"@types/events@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
+  integrity sha512-KEIlhXnIutzKwRbQkGWb/I4HFqBuUykAdHgDED6xqwXJfONCjF5VoE0cXEiurh3XauygxzeDzgtXUqvLkxFzzA==
 
 "@types/express-serve-static-core@^4.17.18":
   version "4.17.22"
@@ -2759,6 +2778,10 @@
   integrity sha512-+qsjqR75S/ib0ig0R9WN+CDoZeOBU6F2XLewgC4KVgdXiNHiKKHFEMRHOrs5PbYE97D5vataw5wPj4KLYfUkuQ==
   dependencies:
     "@types/node" "*"
+
+"@types/ipfs@git+https://github.com/lukas2005/types-ipfs.git":
+  version "0.23.6"
+  resolved "git+https://github.com/lukas2005/types-ipfs.git#fb4bd2c5780810b8355356f2f683064008b60053"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
@@ -2859,6 +2882,15 @@
   integrity sha512-PJgbI4KplJfyxKWVrBbEL+rePEBqeozJRMT0mBL3ynhvngASBV/XJ+BneLuJN74RjjMzO0gA5ns80mgubQdZAA==
   dependencies:
     "@types/webpack" "^4"
+
+"@types/orbit-db@https://github.com/orbitdb/orbit-db-types.git":
+  version "1.0.0"
+  resolved "https://github.com/orbitdb/orbit-db-types.git#8e8fc870213f7a758468317c5b2918b36bd27ee6"
+  dependencies:
+    "@types/elliptic" "^6.4.6"
+    "@types/events" "^1.2.0"
+    "@types/ipfs" "git+https://github.com/lukas2005/types-ipfs.git"
+    orbit-db "git+https://github.com/orbitdb/orbit-db.git"
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -12449,6 +12481,30 @@ orbit-db@^0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/orbit-db/-/orbit-db-0.26.1.tgz#2a28cfcbe5dc93efb536d44772d2480c42e6ac3d"
   integrity sha512-bp0oJdjg94Lad1Mp7XRwFatUwFgprbNTxyOuqSb8tWcWWdxWlYvG/ez9DogR9I4Lc5mbPrC7MbWeVcBIu+AeQw==
+  dependencies:
+    cids "^1.0.0"
+    ipfs-pubsub-1on1 "~0.0.6"
+    is-node "^1.0.2"
+    localstorage-down "^0.6.7"
+    logplease "^1.2.14"
+    multihashes "~3.0.1"
+    orbit-db-access-controllers "^0.3.0"
+    orbit-db-cache "~0.3.0"
+    orbit-db-counterstore "~1.12.0"
+    orbit-db-docstore "~1.12.0"
+    orbit-db-eventstore "~1.12.0"
+    orbit-db-feedstore "~1.12.0"
+    orbit-db-identity-provider "~0.3.0"
+    orbit-db-io "~0.3.0"
+    orbit-db-keystore "~0.3.0"
+    orbit-db-kvstore "~1.12.0"
+    orbit-db-pubsub "~0.6.0"
+    orbit-db-storage-adapter "~0.5.3"
+    orbit-db-store "~4.0.1"
+
+"orbit-db@git+https://github.com/orbitdb/orbit-db.git":
+  version "0.26.1"
+  resolved "git+https://github.com/orbitdb/orbit-db.git#4f3fabb7bcf20f1314fd8e52fca556ce2852e46a"
   dependencies:
     cids "^1.0.0"
     ipfs-pubsub-1on1 "~0.0.6"
