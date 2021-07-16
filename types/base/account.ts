@@ -1,3 +1,5 @@
+import { History } from './history'
+
 /**
  * アカウント(Admin/User) 基底インターフェイス
  */
@@ -7,7 +9,7 @@ export interface Account {
     /** アカウント名 */
     name: string
     /** アカウント情報の編集履歴 */
-    histories: any[]
+    histories: History[]
     /** アカウントの作成日 */
     createdDate: Date
     /** アカウントの更新日 */
