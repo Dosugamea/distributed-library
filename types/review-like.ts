@@ -18,7 +18,7 @@ export interface ReviewLike {
   /** ユーザーID */
   userId: UserId
   /** ユーザーが付与したコイン数 */
-  coin: Number
+  coin: number
   /** レビュー評価の投稿日 */
   createdDate: Date
 }

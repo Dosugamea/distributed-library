@@ -18,9 +18,9 @@ export interface Review {
     /** 書誌ID */
     bibliographyId: BibliographyId
     /** ユーザーが付与したコイン数 */
-    coin: Number
+    coin: number
     /** レビュー本文 */
-    comment: String
+    comment: string
     /** レビューの投稿日 */
     createdDate: Date
 }

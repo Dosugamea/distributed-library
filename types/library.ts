@@ -14,7 +14,7 @@ export interface Library {
   /** 図書室ID */
   libraryId: LibraryId
   /** 図書室名 */
-  name: String
+  name: string
   /** 図書室の管理者配列 */
   admins: AdminId[]
   /** 図書室の作成日 */
@@ -22,5 +22,5 @@ export interface Library {
   /** 図書室の更新日 */
   updatedDate: Date
   /** 備考欄(図書室の扱う本/ポリシー等) */
-  note: String
+  note: string
 }
