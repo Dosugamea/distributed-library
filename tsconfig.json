@@ -28,7 +28,8 @@
       "@nuxtjs/axios",
       "@nuxt/content",
       "@types/node",
-      "@types/jest"
+      "@types/jest",
+      "@types/orbit-db"
     ]
   },
   "exclude": [
