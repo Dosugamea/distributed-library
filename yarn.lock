@@ -955,10 +955,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@eslint/eslintrc@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.2.tgz#f63d0ef06f5c0c57d76c4ab5f63d3835c51b0179"
-  integrity sha512-8nmGq/4ycLpIwzvhI4tNDmQztZ8sp+hI7cyG8i1nQDhkAbRzHpXPidRAHlNvCZQpJTKw5ItIpMw9RSToGF00mg==
+"@eslint/eslintrc@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
+  integrity sha512-J6KFFz5QCYUJq3pf0mjEcCJVERbzv71PUIDczuh9JkwGEzced6CO5ADLHB1rbf/+oPBtoPfMYNOpGDzCANlbXw==
   dependencies:
     ajv "^6.12.4"
     debug "^4.1.1"
@@ -5729,10 +5729,10 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
-  integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+debug@4, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.2.0, debug@^4.3.0, debug@^4.3.1, debug@~4.3.1:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
+  integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
   dependencies:
     ms "2.1.2"
 
@@ -5742,13 +5742,6 @@ debug@^3.2.7:
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
   dependencies:
     ms "^2.1.1"
-
-debug@^4.2.0, debug@^4.3.0, debug@~4.3.1:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
-  integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
-  dependencies:
-    ms "2.1.2"
 
 decamelize-keys@^1.1.0:
   version "1.1.0"
@@ -6639,13 +6632,13 @@ eslint-webpack-plugin@^2.4.1:
     normalize-path "^3.0.0"
     schema-utils "^3.0.0"
 
-eslint@^7.29.0:
-  version "7.30.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.30.0.tgz#6d34ab51aaa56112fd97166226c9a97f505474f8"
-  integrity sha512-VLqz80i3as3NdloY44BQSJpFw534L9Oh+6zJOUaViV4JPd+DaHwutqP7tcpkW3YiXbK6s05RZl7yl7cQn+lijg==
+eslint@^7.31.0:
+  version "7.31.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.31.0.tgz#f972b539424bf2604907a970860732c5d99d3aca"
+  integrity sha512-vafgJpSh2ia8tnTkNUkwxGmnumgckLh5aAbLa1xRmIn9+owi8qBNGKL+B881kNKNTy7FFqTEkpNkUvmw0n6PkA==
   dependencies:
     "@babel/code-frame" "7.12.11"
-    "@eslint/eslintrc" "^0.4.2"
+    "@eslint/eslintrc" "^0.4.3"
     "@humanwhocodes/config-array" "^0.5.0"
     ajv "^6.10.0"
     chalk "^4.0.0"
@@ -12477,32 +12470,7 @@ orbit-db-store@~4.0.1:
     p-queue "^6.6.1"
     readable-stream "~3.6.0"
 
-orbit-db@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/orbit-db/-/orbit-db-0.26.1.tgz#2a28cfcbe5dc93efb536d44772d2480c42e6ac3d"
-  integrity sha512-bp0oJdjg94Lad1Mp7XRwFatUwFgprbNTxyOuqSb8tWcWWdxWlYvG/ez9DogR9I4Lc5mbPrC7MbWeVcBIu+AeQw==
-  dependencies:
-    cids "^1.0.0"
-    ipfs-pubsub-1on1 "~0.0.6"
-    is-node "^1.0.2"
-    localstorage-down "^0.6.7"
-    logplease "^1.2.14"
-    multihashes "~3.0.1"
-    orbit-db-access-controllers "^0.3.0"
-    orbit-db-cache "~0.3.0"
-    orbit-db-counterstore "~1.12.0"
-    orbit-db-docstore "~1.12.0"
-    orbit-db-eventstore "~1.12.0"
-    orbit-db-feedstore "~1.12.0"
-    orbit-db-identity-provider "~0.3.0"
-    orbit-db-io "~0.3.0"
-    orbit-db-keystore "~0.3.0"
-    orbit-db-kvstore "~1.12.0"
-    orbit-db-pubsub "~0.6.0"
-    orbit-db-storage-adapter "~0.5.3"
-    orbit-db-store "~4.0.1"
-
-"orbit-db@git+https://github.com/orbitdb/orbit-db.git":
+orbit-db@^0.26.1, "orbit-db@git+https://github.com/orbitdb/orbit-db.git":
   version "0.26.1"
   resolved "git+https://github.com/orbitdb/orbit-db.git#4f3fabb7bcf20f1314fd8e52fca556ce2852e46a"
   dependencies:
