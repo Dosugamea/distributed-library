@@ -1,10 +1,7 @@
-// for dev purposes, make repo different even if from same ip address.
-const repo = () => 'ipfs/broamp-demo/' + Math.random()
-
 const config = {
   ipfs: {
-    repo: repo(),
-    // repo: "ipfs/shared",
+    // for dev purposes, make repo different even if from same ip address.
+    repo: `ipfs/broamp-demo/${Math.random()}`,
     EXPERIMENTAL: {
       ipnsPubsub: true
     },
