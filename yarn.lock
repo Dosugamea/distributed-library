@@ -12532,32 +12532,7 @@ orbit-db-store@~4.0.1:
     p-queue "^6.6.1"
     readable-stream "~3.6.0"
 
-orbit-db@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/orbit-db/-/orbit-db-0.26.1.tgz#2a28cfcbe5dc93efb536d44772d2480c42e6ac3d"
-  integrity sha512-bp0oJdjg94Lad1Mp7XRwFatUwFgprbNTxyOuqSb8tWcWWdxWlYvG/ez9DogR9I4Lc5mbPrC7MbWeVcBIu+AeQw==
-  dependencies:
-    cids "^1.0.0"
-    ipfs-pubsub-1on1 "~0.0.6"
-    is-node "^1.0.2"
-    localstorage-down "^0.6.7"
-    logplease "^1.2.14"
-    multihashes "~3.0.1"
-    orbit-db-access-controllers "^0.3.0"
-    orbit-db-cache "~0.3.0"
-    orbit-db-counterstore "~1.12.0"
-    orbit-db-docstore "~1.12.0"
-    orbit-db-eventstore "~1.12.0"
-    orbit-db-feedstore "~1.12.0"
-    orbit-db-identity-provider "~0.3.0"
-    orbit-db-io "~0.3.0"
-    orbit-db-keystore "~0.3.0"
-    orbit-db-kvstore "~1.12.0"
-    orbit-db-pubsub "~0.6.0"
-    orbit-db-storage-adapter "~0.5.3"
-    orbit-db-store "~4.0.1"
-
-"orbit-db@git+https://github.com/orbitdb/orbit-db.git":
+orbit-db@^0.26.1, "orbit-db@git+https://github.com/orbitdb/orbit-db.git":
   version "0.26.1"
   resolved "git+https://github.com/orbitdb/orbit-db.git#4f3fabb7bcf20f1314fd8e52fca556ce2852e46a"
   dependencies:
@@ -15051,7 +15026,7 @@ shell-quote@^1.6.1:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
   integrity sha512-mRz/m/JVscCrkMyPqHc/bczi3OQHkLTqXHEFu0zDhK/qfv3UcOA4SVmRCLmos4bhjr9ekVQubj/R7waKapmiQg==
 
-shvl@^2.0.2:
+shvl@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/shvl/-/shvl-2.0.3.tgz#eb4bd37644f5684bba1fc52c3010c96fb5e6afd1"
   integrity sha512-V7C6S9Hlol6SzOJPnQ7qzOVEWUQImt3BNmmzh40wObhla3XOYMe4gGiYzLrJd5TFa+cI2f9LKIRJTTKZSTbWgw==
@@ -16751,13 +16726,13 @@ vuex-module-decorators@^1.0.1:
   resolved "https://registry.yarnpkg.com/vuex-module-decorators/-/vuex-module-decorators-1.0.1.tgz#d34dafb5428a3636f1c26d3d014c15fc9659ccd0"
   integrity sha512-FLWZsXV5XAtl/bcKUyQFpnSBtpc3wK/7zSdy9oKbyp71mZd4ut5y2zSd219wWW9OG7WUOlVwac4rXFFDVnq7ug==
 
-vuex-persistedstate@^4.0.0-beta.3:
-  version "4.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-4.0.0-beta.3.tgz#89dd712de72d28e85cc95467d066002c1405f277"
-  integrity sha512-T4IRD27qoUWh+8qr6T6zVp15xO7x/nPgnU13OD0C2uUwA7U9PhGozrj6lvVmMYDyRgc36J0msMXn3GvwHjkIhA==
+vuex-persistedstate@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-4.0.0.tgz#ed82f266ca98c869a2aad9cb9880c2f608c05f3a"
+  integrity sha512-jDs+awbV9YD2A2F6S5zgtYq1Bjd8v0YldOK6HPv1EJZzGMse0FtZTREfXvA7zlVfq9MpmSZJNmYQVylfpZ5znQ==
   dependencies:
     deepmerge "^4.2.2"
-    shvl "^2.0.2"
+    shvl "^2.0.3"
 
 vuex@^3.6.2:
   version "3.6.2"
