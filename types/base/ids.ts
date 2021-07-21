@@ -21,7 +21,7 @@ export type AdminId = string
 /**
  * 管理者操作履歴ID
  */
-export type AdminHistoryId = string
+export type AdminHistoryId = number
 
 /**
  * 図書室ID
@@ -31,7 +31,7 @@ export type LibraryId = string
 /**
  * 図書室操作履歴ID
  */
-export type LibraryHistoryId = string
+export type LibraryHistoryId = number
 
 /**
  * 図書室蔵書ID
@@ -41,7 +41,7 @@ export type LibraryBookId = string
 /**
  * 図書室蔵書編集履歴ID
  */
-export type LibraryBookHistoryId = string
+export type LibraryBookHistoryId = number
 
 /**
  * 図書室蔵書貸出返却ID
@@ -56,7 +56,7 @@ export type BibliographyId = string
 /**
  * 書誌操作履歴ID
  */
-export type BibliographyHistoryId = string
+export type BibliographyHistoryId = number
 
 /**
  * 書誌貸出/返却履歴ID

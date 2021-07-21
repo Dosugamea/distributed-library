@@ -20,18 +20,18 @@ import { Account } from './base/account'
 /**
  * 管理者の操作履歴:動作 作成/追加/編集/削除
  */
-export type AdminHistoryAction = 'create' | 'add' | 'remove' | 'edit'
+export type AdminHistoryAction = 'create' | 'add' | 'edit' | 'remove'
 
 /**
  * 管理者の操作履歴:対象 自分自身/トラスト/蔵書/自分自身の名前
  */
-export type AdminHistoryTarget = 'self-account' | 'book' | 'trust' | 'self-name'
+export type AdminHistoryTarget = 'account' | 'trust' | 'name' | 'preferredId' | 'note' | 'standardCode'
 
 /**
  * 管理者の操作履歴
  */
 export interface AdminHistory extends History {
-   _id: AdminHistoryId
+   id: AdminHistoryId
    issuer: AdminId
    action: AdminHistoryAction
    target: AdminHistoryTarget

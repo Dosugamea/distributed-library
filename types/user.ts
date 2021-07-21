@@ -1,5 +1,6 @@
 import { BibliographyId, BibliographyReviewId } from './base/ids'
 import { Account } from './base/account'
+import { History } from './base/history'
 
 /*
 * ユーザー情報型
@@ -17,7 +18,7 @@ export type UserId = string
 /**
  * ユーザー操作履歴ID
  */
-export type UserHistoryId = string
+export type UserHistoryId = number
 
 /**
  * ユーザーの操作履歴:動作
@@ -33,15 +34,11 @@ export type UserHistoryTarget = 'name' | 'note' | 'book' | 'coin' | 'review'
 * ユーザーの操作履歴
 */
 export interface UserHistory extends History{
-   /** ID */
-   _id: UserHistoryId
-   /** 編集動作種別 */
+   id: UserHistoryId
+   issuer: UserId
    action: UserHistoryAction
-   /** 編集対象種別 */
    target: UserHistoryTarget
-   /** 編集後の値 */
    value: string | BibliographyId | number | BibliographyReviewId
-   /** 編集時刻 */
    createdDate: Date
 }
 
