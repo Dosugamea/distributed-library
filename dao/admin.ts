@@ -1,36 +1,60 @@
+import AccountDao from '@/dao/base/account'
 import { AdminInfoDatabase } from '@/types/base/addresses'
-import { Admin, AdminHistory } from '@/types/admin'
+import { Admin, AdminHistory, AdminHistoryAction, AdminHistoryTarget } from '@/types/admin'
 import OrbitDB from 'orbit-db'
-import KeyValueStore from 'orbit-db-kvstore'
 import { AdminId } from '~/types/base/ids'
 
-export default class AdminDao implements Admin {
-  db!: KeyValueStore<any>
-  dbName: string = 'admin-account'
-
-  id: string = ''
-  createdDate: Date = new Date()
-  updatedDate: Date = new Date()
-  histories: AdminHistory[] = []
-  note: string = ''
+export default class AdminDao extends AccountDao implements Admin {
   trust: AdminId[] = []
-  preferredId: string = ''
-  standardCode: string = ''
+  #histories: AdminHistory[] = []
 
   constructor (orbitdb: OrbitDB, dbAddress: AdminInfoDatabase | null) {
-    if (dbAddress == null) {
-      dbAddress = this.dbName
+    super(orbitdb, dbAddress, 'admin')
+    this.db.get('trust').then(
+      (trust: AdminId[]) => {
+        this.trust = trust
+      }
+    )
+  }
+
+  private addAdminHistory (action: AdminHistoryAction, target: AdminHistoryTarget, value: string) {
+    const h: AdminHistory = {
+      id: this.getNewHistoryId(),
+      createdDate: new Date(),
+      issuer: 'self',
+      action,
+      target,
+      value
     }
-    orbitdb.keyvalue(dbAddress).then((db) => {
-      this.db = db
-    })
+    this.#histories.push(h)
+    this.db.set('histories', this.#histories)
   }
 
-  get name (): string {
-    return this.db.get('name') as string
+  /**
+   * 管理者をトラストする
+   */
+  addTrust (adminId: AdminId) {
+    if (this.trust.includes(adminId)) {
+      throw new Error('You already trusted the admin')
+    }
+    this.trust.push(adminId)
+    this.db.set('trust', this.trust)
+    this.addAdminHistory('add', 'trust', adminId)
   }
 
-  set name (name: string) {
-    this.db.set('name', name)
+  /**
+   * 管理者のトラストを無くす
+   */
+  removeTrust (adminId: AdminId) {
+    if (!this.trust.includes(adminId)) {
+      throw new Error('You already un-trusted the admin')
+    }
+    this.trust = this.trust.filter(trustAdminId => trustAdminId !== adminId)
+    this.db.set('trust', this.trust)
+    this.addAdminHistory('remove', 'trust', adminId)
+  }
+
+  get histories (): AdminHistory[] {
+    return this.#histories as AdminHistory[]
   }
 }
