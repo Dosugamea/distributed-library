@@ -18,7 +18,7 @@ export interface Bibliography {
   /** 書誌ID */
   _id: BibliographyId
   /** 書誌名 */
-  title: string
+  name: string
   /** 書籍プレビュー画像アドレス **/
   image: string
   /** 書誌カテゴリ */

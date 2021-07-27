@@ -17,13 +17,13 @@ export type BibliographyHistoryAction = 'create' | 'edit'
 /**
  * 書誌情報の編集操作:対象
  */
-export type BibliographyHistoryTarget = 'self-book' | 'title' | 'category' | 'author' | 'publisher' | 'publishedDate' | 'note'
+export type BibliographyHistoryTarget = 'bibliography' | 'title' | 'category' | 'author' | 'publisher' | 'publishedDate' | 'note'
 
 /**
  * 書誌情報の編集履歴
  */
 export interface BibliographyHistory extends History {
-  _id: BibliographyHistoryId
+  id: BibliographyHistoryId
   issuer: AdminId
   action: BibliographyHistoryAction
   target: BibliographyHistoryTarget
