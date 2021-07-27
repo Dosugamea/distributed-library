@@ -3,7 +3,7 @@
  */
 export interface History {
     /** 編集管理ID **/
-    id: number
+    id: number | string
     /** 編集実行者 */
     issuer: string
     /** 編集動作種別 */

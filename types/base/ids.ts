@@ -56,7 +56,7 @@ export type BibliographyId = string
 /**
  * 書誌操作履歴ID
  */
-export type BibliographyHistoryId = number
+export type BibliographyHistoryId = string
 
 /**
  * 書誌貸出/返却履歴ID
