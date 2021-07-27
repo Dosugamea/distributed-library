@@ -4,7 +4,7 @@ import { Account } from '@/types/base/account'
 import { History as HistoryData } from '@/types/base/history'
 
 export default class AccountDao implements Account {
-  db!: KeyValueStore<any>
+  protected db!: KeyValueStore<any>
   #histories: HistoryData[] = []
 
   constructor (orbitdb: OrbitDB, dbAddress: string | null, dbName: string) {
