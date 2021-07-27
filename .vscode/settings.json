@@ -1,7 +1,11 @@
 {
     "cSpell.words": [
         "IPFS",
+        "docstore",
+        "eventstore",
         "feedstore",
+        "keyvalue",
+        "kvstore",
         "orbitdb"
     ]
 }
