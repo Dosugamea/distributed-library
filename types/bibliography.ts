@@ -16,7 +16,7 @@ import { BibliographyId, BibliographyHistoryId } from './base/ids'
  */
 export interface Bibliography {
   /** 書誌ID */
-  _id: BibliographyId
+  id: BibliographyId
   /** 書誌名 */
   name: string
   /** 書籍プレビュー画像アドレス **/

@@ -1,52 +1,46 @@
-import KeyValueStore from 'orbit-db-kvstore'
-import EventStore from 'orbit-db-eventstore'
-import { History as HistoryData } from '@/types/base/history'
-import { v4 as uuid4 } from 'uuid'
+import type EventStore from 'orbit-db-eventstore'
+import HistoryDao from './history'
 
-export default class ContentDao {
+/**
+ * コンテンツ系DAOの基底クラス
+ */
+export default class ContentDao extends HistoryDao {
   readonly id: string = ''
   readonly createdDate: Date = new Date()
-  private __updatedDate: Date = new Date()
-  protected database!: KeyValueStore<any>
-  private historyDatabase!: EventStore<any>
+  #updatedDate: Date = new Date()
+  #name: string = ''
+  #note: string = ''
 
-  constructor (database: KeyValueStore<any>, historyDatabase: EventStore<any>) {
-    this.database = database
-    this.historyDatabase = historyDatabase
-  }
-
-  private addHistory (action: string, target: string, value: string) {
-    const h: HistoryData = {
-      id: uuid4(),
-      createdDate: new Date(),
-      issuer: 'self',
-      action,
-      target,
-      value
-    }
-    this.historyDatabase.add(h)
+  constructor (id: string, name: string, note: string, createdDate: Date, updatedDate: Date, historyDatabase: EventStore<any>, issuer: string) {
+    super(historyDatabase, issuer)
+    this.id = id
+    this.#name = name
+    this.#note = note
+    this.createdDate = createdDate
+    this.#updatedDate = updatedDate
   }
 
   get updatedDate () : Date {
-    return this.__updatedDate
+    return this.#updatedDate
   }
 
   set name (name: string) {
-    this.__updatedDate = new Date()
+    this.#updatedDate = new Date()
+    this.#name = name
     this.addHistory('edit', 'name', name)
   }
 
   get name (): string {
-    return this.database.get('name') as string
+    return this.#name
   }
 
   set note (newNote: string) {
-    this.database.set('note', newNote)
-    this.database.set('updatedDate', new Date())
+    this.#updatedDate = new Date()
+    this.#note = newNote
     this.addHistory('edit', 'note', newNote)
   }
 
   get note () : string {
-    return this.database.get('note') as string
+    return this.#note
   }
 }
