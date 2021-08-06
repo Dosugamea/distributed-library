@@ -5,7 +5,7 @@ import { BibliographyHistoryId } from '@/types/base/ids'
 import ContentDao from '@/dao/base/content'
 
 /**
- * This is bibliography data access object.
+ * Bibliography model instance for add/edit/remove bibliography entries.
 */
 export default class BibliographyModel extends ContentDao implements BibliographyType {
     #author: string = ''

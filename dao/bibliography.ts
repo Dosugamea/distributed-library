@@ -1,6 +1,7 @@
 import type { BibliographyInfoDatabase, BibliographyInfoHistoryDatabase } from '@/types/base/addresses'
 import type { BibliographyId } from '@/types/base/ids'
 import { Bibliography } from '@/types/bibliography'
+import type BibliographyModel from '@/models/bibliography'
 import { BibliographyHistory, BibliographyHistoryAction, BibliographyHistoryTarget } from '@/types/bibliography-history'
 import OrbitDB from 'orbit-db'
 import DocStore from 'orbit-db-docstore'
@@ -25,7 +26,7 @@ export default class BibliographyDao {
       })
     }
 
-    addBibliography (bibliography: Bibliography) {
+    addBibliography (bibliography: BibliographyModel) {
       if (this.getBibliography(bibliography.id)) {
         throw new Error(`Bibliography ${bibliography.id} already exists.`)
       }
@@ -33,13 +34,13 @@ export default class BibliographyDao {
       this.addHistory('create', 'bibliography', bibliography.id)
     }
 
-    editBibliography (bibliography: Bibliography) {
+    editBibliography (bibliography: BibliographyModel) {
       this.getBibliography(bibliography.id)
       this.#database.put(bibliography)
       this.addHistory('edit', 'bibliography', bibliography.id)
     }
 
-    removeBibliography (bibliography: Bibliography) {
+    removeBibliography (bibliography: BibliographyModel) {
       this.getBibliography(bibliography.id)
       // this.#database.del(bibliography.id)
       // this.addHistory('delete', 'bibliography', bibliography.id)
