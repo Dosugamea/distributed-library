@@ -1,4 +1,5 @@
 import type { BibliographyInfoDatabase, BibliographyInfoHistoryDatabase } from '@/types/base/addresses'
+import type { BibliographyId } from '@/types/base/ids'
 import { Bibliography } from '@/types/bibliography'
 import { BibliographyHistory, BibliographyHistoryAction, BibliographyHistoryTarget } from '@/types/bibliography-history'
 import OrbitDB from 'orbit-db'
@@ -25,8 +26,7 @@ export default class BibliographyDao {
     }
 
     addBibliography (bibliography: Bibliography) {
-      const isExist = this.#database.get(bibliography.id)
-      if (isExist) {
+      if (this.getBibliography(bibliography.id)) {
         throw new Error(`Bibliography ${bibliography.id} already exists.`)
       }
       this.#database.put(bibliography)
@@ -34,22 +34,26 @@ export default class BibliographyDao {
     }
 
     editBibliography (bibliography: Bibliography) {
-      const isExist = this.#database.get(bibliography.id)
-      if (!isExist) {
-        throw new Error(`Bibliography ${bibliography.id} was not existed.`)
-      }
+      this.getBibliography(bibliography.id)
       this.#database.put(bibliography)
       this.addHistory('edit', 'bibliography', bibliography.id)
     }
 
     removeBibliography (bibliography: Bibliography) {
-      const isExist = this.#database.get(bibliography.id)
-      if (!isExist) {
-        throw new Error(`Bibliography ${bibliography.id} was not existed.`)
-      }
+      this.getBibliography(bibliography.id)
       // this.#database.del(bibliography.id)
       // this.addHistory('delete', 'bibliography', bibliography.id)
       throw new Error('Remove bibliography is not implemented')
+    }
+
+    findBibliography (query : any) : Bibliography[] {
+      return this.#database.query(query)
+    }
+
+    getBibliography (bibliographyId: BibliographyId): Bibliography {
+      const docs = this.#database.get(bibliographyId)
+      if (docs.length === 0) { throw new Error(`Could not find bibliography ${bibliographyId}`) }
+      return docs[0]
     }
 
     private addHistory (action: BibliographyHistoryAction, target: BibliographyHistoryTarget, value: string) {
