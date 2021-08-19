@@ -69,6 +69,11 @@ export type BibliographyLendReturnId = string
 export type BibliographyReviewId = string
 
 /**
+ * レビュー操作履歴ID
+ */
+export type BibliographyReviewHistoryId = string
+
+/**
  * レビューいいねID
  */
 export type BibliographyReviewLikeId = string

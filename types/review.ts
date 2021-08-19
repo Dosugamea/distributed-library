@@ -12,15 +12,19 @@ import { BibliographyReviewId, UserId, BibliographyId } from './base/ids'
  */
 export interface Review {
     /** レビューID */
-    reviewId: BibliographyReviewId
+    id: BibliographyReviewId
     /** ユーザーID */
     userId: UserId
     /** 書誌ID */
     bibliographyId: BibliographyId
     /** ユーザーが付与したコイン数 */
     coin: number
+    /** レビュータイトル */
+    name: string
     /** レビュー本文 */
-    comment: string
+    note: string
     /** レビューの投稿日 */
     createdDate: Date
+    /** レビューの更新日 */
+    updatedDate: Date
 }

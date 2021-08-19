@@ -44,6 +44,11 @@ export type BibliographyInfoHistoryDatabase = string
 export type BibliographyReviewDatabase = string
 
 /**
+ * 書誌のレビューの編集履歴が保存されるDBアドレス
+ */
+export type BibliographyReviewHistoryDatabase = string
+
+/**
  * 書誌のレビューへの評価が保存されるDBアドレス
  */
 export type BibliographyReviewLikeDatabase = string
