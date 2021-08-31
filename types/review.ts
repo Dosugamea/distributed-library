@@ -1,4 +1,4 @@
-import { BibliographyReviewId, UserId, BibliographyId } from './base/ids'
+import { BibliographyReviewId, UserId, BibliographyId, BibliographyReviewHistoryId } from './base/ids'
 
 /*
 * レビュー型
@@ -23,6 +23,8 @@ export interface Review {
     name: string
     /** レビュー本文 */
     note: string
+    /** レビューの編集履歴 */
+    histories: BibliographyReviewHistoryId[]
     /** レビューの投稿日 */
     createdDate: Date
     /** レビューの更新日 */

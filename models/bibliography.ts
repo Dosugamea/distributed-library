@@ -31,7 +31,7 @@ export default class BibliographyModel extends ContentDao implements Bibliograph
       issuer: string
     ) {
       super(id, name, note, createdDate, updatedDate, historyDatabase, issuer)
-      this.author = author
+      this.#author = author
       this.#category = category
       this.#histories = histories
       this.#image = image
