@@ -1,13 +1,13 @@
 import type EventStore from 'orbit-db-eventstore'
-import HistoryDao from './history'
+import HistoryModel from './history'
 
 /**
  * コンテンツ系DAOの基底クラス
  */
-export default class ContentDao extends HistoryDao {
+export default class ContentModel extends HistoryModel {
   readonly id: string = ''
   readonly createdDate: Date = new Date()
-  #updatedDate: Date = new Date()
+  protected __updatedDate: Date = new Date()
   #name: string = ''
   #note: string = ''
 
@@ -17,15 +17,15 @@ export default class ContentDao extends HistoryDao {
     this.#name = name
     this.#note = note
     this.createdDate = createdDate
-    this.#updatedDate = updatedDate
+    this.__updatedDate = updatedDate
   }
 
   get updatedDate () : Date {
-    return this.#updatedDate
+    return this.updatedDate
   }
 
   set name (name: string) {
-    this.#updatedDate = new Date()
+    this.__updatedDate = new Date()
     this.#name = name
     this.addHistory('edit', 'name', name)
   }
@@ -35,7 +35,7 @@ export default class ContentDao extends HistoryDao {
   }
 
   set note (newNote: string) {
-    this.#updatedDate = new Date()
+    this.__updatedDate = new Date()
     this.#note = newNote
     this.addHistory('edit', 'note', newNote)
   }

@@ -2,12 +2,12 @@ import EventStore from 'orbit-db-eventstore'
 import { Review as ReviewType } from '@/types/review'
 import { BibliographyReviewHistory } from '@/types/review-history'
 import { BibliographyReviewHistoryId, UserId, BibliographyId } from '@/types/base/ids'
-import ContentDao from '@/dao/base/content'
+import ContentModel from '@/models/base/content'
 
 /**
  * Review model instance for add/edit/remove review entries.
 */
-export default class ReviewModel extends ContentDao implements ReviewType {
+export default class ReviewModel extends ContentModel implements ReviewType {
     #histories: BibliographyReviewHistoryId[] = []
     #userId: UserId = ''
     #bibliographyId: BibliographyId = ''

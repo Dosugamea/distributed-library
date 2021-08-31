@@ -2,12 +2,12 @@ import EventStore from 'orbit-db-eventstore'
 import { Bibliography as BibliographyType } from '@/types/bibliography'
 import { BibliographyHistory } from '@/types/bibliography-history'
 import { BibliographyHistoryId } from '@/types/base/ids'
-import ContentDao from '@/dao/base/content'
+import ContentModel from '@/models/base/content'
 
 /**
  * Bibliography model instance for add/edit/remove bibliography entries.
 */
-export default class BibliographyModel extends ContentDao implements BibliographyType {
+export default class BibliographyModel extends ContentModel implements BibliographyType {
     #author: string = ''
     #category: string = ''
     #histories: BibliographyHistoryId[] = []

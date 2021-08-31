@@ -2,7 +2,7 @@ import { History as HistoryData } from '@/types/base/history'
 import EventStore from 'orbit-db-eventstore'
 import { v4 as uuid4 } from 'uuid'
 
-export default class HistoryDao {
+export default class HistoryModel {
     #historyDatabase!: EventStore<any>
     #issuer!: string
 
