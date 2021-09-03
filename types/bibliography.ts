@@ -15,6 +15,8 @@ import { BibliographyId, BibliographyHistoryId } from './base/ids'
  * 書誌情報
  */
 export interface Bibliography {
+  /** 書誌ID(OrbitDBのキーID) */
+  _id: BibliographyId
   /** 書誌ID */
   id: BibliographyId
   /** 書誌名 */

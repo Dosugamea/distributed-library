@@ -101,4 +101,8 @@ export default class BibliographyModel extends ContentModel implements Bibliogra
     get histories () {
       return this.#histories
     }
+
+    get _id (): string {
+      return this.id
+    }
 }
