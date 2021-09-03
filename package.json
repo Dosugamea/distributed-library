@@ -19,6 +19,7 @@
     "core-js": "^3.15.1",
     "ipfs-core": "^0.8.0",
     "ipfs-core-types": "^0.5.2",
+    "nanoid": "^3.1.25",
     "node-sass": "^6.0.1",
     "nuxt": "^2.15.7",
     "nuxt-buefy": "^0.4.8",
@@ -37,6 +38,7 @@
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/eslint-config-typescript": "^6.0.1",
     "@nuxtjs/eslint-module": "^3.0.2",
+    "@peculiar/webcrypto": "^1.1.7",
     "@types/jest": "^26.0.24",
     "@types/uuid": "^8.3.1",
     "@vue/test-utils": "^1.2.1",
@@ -48,5 +50,8 @@
     "jest": "^27.0.5",
     "ts-jest": "^27.0.3",
     "vue-jest": "^3.0.4"
+  },
+  "resolutions": {
+    "web-encoding": "1.1.4"
   }
 }
