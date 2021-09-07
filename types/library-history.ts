@@ -12,12 +12,12 @@ import { History } from './base/history'
 /**
  * 図書室の操作履歴:動作
  */
-export type LibraryHistoryAction = 'create' | 'edit' | 'remove'
+export type LibraryHistoryAction = 'create' | 'edit' | 'remove' | 'add'
 
 /**
  * 図書室の操作履歴:対象
  */
-export type LibraryHistoryTarget = 'library' | 'name' | 'admin' | 'note'
+export type LibraryHistoryTarget = 'library' | 'name' | 'admin' | 'note' | 'book'
 
 /**
  * 図書室の操作履歴
