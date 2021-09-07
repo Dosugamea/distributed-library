@@ -21,7 +21,7 @@ export default class ContentModel extends HistoryModel {
   }
 
   get updatedDate () : Date {
-    return this.updatedDate
+    return this.__updatedDate
   }
 
   set name (name: string) {

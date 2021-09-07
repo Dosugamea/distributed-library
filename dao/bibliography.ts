@@ -7,11 +7,12 @@ import type { BibliographyId } from '@/types/base/ids'
 import { Bibliography } from '@/types/bibliography'
 import BibliographyModel from '@/models/bibliography'
 import { BibliographyHistory, BibliographyHistoryAction, BibliographyHistoryTarget } from '@/types/bibliography-history'
+import type { ContentDaoInterface } from '@/dao/base/content'
 
 /**
  * This is bibliography data access object.
 */
-export default class BibliographyDao {
+export default class BibliographyDao implements ContentDaoInterface<BibliographyModel> {
     #database!: DocStore<Bibliography>
     #historyDatabase!: EventStore<BibliographyHistory>
 
@@ -22,7 +23,7 @@ export default class BibliographyDao {
       this.#historyDatabase = await orbitdb.log(historyDatabaseAddress) as EventStore<BibliographyHistory>
     }
 
-    createBibliography (
+    create (
       id: string,
       name: string,
       author: string,
@@ -44,11 +45,11 @@ export default class BibliographyDao {
       return bibliography
     }
 
-    getBibliographyAddress () {
+    getAddress () {
       return this.#database.address.root
     }
 
-    getBibliographyHistoryAddress () {
+    getHistoryAddress () {
       return this.#historyDatabase.address.root
     }
 
@@ -62,39 +63,44 @@ export default class BibliographyDao {
         bibliography.note, this.#historyDatabase, issuer)
     }
 
-    async addBibliography (bibliography: BibliographyModel) {
-      if (this.isBibliographyExist(bibliography.id)) {
-        throw new Error(`Bibliography ${bibliography.id} already exists.`)
+    async add (bibliography: BibliographyModel) : Promise<string> {
+      if (this.isExist(bibliography.id)) {
+        throw new Error(`Bibliography ${bibliography.id} already exist`)
       }
       const dbPutResp = await this.#database.put(bibliography)
       this.addHistory('create', 'bibliography', bibliography.id)
       return dbPutResp
     }
 
-    editBibliography (bibliography: BibliographyModel) {
-      this.getBibliography(bibliography.id)
-      this.#database.put(bibliography)
+    async edit (bibliography: BibliographyModel) {
+      if (!this.isExist(bibliography.id)) {
+        throw new Error(`Bibliography ${bibliography.id} doesn't exist`)
+      }
+      await this.#database.del(bibliography.id)
+      await this.#database.put(bibliography)
       this.addHistory('edit', 'bibliography', bibliography.id)
     }
 
-    removeBibliography (bibliography: BibliographyModel) {
-      this.getBibliography(bibliography.id)
+    remove (bibliography: BibliographyModel) {
+      if (!this.isExist(bibliography.id)) {
+        throw new Error(`Bibliography ${bibliography.id} doesn't exist`)
+      }
       // this.#database.del(bibliography.id)
       // this.addHistory('delete', 'bibliography', bibliography.id)
       throw new Error('Remove bibliography is not implemented')
     }
 
-    findBibliography (query : any) : Bibliography[] {
+    find (query : any) : Bibliography[] {
       return this.#database.query(query)
     }
 
-    getBibliography (bibliographyId: BibliographyId): Bibliography {
+    get (bibliographyId: BibliographyId): Bibliography {
       const docs = this.#database.get(bibliographyId)
-      if (docs.length === 0) { throw new Error(`Could not find bibliography ${bibliographyId}`) }
+      if (docs.length === 0) { throw new Error(`Bibliography ${bibliographyId} doesn't exist`) }
       return docs[0]
     }
 
-    isBibliographyExist (bibliographyId: BibliographyId) : boolean {
+    isExist (bibliographyId: BibliographyId) : boolean {
       return this.#database.get(bibliographyId).length > 0
     }
 
