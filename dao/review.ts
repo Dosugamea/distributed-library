@@ -1,12 +1,12 @@
+import OrbitDB from 'orbit-db'
+import DocStore from 'orbit-db-docstore'
+import EventStore from 'orbit-db-eventstore'
+import { v4 as uuid4 } from 'uuid'
 import type { BibliographyReviewDatabase, BibliographyReviewHistoryDatabase } from '@/types/base/addresses'
 import type { BibliographyReviewId, UserId } from '@/types/base/ids'
 import type { Review } from '@/types/review'
 import type Bibliography from '@/models/Bibliography'
 import { BibliographyReviewHistory, BibliographyReviewHistoryAction, BibliographyReviewHistoryTarget } from '@/types/review-history'
-import OrbitDB from 'orbit-db'
-import DocStore from 'orbit-db-docstore'
-import EventStore from 'orbit-db-eventstore'
-import { v4 as uuid4 } from 'uuid'
 
 /**
  * This is review data access object.

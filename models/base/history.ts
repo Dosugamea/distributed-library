@@ -1,6 +1,6 @@
-import { History as HistoryData } from '@/types/base/history'
 import EventStore from 'orbit-db-eventstore'
 import { v4 as uuid4 } from 'uuid'
+import { History as HistoryData } from '@/types/base/history'
 
 export default class HistoryModel {
     #historyDatabase!: EventStore<any>
