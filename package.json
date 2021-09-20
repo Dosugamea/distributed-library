@@ -17,7 +17,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
     "core-js": "^3.16.0",
-    "ipfs-core": "^0.10.5",
+    "ipfs-core": "^0.10.8",
     "ipfs-core-types": "^0.7.1",
     "node-sass": "^6.0.1",
     "nuxt": "^2.15.8",
