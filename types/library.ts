@@ -1,4 +1,4 @@
-import { AdminId, LibraryId, UserId } from './base/ids'
+import { AdminId, LibraryId, LibraryHistoryId, UserId } from './base/ids'
 import { Book } from './library-book'
 
 /*
@@ -11,7 +11,7 @@ import { Book } from './library-book'
 /**
  * 図書室情報
  */
-export interface Library {
+export type Library = {
   /** 図書室ID(OrbitDBのキーID) */
   _id: LibraryId
   /** 図書室ID */
@@ -20,12 +20,16 @@ export interface Library {
   name: string
   /** 図書室の管理者配列 */
   admins: AdminId[]
+  /** 図書室の編集履歴 */
+  histories: LibraryHistoryId[]
   /** 図書室の作成日 */
   createdDate: Date
   /** 図書室の更新日 */
   updatedDate: Date
   /** 備考欄(図書室の扱う本/ポリシー等) */
   note: string
+  /** 本一覧のDBアドレス */
+  bookDatabaseAddress: string
   /** 管理者を追加する */
   addAdmin(id: AdminId): void
   /** 管理者を削除する */

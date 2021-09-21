@@ -23,7 +23,7 @@ export type LibraryHistoryTarget = 'library' | 'name' | 'admin' | 'note' | 'book
  * 図書室の操作履歴
  */
 export interface LibraryHistory extends History {
-  _id: LibraryHistoryId
+  id: LibraryHistoryId
   issuer: AdminId
   action: LibraryHistoryAction
   target: LibraryHistoryTarget

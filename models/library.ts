@@ -16,6 +16,7 @@ export default class LibraryModel extends ContentModel implements LibraryType {
     #historyDatabase!: EventStore<LibraryHistory>
     #histories: LibraryHistoryId[] = []
     #admins: AdminId[] = []
+    bookDatabaseAddress: string = ''
 
     constructor (
       id: LibraryId,
@@ -26,12 +27,14 @@ export default class LibraryModel extends ContentModel implements LibraryType {
       admins: AdminId[],
       note: string,
       bookDatabase: DocStore<Book>,
+      bookDatabaseAddress: string,
       historyDatabase: EventStore<LibraryHistory>,
       issuer: string
     ) {
       super(id, name, note, createdDate, updatedDate, historyDatabase, issuer)
       this.#histories = histories
       this.#admins = admins
+      this.bookDatabaseAddress = bookDatabaseAddress
       this.#bookDatabase = bookDatabase
     }
 
@@ -79,7 +82,7 @@ export default class LibraryModel extends ContentModel implements LibraryType {
       if (!this.isBookExist(book.id)) {
         throw new Error(`Book ${book.id} doesn't exist`)
       }
-      const historyId: LibraryHistoryId = await this.addBookHistory('return', 'book', book.id, issuer)
+      const historyId: LibraryHistoryId = await this.addBookHistory('rent', 'book', book.id, issuer)
       this.#histories.push(historyId)
     }
 
