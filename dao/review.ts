@@ -5,7 +5,8 @@ import { v4 as uuid4 } from 'uuid'
 import type { BibliographyReviewDatabase, BibliographyReviewHistoryDatabase } from '@/types/base/addresses'
 import type { BibliographyReviewId, UserId } from '@/types/base/ids'
 import type { Review } from '@/types/review'
-import type Bibliography from '@/models/Bibliography'
+import ReviewModel from '@/models/Review'
+import Bibliography from '@/models/bibliography'
 import { BibliographyReviewHistory, BibliographyReviewHistoryAction, BibliographyReviewHistoryTarget } from '@/types/review-history'
 
 /**
@@ -27,6 +28,47 @@ export default class ReviewDao {
     orbitdb.log(historyDatabaseAddress, { accessController: { write: ['*'] } }).then((db) => {
       this.#historyDatabase = db as EventStore<BibliographyReviewHistory>
     })
+  }
+
+  async add (review: ReviewModel) : Promise<string> {
+    if (this.isExist(review.id)) {
+      throw new Error(`Review ${review.id} already exist`)
+    }
+    const dbPutResp = await this.#database.put(review)
+    this.addHistory('add', 'note', review.id)
+    return dbPutResp
+  }
+
+  async edit (review: ReviewModel) {
+    if (!this.isExist(review.id)) {
+      throw new Error(`Review ${review.id} doesn't exist`)
+    }
+    await this.#database.del(review.id)
+    await this.#database.put(review)
+    this.addHistory('edit', 'note', review.id)
+  }
+
+  remove (review: ReviewModel) {
+    if (!this.isExist(review.id)) {
+      throw new Error(`Review ${review.id} doesn't exist`)
+    }
+    // this.#database.del(review.id)
+    // this.addHistory('delete', 'review', review.id)
+    throw new Error('Remove review is not implemented')
+  }
+
+  find (query : any) : Review[] {
+    return this.#database.query(query)
+  }
+
+  get (reviewId: BibliographyReviewId): Review {
+    const docs = this.#database.get(reviewId)
+    if (docs.length === 0) { throw new Error(`Review ${reviewId} doesn't exist`) }
+    return docs[0]
+  }
+
+  isExist (reviewId: BibliographyReviewId) : boolean {
+    return this.#database.get(reviewId).length > 0
   }
 
   getReviewByBibliography (bibliography: Bibliography): Review[] {

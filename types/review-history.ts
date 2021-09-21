@@ -7,12 +7,12 @@ import { History } from './base/history'
 */
 
 /**
- * 書誌情報の編集操作:動作
+ * 書誌レビュー情報の編集操作:動作
  */
 export type BibliographyReviewHistoryAction = 'add' | 'edit' | 'remove'
 
 /**
- * 書誌情報の編集操作:対象
+ * 書誌レビュー情報の編集操作:対象
  */
 export type BibliographyReviewHistoryTarget = 'note'
 
