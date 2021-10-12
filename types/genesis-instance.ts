@@ -1,7 +1,6 @@
 import {
   LibraryInfoDatabase, LibraryInfoHistoryDatabase,
-  LibraryBookInfoDatabase, LibraryBookInfoHistoryDatabase,
-  LibraryBookLendDatabase
+  LibraryBookInfoDatabase, LibraryBookInfoHistoryDatabase
 } from './base/addresses'
 
 /*
@@ -23,6 +22,4 @@ export type GenesisLibrary = {
   book: LibraryBookInfoDatabase
   /** 図書室の蔵書編集履歴DBアドレス */
   bookHistory: LibraryBookInfoHistoryDatabase
-  /** 図書室の貸出/返却履歴DBアドレス */
-  lend: LibraryBookLendDatabase
 }
