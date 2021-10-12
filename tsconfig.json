@@ -9,6 +9,7 @@
       "DOM"
     ],
     "esModuleInterop": true,
+    "typeRoots" : ["@types", "./types"],
     "allowJs": true,
     "sourceMap": true,
     "strict": true,
