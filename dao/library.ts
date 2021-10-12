@@ -1,6 +1,7 @@
 import OrbitDB from 'orbit-db'
 import DocStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
+import { nanoid } from 'nanoid'
 import { v4 as uuid4 } from 'uuid'
 import type { LibraryInfoDatabase, LibraryInfoHistoryDatabase } from '@/types/base/addresses'
 import type { LibraryId } from '@/types/base/ids'
@@ -11,26 +12,28 @@ import LibraryModel from '@/models/library'
 export default class LibraryDao {
   #database!: DocStore<Library>
   #historyDatabase!: EventStore<LibraryHistory>
+  #defaultAdmin!: string
 
   async build (orbitdb: OrbitDB, databaseAddress: LibraryInfoDatabase | null, historyDatabaseAddress: LibraryInfoHistoryDatabase | null) {
     databaseAddress = databaseAddress || 'library'
     historyDatabaseAddress = historyDatabaseAddress || 'libraryHistory'
     this.#database = await orbitdb.docstore(databaseAddress) as DocStore<Library>
     this.#historyDatabase = await orbitdb.log(historyDatabaseAddress) as EventStore<LibraryHistory>
+    // @ts-ignore
+    this.#defaultAdmin = orbitdb.identity.publicKey
   }
 
   create (
-    id: string,
     name: string,
-    admins: string[],
     note: string,
     issuer: string
   ): LibraryModel {
+    const id = nanoid(20)
     const createdDate = new Date()
     const library = new LibraryModel(
       id, name,
       createdDate, createdDate,
-      [], admins,
+      [], [this.#defaultAdmin],
       note,
       this.#historyDatabase, issuer)
     return library
