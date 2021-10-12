@@ -14,7 +14,7 @@ import {
 /**
  * 図書室情報
  */
-export interface GenesisLibrary {
+export type GenesisLibrary = {
   /** 図書室の情報DBアドレス */
   library: LibraryInfoDatabase
   /** 図書室の情報編集履歴DBアドレス */

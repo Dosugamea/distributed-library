@@ -14,7 +14,7 @@ import {
 /**
  * 連合情報
  */
-export interface GenesisUnion {
+export type GenesisUnion = {
   /** 図書室のノードのアドレス群 */
   library: LibraryNodeDatabase[]
   /** 図書室のノードの編集履歴DBアドレス */
