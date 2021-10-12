@@ -1,9 +1,10 @@
 import OrbitDB from 'orbit-db'
 import DocStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
+import { nanoid } from 'nanoid'
 import { v4 as uuid4 } from 'uuid'
 import type { BibliographyReviewDatabase, BibliographyReviewHistoryDatabase } from '@/types/base/addresses'
-import type { BibliographyReviewId, UserId } from '@/types/base/ids'
+import type { BibliographyReviewId, UserId, BibliographyId } from '@/types/base/ids'
 import type { Review } from '@/types/review'
 import ReviewModel from '@/models/Review'
 import Bibliography from '@/models/bibliography'
@@ -17,17 +18,49 @@ export default class ReviewDao {
   #historyDatabase!: EventStore<BibliographyReviewHistory>
   #issuer: UserId = ''
 
-  constructor (orbitdb: OrbitDB, databaseAddress: BibliographyReviewDatabase | null, historyDatabaseAddress: BibliographyReviewHistoryDatabase | null) {
+  async build (orbitdb: OrbitDB, databaseAddress: BibliographyReviewDatabase | null, historyDatabaseAddress: BibliographyReviewHistoryDatabase | null) {
     databaseAddress = databaseAddress || 'review'
     historyDatabaseAddress = historyDatabaseAddress || 'reviewHistory'
     // @ts-ignore
     this.#issuer = orbitdb.identity.publicKey
-    orbitdb.docs(databaseAddress).then((db) => {
-      this.#database = db as DocStore<Review>
-    })
-    orbitdb.log(historyDatabaseAddress, { accessController: { write: ['*'] } }).then((db) => {
-      this.#historyDatabase = db as EventStore<BibliographyReviewHistory>
-    })
+    this.#database = await orbitdb.docs(databaseAddress) as DocStore<Review>
+    this.#historyDatabase = await orbitdb.log(historyDatabaseAddress, { accessController: { write: ['*'] } }) as EventStore<BibliographyReviewHistory>
+  }
+
+  create (
+    userId: UserId,
+    bibliographyId: BibliographyId,
+    coin: number,
+    name: string,
+    note: string
+  ): ReviewModel {
+    const id = nanoid(20)
+    const createdDate = new Date()
+    const review = new ReviewModel(
+      id, userId, bibliographyId,
+      coin,
+      name,
+      createdDate, createdDate,
+      [],
+      note, this.#historyDatabase, this.#issuer)
+    return review
+  }
+
+  getAddress () {
+    return this.#database.address.root
+  }
+
+  getHistoryAddress () {
+    return this.#historyDatabase.address.root
+  }
+
+  convertToModel (review: Review): ReviewModel {
+    return new ReviewModel(
+      review.id, review.userId, review.bibliographyId,
+      review.coin,
+      review.name, review.createdDate, review.updatedDate,
+      review.histories, review.note, this.#historyDatabase, this.#issuer
+    )
   }
 
   async add (review: ReviewModel) : Promise<string> {

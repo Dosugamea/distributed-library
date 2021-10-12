@@ -48,4 +48,8 @@ export default class ReviewModel extends ContentModel implements ReviewType {
     get coin () {
       return this.#coin
     }
+
+    get _id (): string {
+      return this.id
+    }
 }
