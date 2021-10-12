@@ -21,4 +21,18 @@ export interface Book {
   rentable: boolean
   /** 備考欄(本の状態等) */
   note: string
+  // /** 蔵書を追加する */
+  // addBook(book: Book): void
+  // /** 蔵書を編集する */
+  // editBook(book: Book): void
+  // /** 蔵書を削除する */
+  // removeBook(book: Book): void
+  // /** 蔵書一覧を取得する(システム操作で呼び出される) */
+  // listBook(): Book[]
+  // /** 蔵書一覧をクエリ付きで取得する(システム操作で呼び出される) */
+  // listBookWithQuery(query: any): Book[]
+  // /** 本を借りる(システム操作で呼び出される) */
+  // rentBook(issuer: UserId, book: Book): void
+  // /** 本を返す(システム操作で呼び出される) */
+  // returnBook(issuer: UserId, book: Book): void
 }

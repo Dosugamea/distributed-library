@@ -1,5 +1,4 @@
-import { AdminId, LibraryId, LibraryHistoryId, UserId } from './base/ids'
-import { Book } from './library-book'
+import { AdminId, LibraryId, LibraryHistoryId } from './base/ids'
 
 /*
 * 図書室型
@@ -28,24 +27,8 @@ export type Library = {
   updatedDate: Date
   /** 備考欄(図書室の扱う本/ポリシー等) */
   note: string
-  /** 本一覧のDBアドレス */
-  bookDatabaseAddress: string
   /** 管理者を追加する */
   addAdmin(id: AdminId): void
   /** 管理者を削除する */
   removeAdmin(id: AdminId): void
-  /** 蔵書を追加する */
-  addBook(book: Book): void
-  /** 蔵書を編集する */
-  editBook(book: Book): void
-  /** 蔵書を削除する */
-  removeBook(book: Book): void
-  /** 蔵書一覧を取得する(システム操作で呼び出される) */
-  listBook(): Book[]
-  /** 蔵書一覧をクエリ付きで取得する(システム操作で呼び出される) */
-  listBookWithQuery(query: any): Book[]
-  /** 本を借りる(システム操作で呼び出される) */
-  rentBook(issuer: UserId, book: Book): void
-  /** 本を返す(システム操作で呼び出される) */
-  returnBook(issuer: UserId, book: Book): void
 }

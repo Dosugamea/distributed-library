@@ -41,7 +41,7 @@ export type LibraryBookId = string
 /**
  * 図書室蔵書編集履歴ID
  */
-export type LibraryBookHistoryId = number
+export type LibraryBookHistoryId = string
 
 /**
  * 図書室蔵書貸出返却ID

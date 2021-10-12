@@ -5,39 +5,33 @@ import { v4 as uuid4 } from 'uuid'
 import type { LibraryInfoDatabase, LibraryInfoHistoryDatabase } from '@/types/base/addresses'
 import type { LibraryId } from '@/types/base/ids'
 import { Library } from '@/types/library'
-import { Book } from '@/types/library-book'
 import { LibraryHistory, LibraryHistoryAction, LibraryHistoryTarget } from '@/types/library-history'
 import LibraryModel from '@/models/library'
 
 export default class LibraryDao {
   #database!: DocStore<Library>
   #historyDatabase!: EventStore<LibraryHistory>
-  #orbitdb!: OrbitDB
 
   async build (orbitdb: OrbitDB, databaseAddress: LibraryInfoDatabase | null, historyDatabaseAddress: LibraryInfoHistoryDatabase | null) {
     databaseAddress = databaseAddress || 'library'
     historyDatabaseAddress = historyDatabaseAddress || 'libraryHistory'
     this.#database = await orbitdb.docstore(databaseAddress) as DocStore<Library>
     this.#historyDatabase = await orbitdb.log(historyDatabaseAddress) as EventStore<LibraryHistory>
-    this.#orbitdb = orbitdb
   }
 
-  async create (
+  create (
     id: string,
     name: string,
     admins: string[],
     note: string,
-    bookDatabaseAddress: string | null,
     issuer: string
-  ): Promise<LibraryModel> {
+  ): LibraryModel {
     const createdDate = new Date()
-    bookDatabaseAddress = bookDatabaseAddress || 'libraryBooks'
-    const bookDatabase = await this.#orbitdb.docstore(bookDatabaseAddress) as DocStore<Book>
     const library = new LibraryModel(
       id, name,
       createdDate, createdDate,
       [], admins,
-      note, bookDatabase, bookDatabaseAddress,
+      note,
       this.#historyDatabase, issuer)
     return library
   }
@@ -50,13 +44,11 @@ export default class LibraryDao {
     return this.#historyDatabase.address.root
   }
 
-  async convertToModel (library: Library, issuer: string): Promise<LibraryModel> {
-    const bookDatabase = await this.#orbitdb.docstore(library.bookDatabaseAddress) as DocStore<Book>
+  convertToModel (library: Library, issuer: string): LibraryModel {
     return new LibraryModel(
       library.id, library.name, library.createdDate, library.updatedDate,
       library.histories, library.admins,
       library.note,
-      bookDatabase, library.bookDatabaseAddress,
       this.#historyDatabase, issuer)
   }
 
