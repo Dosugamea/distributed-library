@@ -1,6 +1,7 @@
 import OrbitDB from 'orbit-db'
 import DocStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
+import { nanoid } from 'nanoid'
 import { v4 as uuid4 } from 'uuid'
 import type { LibraryInfoDatabase, LibraryInfoHistoryDatabase } from '@/types/base/addresses'
 import { LibraryHistory, LibraryHistoryAction, LibraryHistoryTarget } from '@/types/library-history'
@@ -11,23 +12,21 @@ import { LibraryBookId, BibliographyId } from '@/types/base/ids'
 export default class LibraryBookDao {
   #database!: DocStore<LibraryBookType>
   #historyDatabase!: EventStore<LibraryHistory>
-  #orbitdb!: OrbitDB
 
   async build (orbitdb: OrbitDB, databaseAddress: LibraryInfoDatabase | null, historyDatabaseAddress: LibraryInfoHistoryDatabase | null) {
     databaseAddress = databaseAddress || 'libraryBooks'
     historyDatabaseAddress = historyDatabaseAddress || 'libraryBooksHistory'
     this.#database = await orbitdb.docstore(databaseAddress) as DocStore<LibraryBookType>
     this.#historyDatabase = await orbitdb.log(historyDatabaseAddress) as EventStore<LibraryHistory>
-    this.#orbitdb = orbitdb
   }
 
   create (
-    id: LibraryBookId,
     bibliographyId: BibliographyId,
     rentable: boolean,
     note: string,
     issuer: string
   ): LibraryBookModel {
+    const id = nanoid(20)
     const libraryBookModel = new LibraryBookModel(
       id, bibliographyId, rentable,
       note, [], this.#historyDatabase, issuer)
@@ -60,18 +59,18 @@ export default class LibraryBookDao {
 
   async edit (libraryBook: LibraryBookType) {
     if (!this.isExist(libraryBook.id)) {
-      throw new Error(`Library ${libraryBook.id} doesn't exist`)
+      throw new Error(`LibraryBook ${libraryBook.id} doesn't exist`)
     }
     await this.#database.del(libraryBook.id)
     await this.#database.put(libraryBook)
     this.addHistory('edit', 'book', libraryBook.id)
   }
 
-  remove (libraryBook: LibraryBookType) {
+  async remove (libraryBook: LibraryBookType) {
     if (!this.isExist(libraryBook.id)) {
-      throw new Error(`Library ${libraryBook.id} doesn't exist`)
+      throw new Error(`LibraryBook ${libraryBook.id} doesn't exist`)
     }
-    this.#database.del(libraryBook.id)
+    await this.#database.del(libraryBook.id)
     this.addHistory('remove', 'book', libraryBook.id)
   }
 
