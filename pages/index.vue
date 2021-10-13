@@ -2,39 +2,12 @@
   <section class="section">
     <div class="columns is-mobile">
       <card
-        title="Free"
+        v-for="library in libraries"
+        :key="library.id"
+        :title="library.name"
         icon="github"
       >
-        Open source on <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
-
-      <card
-        title="Responsive"
-        icon="cellphone-link"
-      >
-        <b class="has-text-grey">
-          Every
-        </b> component is responsive
-      </card>
-
-      <card
-        title="Modern"
-        icon="alert-decagram"
-      >
-        Built with <a href="https://vuejs.org/">
-          Vue.js
-        </a> and <a href="http://bulma.io/">
-          Bulma
-        </a>
-      </card>
-
-      <card
-        title="Lightweight"
-        icon="arrange-bring-to-front"
-      >
-        No other internal dependency
+        {{ library.note }}
       </card>
     </div>
     <FirstStepPage :wizard-step="wizardStep" @change-step="changeStep" />
@@ -55,6 +28,7 @@ import LibraryConfigCard from '@/components/library-config/card.vue'
 import Card from '@/components/Card.vue'
 import { Wizard } from '@/types/front/wizard-const'
 import { clientStore } from '@/store'
+// import { Library } from '~/types/library'
 
 @Component({
   components: {
@@ -72,6 +46,7 @@ export default class IndexComponent extends Vue {
   shelfName: string = ''
   shelfNote: string = ''
   dbAddress: string = ''
+  libraries: object[] = []
 
   changeStep (newValue: number) {
     this.wizardStep = newValue
@@ -89,10 +64,20 @@ export default class IndexComponent extends Vue {
       await this.$libraryBookDao.build(this.$orbitdb, libraryBookInfo[0], libraryBookInfo[1])
       this.wizardStep = Wizard.INITIALIZED
       alert('本棚の読み出しに成功しました')
+      this.$libraryDao.listenReady(() => {
+        console.log('ready')
+        this.libraries = this.$libraryDao.list()
+        console.log(this.libraries)
+      })
       this.$libraryDao.listenUpdate(() => {
         console.log('replicated')
-        const libraryObjects = this.$libraryDao.list()
-        console.log(libraryObjects)
+        this.libraries = this.$libraryDao.list()
+        console.log(this.libraries)
+      })
+      this.$libraryDao.listenWrite(() => {
+        console.log('write')
+        this.libraries = this.$libraryDao.list()
+        console.log(this.libraries)
       })
     }
   }

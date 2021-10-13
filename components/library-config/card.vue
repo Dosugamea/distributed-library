@@ -1,11 +1,11 @@
 <template>
   <section>
     <b-field label="Name">
-      <b-input v-model="shelfNameProp" type="string" maxlength="30" />
+      <b-input v-model="shelfName" type="string" maxlength="30" />
     </b-field>
 
     <b-field label="Note">
-      <b-input v-model="shelfNoteProp" type="string" maxlength="30" />
+      <b-input v-model="shelfNote" type="string" maxlength="30" />
     </b-field>
 
     <b-button @click="saveDB()">
@@ -15,20 +15,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, PropSync } from 'nuxt-property-decorator'
+import { Vue, Component } from 'nuxt-property-decorator'
 
 @Component
 export default class LibraryConfigCard extends Vue {
-  @PropSync('shelfName', { type: String })
-  shelfNameProp!: string
-
-  @PropSync('shelfNote', { type: String })
-  shelfNoteProp!: string
+  shelfName: string = ''
+  shelfNote: string = ''
 
   async saveDB () {
+    console.log(this.shelfName)
+    console.log(this.shelfNote)
     const libraryModel = this.$libraryDao.create(
-      this.shelfNameProp,
-      this.shelfNoteProp,
+      this.shelfName,
+      this.shelfNote,
       'test'
     )
     console.log(await this.$libraryDao.add(libraryModel))

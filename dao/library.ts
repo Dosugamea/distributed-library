@@ -10,15 +10,15 @@ import { LibraryHistory, LibraryHistoryAction, LibraryHistoryTarget } from '@/ty
 import LibraryModel from '@/models/library'
 
 export default class LibraryDao {
-  #database!: DocStore<Library>
+  #database!: DocStore<any>
   #historyDatabase!: EventStore<LibraryHistory>
   #defaultAdmin!: string
 
   async build (orbitdb: OrbitDB, databaseAddress: LibraryInfoDatabase | null, historyDatabaseAddress: LibraryInfoHistoryDatabase | null) {
     databaseAddress = databaseAddress || 'library'
     historyDatabaseAddress = historyDatabaseAddress || 'libraryHistory'
-    this.#database = await orbitdb.docstore(databaseAddress) as DocStore<Library>
-    this.#historyDatabase = await orbitdb.log(historyDatabaseAddress) as EventStore<LibraryHistory>
+    this.#database = await orbitdb.docstore(databaseAddress, { accessController: { write: ['*'] } }) as DocStore<any>
+    this.#historyDatabase = await orbitdb.log(historyDatabaseAddress, { accessController: { write: ['*'] } })
     // @ts-ignore
     this.#defaultAdmin = orbitdb.identity.publicKey
   }
@@ -47,6 +47,18 @@ export default class LibraryDao {
     return this.#historyDatabase.address.root
   }
 
+  listenWrite (runner: any) {
+    this.#database.events.on('write', runner)
+  }
+
+  listenUpdate (runner: any) {
+    this.#database.events.on('replicated', runner)
+  }
+
+  listenReady (runner: any) {
+    this.#database.events.on('ready', runner)
+  }
+
   convertToModel (library: Library, issuer: string): LibraryModel {
     return new LibraryModel(
       library.id, library.name, library.createdDate, library.updatedDate,
@@ -55,11 +67,24 @@ export default class LibraryDao {
       this.#historyDatabase, issuer)
   }
 
+  convertToType (library: LibraryModel): object {
+    return {
+      _id: library._id,
+      id: library.id,
+      name: library.name,
+      createdDate: '',
+      updatedDate: '',
+      histories: [].toString(),
+      admins: [].toString(),
+      note: library.note
+    }
+  }
+
   async add (library: LibraryModel) : Promise<string> {
     if (this.isExist(library.id)) {
       throw new Error(`Library ${library.id} already exist`)
     }
-    const dbPutResp = await this.#database.put(library)
+    const dbPutResp = await this.#database.put(this.convertToType(library))
     this.addHistory('create', 'library', library.id)
     return dbPutResp
   }
@@ -92,14 +117,19 @@ export default class LibraryDao {
     return docs[0]
   }
 
+  list (): object[] {
+    const docs = this.#database.get('')
+    return docs
+  }
+
   isExist (libraryId: LibraryId) : boolean {
     return this.#database.get(libraryId).length > 0
   }
 
   private addHistory (action: LibraryHistoryAction, target: LibraryHistoryTarget, value: string) {
-    const h: LibraryHistory = {
+    const h: object = {
       id: uuid4(),
-      createdDate: new Date(),
+      createdDate: new Date().toString(),
       issuer: 'self',
       action,
       target,
