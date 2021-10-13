@@ -6,14 +6,28 @@ import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
   namespaced: true
 })
 export default class Client extends VuexModule {
-  private test: string = '';
+  private libraryDatabase: string = '';
+  private libraryHistoryDatabase: string = '';
+  private libraryBookDatabase: string = '';
+  private libraryBookHistoryDatabase: string = '';
 
   @Mutation
-  public setTest (test: string) {
-    this.test = test
+  public setGenesisLibrary (dbAndHistoryDb: Array<string>): void {
+    this.libraryDatabase = dbAndHistoryDb[0]
+    this.libraryHistoryDatabase = dbAndHistoryDb[1]
   }
 
-  public get getTest () {
-    return this.test
+  @Mutation
+  public setLibraryBooks (dbAndHistoryDb: Array<string>) {
+    this.libraryBookDatabase = dbAndHistoryDb[0]
+    this.libraryBookHistoryDatabase = dbAndHistoryDb[1]
+  }
+
+  public get genesisLibraryInfo () : Array<string> {
+    return [this.libraryDatabase, this.libraryHistoryDatabase]
+  }
+
+  public get libraryBookInfo () : Array<string> {
+    return [this.libraryBookDatabase, this.libraryBookHistoryDatabase]
   }
 }

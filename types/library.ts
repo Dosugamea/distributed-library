@@ -27,8 +27,4 @@ export type Library = {
   updatedDate: Date
   /** 備考欄(図書室の扱う本/ポリシー等) */
   note: string
-  /** 管理者を追加する */
-  addAdmin(id: AdminId): void
-  /** 管理者を削除する */
-  removeAdmin(id: AdminId): void
 }

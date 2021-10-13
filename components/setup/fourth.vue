@@ -1,6 +1,6 @@
 <template>
   <b-modal :active="isThisStep" :can-cancel="false" has-modal-card>
-    <div class="modal-card" style="width: auto">
+    <div class="modal-card" style="width: 700px;">
       <header class="modal-card-head">
         <p class="modal-card-title">
           本棚の読み込み(入力)
@@ -42,7 +42,7 @@
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
-          <b-button type="is-primary" :disabled="isFormInvalid" @click="goLoad">
+          <b-button v-if="loadStatus == 0" type="is-primary" :disabled="isFormInvalid" @click="loadDatabase">
             読み込む
           </b-button>
           <b-button type="is-secondary" @click="goBack">
@@ -58,10 +58,12 @@
 import { Component, Emit } from 'nuxt-property-decorator'
 import { Wizard } from '@/types/front/wizard-const'
 import BaseStepPage from '@/components/setup/base.vue'
+import { clientStore } from '@/store'
 
 @Component
 export default class FourthStepPage extends BaseStepPage {
   DISPLAY_STEP = Wizard.LOAD_LIBRARY
+  loadStatus: number = 0
   libraryDatabase: string = ''
   libraryHistoryDatabase: string = ''
   libraryBookDatabase: string = ''
@@ -72,9 +74,26 @@ export default class FourthStepPage extends BaseStepPage {
       this.libraryBookDatabase.length === 0 || this.libraryBookHistoryDatabase.length === 0
   }
 
+  async loadDatabase () {
+    this.loadStatus += 1
+    // 連合を読み出し
+    await this.$libraryDao.build(this.$orbitdb, '/orbitdb/' + this.libraryDatabase + '/library', '/orbitdb/' + this.libraryHistoryDatabase + '/libraryHistory')
+    await this.$libraryBookDao.build(this.$orbitdb, '/orbitdb/' + this.libraryBookDatabase + '/libraryBooks', '/orbitdb/' + this.libraryBookHistoryDatabase + '/libraryBooksHistory')
+    // 連合読み出し完了
+    this.loadStatus += 1
+    alert('本棚の読み出しに成功しました')
+    clientStore.setGenesisLibrary(
+      ['/orbitdb/' + this.libraryDatabase + '/library', '/orbitdb/' + this.libraryHistoryDatabase + '/libraryHistory']
+    )
+    clientStore.setLibraryBooks(
+      ['/orbitdb/' + this.libraryBookDatabase + '/libraryBooks', '/orbitdb/' + this.libraryBookHistoryDatabase + '/libraryBooksHistory']
+    )
+    this.goMain()
+  }
+
   @Emit('change-step')
-  goLoad () {
-    return Wizard.INIT_LIBRARY
+  goMain () {
+    return Wizard.INITIALIZED
   }
 
   @Emit('change-step')

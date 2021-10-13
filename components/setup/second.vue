@@ -99,7 +99,7 @@ export default class SecondStepPage extends BaseStepPage {
     await this.$libraryDao.build(this.$orbitdb, null, null)
     await this.$libraryBookDao.build(this.$orbitdb, null, null)
     // 連合を作成して登録
-    const newLibrary = this.$libraryDao.create(this.shelfNote, this.shelfNote, issuer)
+    const newLibrary = this.$libraryDao.create(this.shelfName, this.shelfNote, issuer)
     await this.$libraryDao.add(newLibrary)
     // Daoからアドレスを取り出して代入
     this.libraryDatabase = this.$libraryDao.getAddress()
