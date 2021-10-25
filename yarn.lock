@@ -1631,10 +1631,25 @@
     cborg "^1.2.1"
     multiformats "^9.0.0"
 
+"@ipld/dag-cbor@^6.0.10":
+  version "6.0.12"
+  resolved "https://registry.yarnpkg.com/@ipld/dag-cbor/-/dag-cbor-6.0.12.tgz#4c3d3a616047769561dbff58942caa147f661041"
+  integrity sha512-CZRiXFEMtbEoZq5x2vR6xXtsycbYml2C+4eKFxzwyFjLsAGVbk6MZFnMtiO/dphz+ZVLPwnHU5hOL5uJ+Lf7yw==
+  dependencies:
+    cborg "^1.2.1"
+    multiformats "^9.0.0"
+
 "@ipld/dag-pb@^2.0.0", "@ipld/dag-pb@^2.0.2", "@ipld/dag-pb@^2.1.0", "@ipld/dag-pb@^2.1.3":
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/@ipld/dag-pb/-/dag-pb-2.1.9.tgz#823ca89168fa367e6b2f61255332f4113ad6f8c6"
   integrity sha512-6p8vgm3jMB7IKO4CAdZV/rbhBo/YvNLmiEot1vjtJalmASM+9DLbFIzHV0CAHkwlSsv3/UTsV7UzfDb6dGTHLQ==
+  dependencies:
+    multiformats "^9.0.0"
+
+"@ipld/dag-pb@^2.1.9":
+  version "2.1.12"
+  resolved "https://registry.yarnpkg.com/@ipld/dag-pb/-/dag-pb-2.1.12.tgz#237b6aa24e462dc4c43064eba0f3fa67cd58ae21"
+  integrity sha512-fNAtr4RnPU2N+QBEfPxwry2zOe6t10s1KdyisTL7i/Ct3m8p2lDfg4Zs3EmgSBXvXVrMJ0cIsxK1D/J4b/mwvw==
   dependencies:
     multiformats "^9.0.0"
 
@@ -4561,10 +4576,10 @@ bser@2.1.1:
   dependencies:
     node-int64 "^0.4.0"
 
-buefy@^0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.9.8.tgz#51fb52bf3bcf4b8db7668f0ca17f1a5e8cf7f499"
-  integrity sha512-VBGAD6WtmgpPdiRnBXaTleS3ifpNu9rbInAr54YL8KJw1RhCb8JtGYYYVRjllnDQmN0jQjC5lYoPR9KpfTe+Cw==
+buefy@^0.9.10:
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.9.10.tgz#17f64ee1ba43a145d1d3c56f45cba95e4e2975fa"
+  integrity sha512-xXEoy/NTgBNiIfBTCdHi2Vu5SJJdB046py6ekUvYuUgYwRvulySZksdecVNNWdfEVU8iD4esZaRbTLwCegFcVQ==
   dependencies:
     bulma "0.9.3"
 
@@ -8503,6 +8518,20 @@ ipfs-http-client@^52.0.3:
     stream-to-it "^0.2.2"
     uint8arrays "^3.0.0"
 
+ipfs-log@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/ipfs-log/-/ipfs-log-5.3.1.tgz#ae456584d6ec3f946a9ca0535974f45988637455"
+  integrity sha512-VD4vIYD+FAbxzE5ypFdoS/85gK/Yx0VChOzFplXTdgm4W0xf9Lanrgp78MO/OFiDu3Wg1cMgjnxpyNl86lIchA==
+  dependencies:
+    json-stringify-deterministic "^1.0.1"
+    multihashing-async "^2.0.1"
+    orbit-db-identity-provider "^0.3.1"
+    orbit-db-io "^1.0.1"
+    p-do-whilst "^1.1.0"
+    p-each-series "^2.1.0"
+    p-map "^4.0.0"
+    p-whilst "^2.1.0"
+
 ipfs-log@~5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/ipfs-log/-/ipfs-log-5.0.1.tgz#0335492ae404ab88bebbd682cecd9efcb8059838"
@@ -11700,6 +11729,11 @@ multiformats@^9.0.0, multiformats@^9.0.2, multiformats@^9.0.4, multiformats@^9.1
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.4.6.tgz#d24b2e313ff3a3f8f48eef771d44fb329a354e56"
   integrity sha512-ngZRO82P7mPvw/3gu5NQ2QiUJGYTS0LAxvQnEAlWCJakvn7YpK2VAd9JWM5oosYUeqoVbkylH/FsqRc4fc2+ag==
 
+multiformats@^9.4.7:
+  version "9.4.9"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.4.9.tgz#5d3c7cf8dfeef6bda2535d37fd0ac99b10a15046"
+  integrity sha512-zA84TTJcRfRMpjvYqy63piBbSEdqlIGqNNSpP6kspqtougqjo60PRhIFo+oAxrjkof14WMCImvr7acK6rPpXLw==
+
 multihashes@^3.0.1:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/multihashes/-/multihashes-3.1.2.tgz#ffa5e50497aceb7911f7b4a3b6cada9b9730edfc"
@@ -12181,12 +12215,12 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nuxt-buefy@^0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.4.8.tgz#9b59be99803c50b81ad52bc5a6f929426a1651df"
-  integrity sha512-+5hHGnOXbSIRvjFCbejuQZdh1So7evvwVBA+PvEksQj0S7hoWOvjKz7PihcdyXTI4dxJ5bcF71GcGVor+i35fg==
+nuxt-buefy@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.4.10.tgz#7e091ebee5c7dd2bf9de46a3b7a36a3a4d0d4fba"
+  integrity sha512-Kk/QrNXUrIe3/iPecb0v1OmcZWfdihioEuPtqW4OUfaDDPrVUdfPPRKLMHNgy1OPxDEGSor/h3zMr23d9/0Nyw==
   dependencies:
-    buefy "^0.9.8"
+    buefy "^0.9.10"
 
 nuxt-property-decorator@^2.9.1:
   version "2.9.1"
@@ -12399,12 +12433,11 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-orbit-db-access-controllers@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/orbit-db-access-controllers/-/orbit-db-access-controllers-0.3.0.tgz#48814ab2965a73a0d0d218b56be93318c478a0fb"
-  integrity sha512-H7xfgpcyAx9ToFYMvpP7StCt269uaqM33lnMdY9T1o3gbP8IYe0wPurkPQwg6IVZHrDeeBvTDA7kbOqShf9vJw==
+orbit-db-access-controllers@^0.3.0, orbit-db-access-controllers@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/orbit-db-access-controllers/-/orbit-db-access-controllers-0.3.2.tgz#2c3c5c2a8ed0db2e0dcefceb26d8d90f06225301"
+  integrity sha512-FbeWkDoMdLESifPlXu8HBLCSD+JAIRu9Hs9oxppgKzp7YxC7ok+JDy8Z6VaR2jgaZFmiShLB1febX9sNMk91sw==
   dependencies:
-    orbit-db-io "^0.3.0"
     p-map-series "^1.0.0"
 
 orbit-db-cache@~0.3.0:
@@ -12440,6 +12473,14 @@ orbit-db-feedstore@~1.12.0:
   dependencies:
     orbit-db-eventstore "~1.12.0"
 
+orbit-db-identity-provider@^0.3.1, orbit-db-identity-provider@~0.3.0, orbit-db-identity-provider@~0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/orbit-db-identity-provider/-/orbit-db-identity-provider-0.3.1.tgz#ed2eaccf14981fd105984644052bb28e32b2fa20"
+  integrity sha512-kR6uUCovNecTTPTDsCkm07VEEg1nozx5bz0/ZUO7Oo+0EhCACPO9DZ3g5Wy9bPBHyaaRYqcocQfqAvTdfwyWLQ==
+  dependencies:
+    ethers "^5.0.8"
+    orbit-db-keystore "~0.3.5"
+
 orbit-db-identity-provider@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/orbit-db-identity-provider/-/orbit-db-identity-provider-0.4.0.tgz#2225742e96e28855788b17a9e3fbb392123d20e8"
@@ -12452,15 +12493,16 @@ orbit-db-identity-provider@^0.4.0:
     path-browserify "^1.0.1"
     stream-browserify "^3.0.0"
 
-orbit-db-identity-provider@~0.3.0, orbit-db-identity-provider@~0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/orbit-db-identity-provider/-/orbit-db-identity-provider-0.3.1.tgz#ed2eaccf14981fd105984644052bb28e32b2fa20"
-  integrity sha512-kR6uUCovNecTTPTDsCkm07VEEg1nozx5bz0/ZUO7Oo+0EhCACPO9DZ3g5Wy9bPBHyaaRYqcocQfqAvTdfwyWLQ==
+orbit-db-io@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/orbit-db-io/-/orbit-db-io-1.0.1.tgz#eb77d02123cd1b81ee3cc7ef99ba036a300cb956"
+  integrity sha512-rpYsnJSLu9Rw5jIprD0VFNwo1hl8Ex/Xf1jOghDWHSXNt/Pl0gtijguuj4+S1Eirh6RKmaPVqOWu4mH72Ls7Dw==
   dependencies:
-    ethers "^5.0.8"
-    orbit-db-keystore "~0.3.5"
+    "@ipld/dag-cbor" "^6.0.10"
+    "@ipld/dag-pb" "^2.1.9"
+    multiformats "^9.4.7"
 
-orbit-db-io@^0.3.0, orbit-db-io@~0.3.0:
+orbit-db-io@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/orbit-db-io/-/orbit-db-io-0.3.0.tgz#cbc84c629431ea63a2c32d73f4638c8c92ebc444"
   integrity sha512-yWyhDR9vqw2+8tuOT+erKWkc9cL2QuemSVZgPjEm7nn+zkBzbacbfUdbgKtbtgUp8VDKhCzph2LfEEVhs6F5HA==
@@ -12518,6 +12560,19 @@ orbit-db-storage-adapter@~0.5.3:
     level "^5.0.1"
     mkdirp "^0.5.1"
 
+orbit-db-store@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/orbit-db-store/-/orbit-db-store-4.2.0.tgz#9b5d81a498855c4a8ed19ae6287c5e14d6ca8dba"
+  integrity sha512-YPjbhsHIBQZwJ37hngnCotUMPlhXrHG0npbsOFr1tOmXIEFHOeGqW/j/ng4TMmFRciUqL7xUemuSgRdIAB427A==
+  dependencies:
+    ipfs-log "^5.3.1"
+    it-to-stream "^1.0.0"
+    logplease "^1.2.14"
+    p-each-series "^2.1.0"
+    p-map "^4.0.0"
+    p-queue "^6.6.1"
+    readable-stream "~3.6.0"
+
 orbit-db-store@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/orbit-db-store/-/orbit-db-store-4.0.1.tgz#9146b35c9bee8d2085be0b4f709097f24d80037e"
@@ -12532,7 +12587,32 @@ orbit-db-store@~4.0.1:
     p-queue "^6.6.1"
     readable-stream "~3.6.0"
 
-orbit-db@^0.26.1, "orbit-db@git+https://github.com/orbitdb/orbit-db.git":
+orbit-db@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/orbit-db/-/orbit-db-0.27.2.tgz#81f87b72558c438940d718454d80465b35ed694c"
+  integrity sha512-8PEA8qbXQgAIxN6055rIWQDEJHBAQu6IRkSwKIcM2eavAstm0MTe18kvy+oqV6MPwu4BvGrhkpAIlcg9BdFRTA==
+  dependencies:
+    ipfs-pubsub-1on1 "~0.0.6"
+    is-electron "^2.2.0"
+    is-node "^1.0.2"
+    localstorage-down "^0.6.7"
+    logplease "^1.2.14"
+    multihashes "~3.0.1"
+    orbit-db-access-controllers "^0.3.2"
+    orbit-db-cache "~0.3.0"
+    orbit-db-counterstore "~1.12.0"
+    orbit-db-docstore "~1.12.0"
+    orbit-db-eventstore "~1.12.0"
+    orbit-db-feedstore "~1.12.0"
+    orbit-db-identity-provider "~0.3.0"
+    orbit-db-io "^1.0.1"
+    orbit-db-keystore "~0.3.0"
+    orbit-db-kvstore "~1.12.0"
+    orbit-db-pubsub "~0.6.0"
+    orbit-db-storage-adapter "~0.5.3"
+    orbit-db-store "^4.2.0"
+
+"orbit-db@git+https://github.com/orbitdb/orbit-db.git":
   version "0.26.1"
   resolved "git+https://github.com/orbitdb/orbit-db.git#4f3fabb7bcf20f1314fd8e52fca556ce2852e46a"
   dependencies:
