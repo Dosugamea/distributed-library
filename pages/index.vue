@@ -1,5 +1,11 @@
 <template>
   <section class="section">
+    <card
+      title="DB Address"
+      icon="github"
+    >
+      {{ dbAddress }}
+    </card>
     <div class="columns is-mobile">
       <card
         v-for="library in libraries"
@@ -59,6 +65,7 @@ export default class IndexComponent extends Vue {
   async mounted () {
     const genesisLibraryInfo = clientStore.genesisLibraryInfo
     const libraryBookInfo = clientStore.libraryBookInfo
+    this.dbAddress = genesisLibraryInfo[0]
     if (!genesisLibraryInfo.includes('') && !libraryBookInfo.includes('')) {
       await this.$libraryDao.build(this.$orbitdb, genesisLibraryInfo[0], genesisLibraryInfo[1])
       await this.$libraryBookDao.build(this.$orbitdb, libraryBookInfo[0], libraryBookInfo[1])
