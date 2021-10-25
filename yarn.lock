@@ -4561,10 +4561,10 @@ bser@2.1.1:
   dependencies:
     node-int64 "^0.4.0"
 
-buefy@^0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.9.8.tgz#51fb52bf3bcf4b8db7668f0ca17f1a5e8cf7f499"
-  integrity sha512-VBGAD6WtmgpPdiRnBXaTleS3ifpNu9rbInAr54YL8KJw1RhCb8JtGYYYVRjllnDQmN0jQjC5lYoPR9KpfTe+Cw==
+buefy@^0.9.10:
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.9.10.tgz#17f64ee1ba43a145d1d3c56f45cba95e4e2975fa"
+  integrity sha512-xXEoy/NTgBNiIfBTCdHi2Vu5SJJdB046py6ekUvYuUgYwRvulySZksdecVNNWdfEVU8iD4esZaRbTLwCegFcVQ==
   dependencies:
     bulma "0.9.3"
 
@@ -12181,12 +12181,12 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nuxt-buefy@^0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.4.8.tgz#9b59be99803c50b81ad52bc5a6f929426a1651df"
-  integrity sha512-+5hHGnOXbSIRvjFCbejuQZdh1So7evvwVBA+PvEksQj0S7hoWOvjKz7PihcdyXTI4dxJ5bcF71GcGVor+i35fg==
+nuxt-buefy@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.4.10.tgz#7e091ebee5c7dd2bf9de46a3b7a36a3a4d0d4fba"
+  integrity sha512-Kk/QrNXUrIe3/iPecb0v1OmcZWfdihioEuPtqW4OUfaDDPrVUdfPPRKLMHNgy1OPxDEGSor/h3zMr23d9/0Nyw==
   dependencies:
-    buefy "^0.9.8"
+    buefy "^0.9.10"
 
 nuxt-property-decorator@^2.9.1:
   version "2.9.1"
@@ -16670,10 +16670,10 @@ vuex-module-decorators@^1.0.1:
   resolved "https://registry.yarnpkg.com/vuex-module-decorators/-/vuex-module-decorators-1.0.1.tgz#d34dafb5428a3636f1c26d3d014c15fc9659ccd0"
   integrity sha512-FLWZsXV5XAtl/bcKUyQFpnSBtpc3wK/7zSdy9oKbyp71mZd4ut5y2zSd219wWW9OG7WUOlVwac4rXFFDVnq7ug==
 
-vuex-persistedstate@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-4.0.0.tgz#ed82f266ca98c869a2aad9cb9880c2f608c05f3a"
-  integrity sha512-jDs+awbV9YD2A2F6S5zgtYq1Bjd8v0YldOK6HPv1EJZzGMse0FtZTREfXvA7zlVfq9MpmSZJNmYQVylfpZ5znQ==
+vuex-persistedstate@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-4.1.0.tgz#127165f85f5b4534fb3170a5d3a8be9811bd2a53"
+  integrity sha512-3SkEj4NqwM69ikJdFVw6gObeB0NHyspRYMYkR/EbhR0hbvAKyR5gksVhtAfY1UYuWUOCCA0QNGwv9pOwdj+XUQ==
   dependencies:
     deepmerge "^4.2.2"
     shvl "^2.0.3"
