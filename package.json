@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@nuxt/content": "^1.14.0",
+    "@nuxt/content": "^1.15.0",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
     "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
@@ -21,7 +21,7 @@
     "ipfs-core-types": "^0.7.1",
     "node-sass": "^6.0.1",
     "nuxt": "^2.15.8",
-    "nuxt-buefy": "^0.4.8",
+    "nuxt-buefy": "^0.4.10",
     "nuxt-property-decorator": "^2.9.1",
     "nuxt-purgecss": "^1.0.0",
     "orbit-db": "^0.26.1",
