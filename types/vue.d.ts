@@ -1,7 +1,7 @@
-import type GUN from 'gun'
+import { IGunChainReference } from 'gun/types/chain'
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $db: typeof GUN
+    $db: IGunChainReference
   }
 }

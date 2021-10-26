@@ -40,19 +40,15 @@
   </section>
 </template>
 
-<script>
-import Card from '~/components/Card'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
 
-export default {
-  name: 'HomePage',
-
-  components: {
-    Card
-  },
+@Component({})
+export default class IndexComponent extends Vue {
+  name = 'HomePage'
 
   mounted () {
-    console.log(this.$ipfs)
-    console.log(this.$orbitdb)
+    const ref = this.$db.get('server')
   }
 }
 </script>
