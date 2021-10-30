@@ -48,7 +48,8 @@ export default class IndexComponent extends Vue {
   name = 'HomePage'
 
   mounted () {
-    const ref = this.$db.get('server')
+    const user = this.$db.user().recall({ sessionStorage: true })
+    user.get('aaa')
   }
 }
 </script>
