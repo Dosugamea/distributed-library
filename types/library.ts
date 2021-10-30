@@ -1,5 +1,25 @@
-import { Content } from './base/content'
-import { AdminId, LibraryId, BibliographyId } from './base/ids'
+import { ContentType } from './base/content'
+import { AdminId, LibraryId } from './base/ids'
+import { BibliographyType } from './bibliography'
+
+/*
+* 図書室の蔵書情報型
+*  インスタンス個別の蔵書情報DB(docs)で使用
+*
+* 編集可能なノード: 図書室の管理者
+*/
+
+/**
+ * 図書室の蔵書情報
+ */
+export type BookType = {
+  /** 貸出可能な状態か */
+  rentable: boolean
+  /** 備考欄(本の状態等) */
+  note: string
+  /** 書誌 */
+  bibliography: BibliographyType
+}
 
 /*
 * 図書室型
@@ -11,7 +31,7 @@ import { AdminId, LibraryId, BibliographyId } from './base/ids'
 /**
  * 図書室情報
  */
-export type Library = Content & {
+export type LibraryType = ContentType & {
   /** 図書室ID */
   libraryId: LibraryId
   /** 図書室名 */
@@ -26,23 +46,6 @@ export type Library = Content & {
   updatedDate: Date
   /** 備考欄(図書室の扱う本/ポリシー等) */
   note: string
-}
-
-/*
-* 図書室の蔵書情報型
-*  インスタンス個別の蔵書情報DB(docs)で使用
-*
-* 編集可能なノード: 図書室の管理者
-*/
-
-/**
- * 図書室の蔵書情報
- */
-export type Book = {
-  /** 書誌ID */
-  bibliographyId: BibliographyId
-  /** 貸出可能な状態か */
-  rentable: boolean
-  /** 備考欄(本の状態等) */
-  note: string
+  /** 所蔵する本 */
+  books: BookType[]
 }

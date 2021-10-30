@@ -1,4 +1,5 @@
-import { Content } from './base/content'
+import { ContentType } from './base/content'
+import { LogType } from './base/log'
 
 /*
 * ユーザー情報型
@@ -11,13 +12,13 @@ import { Content } from './base/content'
 /**
  * ユーザー情報
  */
-export type User = Content & {
+export type UserType = ContentType & {
   /** アカウントID */
   id: string
   /** アカウント名 */
   name: string
   /** アカウント情報の編集履歴 */
-  histories: History[]
+  histories: LogType[]
   /** アカウントの作成日 */
   createdDate: Date
   /** アカウントの更新日 */

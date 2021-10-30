@@ -1,4 +1,5 @@
-import { Content } from './base/content'
+import { ContentType } from './base/content'
+import { ReviewType } from './review'
 
 /*
 * 書誌情報型
@@ -14,9 +15,9 @@ import { Content } from './base/content'
 /**
  * 書誌情報
  */
-export type Bibliography = Content & {
+export type BibliographyType = ContentType & {
   /** 書誌名 */
-  title: string
+  name: string
   /** 書籍プレビュー画像アドレス **/
   image: string
   /** 書誌カテゴリ */
@@ -33,4 +34,6 @@ export type Bibliography = Content & {
   updatedDate: Date
   /** 備考欄(その他の追加情報等) */
   note: string
+  /** レビュー一覧 */
+  reviews: ReviewType[]
 }

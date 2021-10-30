@@ -1,4 +1,4 @@
-import { Content } from './base/content'
+import { ContentType } from './base/content'
 import { UserId, BibliographyId } from './base/ids'
 
 /*
@@ -7,22 +7,6 @@ import { UserId, BibliographyId } from './base/ids'
 *
 * 編集可能なノード: 誰でも(追加と削除のみ) / identifyIDが一致する場合のみ処理成立
 */
-
-/**
- * レビュー情報
- */
-export type Review = Content & {
-  /** ユーザーID */
-  userId: UserId
-  /** 書誌ID */
-  bibliographyId: BibliographyId
-  /** ユーザーが付与したコイン数 */
-  coin: number
-  /** レビュー本文 */
-  comment: string
-  /** レビューの投稿日 */
-  createdDate: Date
-}
 
 /*
 * レビュー評価型
@@ -34,11 +18,27 @@ export type Review = Content & {
 /**
  * レビュー評価情報
  */
-export interface ReviewLike {
+export interface ReviewLikeType {
   /** ユーザーID */
   userId: UserId
   /** ユーザーが付与したコイン数 */
   coin: number
   /** レビュー評価の投稿日 */
   createdDate: Date
+}
+
+/**
+ * レビュー情報
+ */
+export type ReviewType = ContentType & {
+  /** ユーザーID */
+  userId: UserId
+  /** 書誌ID */
+  bibliographyId: BibliographyId
+  /** レビュー本文 */
+  comment: string
+  /** レビューの投稿日 */
+  createdDate: Date
+  /** レビューへのいいね */
+  likes: ReviewLikeType[]
 }

@@ -1,7 +1,7 @@
 /**
  * 履歴基底インターフェイス
  */
-export interface Log {
+export type LogType = {
     /** 編集実行者 */
     issuer: string
     /** 編集動作種別 */
