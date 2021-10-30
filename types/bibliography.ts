@@ -1,4 +1,4 @@
-import { BibliographyId, BibliographyHistoryId } from './base/ids'
+import { Content } from './base/content'
 
 /*
 * 書誌情報型
@@ -14,9 +14,7 @@ import { BibliographyId, BibliographyHistoryId } from './base/ids'
 /**
  * 書誌情報
  */
-export interface Bibliography {
-  /** 書誌ID */
-  _id: BibliographyId
+export type Bibliography = Content & {
   /** 書誌名 */
   title: string
   /** 書籍プレビュー画像アドレス **/
@@ -29,8 +27,6 @@ export interface Bibliography {
   publisher: string
   /** 書誌の発売日 */
   publishedDate: Date
-  /** 書誌の編集履歴 */
-  histories: BibliographyHistoryId[]
   /** 書誌情報の作成日 */
   createdDate: Date
   /** 書誌情報の更新日 */
