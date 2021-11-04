@@ -1,60 +1,90 @@
 import type { IGunChainReference } from 'gun/types/chain'
-import type { Bibliography } from '@/types/bibliography'
+import type { BibliographyModel } from '@/models/bibliography'
+import type { BibliographyType } from '@/types/bibliography'
 import type { AppState } from '@/types/appState'
 import type { BibliographyId } from '@/types/base/ids'
-import { IDao } from '@/dao/base'
+import { IDao, shootPromise } from '@/dao/base'
 import { getDiff, applyDiff, rdiffResult } from 'recursive-diff'
 
 /**
  * This is bibliography data access object.
 */
-export default class BibliographyDao implements IDao<Bibliography> {
-  #gun: IGunChainReference<AppState>
+export default class BibliographyDao implements IDao<BibliographyModel> {
+  #gun: IGunChainReference<AppState['bibliographies']>
 
   constructor (gun: IGunChainReference<AppState>) {
-    this.#gun = gun
+    this.#gun = gun.get('bibliographies')
   }
 
-  async add (bibliography: BibliographyModel) : Promise<string> {
-    if (this.isExist(bibliography.id)) {
+  async add (bibliography: BibliographyModel): Promise<boolean> {
+    const isExist = await this.isExist(bibliography.id)
+    if (isExist) {
       throw new Error(`Bibliography ${bibliography.id} already exist`)
     }
-    const dbPutResp = await this.#database.put(bibliography)
-    this.addHistory('create', 'bibliography', bibliography.id)
-    return dbPutResp
+    return new Promise<boolean>((resolve, reject) => {
+      const me = this
+      const bibliographyRef = this.#gun.get(bibliography.id)
+      bibliographyRef.put(bibliography, function (resp) {
+        if (resp.ok) {
+          me.addHistory('add', 'bibliography', 'new', bibliographyRef).then(function () {
+            resolve(true)
+          })
+        } else {
+          reject(new Error(`Failed to add bibliography: ${resp.err}`))
+        }
+      })
+    })
   }
 
-  async edit (bibliography: BibliographyModel) {
-    if (!this.isExist(bibliography.id)) {
-      throw new Error(`Bibliography ${bibliography.id} doesn't exist`)
-    }
-    await this.#database.del(bibliography.id)
-    await this.#database.put(bibliography)
-    this.addHistory('edit', 'bibliography', bibliography.id)
+  async edit (bibliography: BibliographyModel): Promise<boolean> {
+    const existBiblio = await this.get(bibliography.id)
+    const diff = getDiff(existBiblio, bibliography)
+    return new Promise<boolean>((resolve, reject) => {
+      const me = this
+      const bibliographyRef = this.#gun.get(bibliography.id)
+      bibliographyRef.put(bibliography, function (resp) {
+        if (resp.ok) {
+          me.addHistory('add', 'bibliography', 'new', bibliographyRef).then(function () {
+            resolve(true)
+          })
+        } else {
+          reject(new Error(`Failed to add bibliography: ${resp.err}`))
+        }
+      })
+    })
   }
 
-  remove (bibliography: BibliographyModel) {
-    if (!this.isExist(bibliography.id)) {
+  async remove (bibliography: BibliographyModel) : Promise<boolean> {
+    const isExist = await this.isExist(bibliography.id)
+    if (!isExist) {
       throw new Error(`Bibliography ${bibliography.id} doesn't exist`)
     }
     throw new Error('Remove bibliography is not implemented')
   }
 
-  find (query : any) : Bibliography[] {
+  async find (query : any) : Bibliography[] {
     return this.#database.query(query)
   }
 
-  get (bibliographyId: BibliographyId): Bibliography {
-    const docs = this.#database.get(bibliographyId)
-    if (docs.length === 0) { throw new Error(`Bibliography ${bibliographyId} doesn't exist`) }
-    return docs[0]
+  async get (id: string): Promise<BibliographyModel> {
+    const bibliography = await shootPromise<BibliographyModel>(this.#gun.get(id))
+    if (bibliography === undefined) {
+      throw new Error(`Bibliography ${id} doesn't exist`)
+    }
+    return bibliography
   }
 
-  isExist (bibliographyId: BibliographyId) : boolean {
-    return this.#database.get(bibliographyId).length > 0
+  async isExist (id: string): Promise<boolean> {
+    const isDefined = await shootPromise<BibliographyModel>(this.#gun.get(id))
+    return isDefined !== undefined
   }
 
-  private addHistory (action: BibliographyHistoryAction, target: BibliographyHistoryTarget, value: string) {
+  private async addHistory(
+    action: string,
+    target: string,
+    value: string,
+    ref: IGunChainReference
+  ) {
     const h: BibliographyHistory = {
       id: uuid4(),
       createdDate: new Date(),
