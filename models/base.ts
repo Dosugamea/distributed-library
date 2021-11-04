@@ -1,32 +1,51 @@
 import { ContentType } from '@/types/base/content'
-import { Log } from '@/types/base/log'
+import { LogType } from '@/types/base/log'
 
 /**
- * Bibliography model instance for add/edit/remove bibliography entries.
+ * ログモデル
+*/
+class LogModel implements LogType {
+  issuer: string
+  action: string
+  target: string
+  value: string | number
+  createdDateUnix: number
+
+  constructor (issuer: string, action: string, target: string, value: string | number, createdDateUnix: number) {
+    this.issuer = issuer
+    this.action = action
+    this.target = target
+    this.value = value
+    this.createdDateUnix = createdDateUnix
+  }
+}
+
+/**
+ * 基底モデル
 */
 class ContentModel implements ContentType {
   id: string
   name: string
-  createdDate: Date
-  updatedDate: Date
+  createdDateUnix: number
+  updatedDateUnix: number
   note: string
-  histories: Log[]
+  histories: LogModel[]
 
   constructor (
     id: string,
     name: string,
-    createdDate: Date,
-    updatedDate: Date,
-    histories: Log[],
+    createdDateUnix: number,
+    updatedDateUnix: number,
+    histories: LogModel[],
     note: string
   ) {
     this.id = id
     this.name = name
-    this.createdDate = createdDate
-    this.updatedDate = updatedDate
+    this.createdDateUnix = createdDateUnix
+    this.updatedDateUnix = updatedDateUnix
     this.histories = histories
     this.note = note
   }
 }
 
-export { ContentModel }
+export { ContentModel, LogModel }
