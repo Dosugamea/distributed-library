@@ -1,5 +1,5 @@
 import { ContentType } from './base/content'
-import { AdminId, LibraryId } from './base/ids'
+import { AdminId } from './base/ids'
 import { BibliographyType } from './bibliography'
 
 /*
@@ -12,7 +12,7 @@ import { BibliographyType } from './bibliography'
 /**
  * 図書室の蔵書情報
  */
-export type BookType = {
+export type LibraryBookType = {
   /** 貸出可能な状態か */
   rentable: boolean
   /** 備考欄(本の状態等) */
@@ -32,8 +32,6 @@ export type BookType = {
  * 図書室情報
  */
 export type LibraryType = ContentType & {
-  /** 図書室ID */
-  libraryId: LibraryId
   /** 図書室名 */
   name: string
   /** 図書室の作者ID */
@@ -41,11 +39,11 @@ export type LibraryType = ContentType & {
   /** 図書室の管理者配列 */
   admins: AdminId[]
   /** 図書室の作成日 */
-  createdDate: Date
+  createdDateUnix: number
   /** 図書室の更新日 */
-  updatedDate: Date
+  updatedDateUnix: number
   /** 備考欄(図書室の扱う本/ポリシー等) */
   note: string
   /** 所蔵する本 */
-  books: BookType[]
+  books: LibraryBookType[]
 }

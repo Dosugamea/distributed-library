@@ -1,13 +1,13 @@
-import { Review } from './review'
-import { Library } from './library'
-import { Bibliography } from './bibliography'
+import { ReviewModel } from '@/models/review'
+import { LibraryModel } from '@/models/library'
+import { BibliographyModel } from '@/models/bibliography'
 
 /**
  * GunDBインスタンスが持てるデータ
  * (ユーザー領域のデータは残念ながら定義できない)
  */
 export type AppState = {
-    reviews: Review[]
-    libraries: Library[]
-    bibliographies: Bibliography[]
+    reviews: Record<string, ReviewModel>
+    libraries: Record<string, LibraryModel>
+    bibliographies: Record<string, BibliographyModel>
 }

@@ -27,11 +27,11 @@ export type BibliographyType = ContentType & {
   /** 書誌の出版社 */
   publisher: string
   /** 書誌の発売日 */
-  publishedDate: Date
+  publishedDateUnix: number
   /** 書誌情報の作成日 */
-  createdDate: Date
+  createdDateUnix: number
   /** 書誌情報の更新日 */
-  updatedDate: Date
+  updatedDateUnix: number
   /** 備考欄(その他の追加情報等) */
   note: string
   /** レビュー一覧 */

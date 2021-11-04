@@ -11,9 +11,9 @@ export type ContentType = {
     /** コンテンツ情報の編集履歴 */
     histories: LogType[]
     /** コンテンツの作成日 */
-    createdDate: Date
+    createdDateUnix: number
     /** コンテンツの更新日 */
-    updatedDate: Date
+    updatedDateUnix: number
     /** コンテンツ備考欄 */
     note: string
   }

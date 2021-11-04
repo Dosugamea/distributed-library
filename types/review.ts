@@ -18,13 +18,13 @@ import { UserId, BibliographyId } from './base/ids'
 /**
  * レビュー評価情報
  */
-export interface ReviewLikeType {
+export type ReviewLikeType = {
   /** ユーザーID */
   userId: UserId
   /** ユーザーが付与したコイン数 */
   coin: number
   /** レビュー評価の投稿日 */
-  createdDate: Date
+  createdDateUnix: number
 }
 
 /**
@@ -38,7 +38,7 @@ export type ReviewType = ContentType & {
   /** レビュー本文 */
   comment: string
   /** レビューの投稿日 */
-  createdDate: Date
+  createdDateUnix: number
   /** レビューへのいいね */
   likes: ReviewLikeType[]
 }

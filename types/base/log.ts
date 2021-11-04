@@ -11,5 +11,5 @@ export type LogType = {
     /** 編集後の値 */
     value: string | number
     /** 編集時刻 */
-    createdDate: Date
+    createdDateUnix: number
 }
