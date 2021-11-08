@@ -35,5 +35,5 @@ export type BibliographyType = ContentType & {
   /** 備考欄(その他の追加情報等) */
   note: string
   /** レビュー一覧 */
-  reviews: ReviewType[]
+  reviews: Record<string, ReviewType>
 }

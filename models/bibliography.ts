@@ -12,21 +12,21 @@ class BibliographyModel extends ContentModel implements BibliographyType {
   author: string
   publisher: string
   publishedDateUnix: number
-  reviews: ReviewModel[]
+  reviews: Record<string, ReviewModel>
 
   constructor (
     id: string,
     name: string,
     createdDateUnix: number,
     updatedDateUnix: number,
-    histories: LogModel[],
+    histories: Record<string, LogModel>,
     note: string,
     image: string,
     category: string,
     author: string,
     publisher: string,
     publishedDateUnix: number,
-    reviews: ReviewModel[]
+    reviews: Record<string, ReviewModel>,
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note)
     this.id = id

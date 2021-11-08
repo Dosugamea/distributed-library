@@ -28,25 +28,25 @@ class LibraryModel extends ContentModel implements LibraryType {
   /** 図書室の作成者 */
   owner: AdminId
   /** 図書室の管理者配列 */
-  admins: AdminId[]
+  admins: Record<string, AdminId>
   /** 所蔵する本 */
-  books: LibraryBookModel[]
+  books: Record<string, LibraryBookModel>
 
   constructor (
     id: string,
     name: string,
-    createdDate: Date,
-    updatedDate: Date,
-    histories: LogModel[],
+    createdDateUnix: number,
+    updatedDateUnix: number,
+    histories: Record<string, LogModel>,
     note: string,
     owner: AdminId,
-    admins: AdminId[],
-    books: LibraryBookModel[]
+    admins: Record<string, AdminId>,
+    books: Record<string, LibraryBookModel>,
   ) {
-    super(id, name, createdDate, updatedDate, histories, note)
+    super(id, name, createdDateUnix, updatedDateUnix, histories, note)
     this.owner = owner
     this.admins = admins
-    this.createdDate = createdDate
+    this.createdDateUnix = createdDateUnix
     this.books = books
   }
 }

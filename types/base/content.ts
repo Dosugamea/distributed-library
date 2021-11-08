@@ -9,7 +9,7 @@ export type ContentType = {
     /** コンテンツ名 */
     name: string
     /** コンテンツ情報の編集履歴 */
-    histories: LogType[]
+    histories: Record<string, LogType>
     /** コンテンツの作成日 */
     createdDateUnix: number
     /** コンテンツの更新日 */

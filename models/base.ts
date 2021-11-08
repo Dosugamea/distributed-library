@@ -29,15 +29,14 @@ class ContentModel implements ContentType {
   createdDateUnix: number
   updatedDateUnix: number
   note: string
-  histories: LogModel[]
+  histories: Record<string, LogModel>
 
   constructor (
     id: string,
     name: string,
     createdDateUnix: number,
     updatedDateUnix: number,
-    histories: LogModel[],
-    note: string
+    histories: Record<string, LogModel>,
   ) {
     this.id = id
     this.name = name

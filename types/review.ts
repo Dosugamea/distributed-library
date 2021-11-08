@@ -40,5 +40,5 @@ export type ReviewType = ContentType & {
   /** レビューの投稿日 */
   createdDateUnix: number
   /** レビューへのいいね */
-  likes: ReviewLikeType[]
+  likes: Record<string, ReviewLikeType>
 }

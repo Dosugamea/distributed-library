@@ -23,19 +23,19 @@ class ReviewModel extends ContentModel implements ReviewType {
   userId: string
   bibliographyId: string
   comment: string
-  likes: ReviewLikeModel[]
+  likes: Record<string, ReviewLikeModel>
 
   constructor (
     id: string,
     name: string,
     createdDateUnix: number,
     updatedDateUnix: number,
-    histories: LogModel[],
+    histories: Record<string, LogModel>,
     note: string,
     userId: string,
     bibliographyId: string,
     comment: string,
-    likes: ReviewLikeModel[]
+    likes: Record<string, ReviewLikeModel>,
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note)
     this.userId = userId
