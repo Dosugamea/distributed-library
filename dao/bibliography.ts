@@ -27,6 +27,7 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
     author: string,
     publisher: string
   ) {
+    // creates new model and return instance
     const newId = shortUUID().generate().toString()
     const logTime = this.getCurrentUnixTime()
     return new BibliographyModel(
@@ -43,6 +44,7 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
       const bibliographyRef = this.#gun.get(bibliography.id)
       const me = this
       try {
+        // Put callback is not working for me
         bibliographyRef.put(bibliography)
         try {
           me.addHistory('add', 'bibliography', bibliography.id, bibliographyRef).then(function () {
@@ -58,6 +60,7 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   }
 
   async edit (bibliography: BibliographyModel): Promise<boolean> {
+    // Not tested yet
     const existBiblio = await this.get(bibliography.id)
     const diff = getDiff(existBiblio, bibliography)
     return new Promise<boolean>((resolve, reject) => {
@@ -79,6 +82,8 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
     if (!isExist) {
       throw new Error(`Bibliography ${bibliography.id} doesn't exist`)
     }
+    // This remove function makes model uncountable.
+    // It will replaced with using isDeleted flag later.
     return new Promise<boolean>((resolve, reject) => {
       // @ts-ignore
       this.#gun.get(bibliography.id).put(null)
@@ -91,18 +96,23 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   }
 
   async list (): Promise<BibliographyModel[]> {
+    // Get total content count to wait all data loaded
     const keys = await this.idKeys()
+    // This loads every models from db
     const bibliographies = await this.shootPromiseMultiple<BibliographyModel>(this.#gun.map(), keys)
     return bibliographies
   }
 
-  async find (query : (model: BibliographyModel) => BibliographyModel) : Promise<BibliographyModel[]> {
+  async find (query: (model: BibliographyModel) => BibliographyModel): Promise<BibliographyModel[]> {
+    // Since using query makes model uncountable, it just get every contents, and filter later.
     const bibliographies = await this.list()
     return bibliographies.filter(query)
   }
 
   async get (id: string): Promise<BibliographyModel> {
+    // This function works fine
     const bibliography = await this.shootPromise<BibliographyModel>(this.#gun.get(id))
+    // It return undefined if not added yet or removed
     if (bibliography === undefined) {
       throw new Error(`Bibliography ${id} doesn't exist`)
     }
@@ -110,6 +120,7 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   }
 
   async idKeys (): Promise<string[]> {
+    // This function gets working keys only
     const allKeys = await this.allKeys()
     console.log(allKeys)
     return new Promise<string[]>((resolve, reject) => {
@@ -134,6 +145,8 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   }
 
   allKeys (): Promise<string[]> {
+    // This function gets every keys includes the values are deleted.
+    // I couldn't found how to delete "key", not only value.
     return new Promise<string[]>((resolve, reject) => {
       try {
         this.#gun.once(
@@ -153,11 +166,13 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   }
 
   async count (): Promise<number> {
+    // Counting working keys means counting models
     const keys = await this.idKeys()
     return keys.length
   }
 
   async isExist (id: string): Promise<boolean> {
+    // Trying get means isExist
     const isDefined = await this.shootPromise<BibliographyModel>(this.#gun.get(id))
     return isDefined !== undefined
   }
@@ -168,6 +183,7 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
     value: string,
     ref: IGunChainReference<BibliographyModel>
   ): Promise<boolean> {
+    // Adds history automatically when add/edit/remove content
     const logTime = this.getCurrentUnixTime()
     const log = new LogModel(
       this.#issuer, action, target, value, logTime
