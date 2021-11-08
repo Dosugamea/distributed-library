@@ -19,6 +19,8 @@ export type LibraryBookType = {
   note: string
   /** 書誌 */
   bibliography: BibliographyType
+  /** 削除フラグ */
+  isDeleted: boolean
 }
 
 /*

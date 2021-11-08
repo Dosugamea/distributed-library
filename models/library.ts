@@ -13,11 +13,14 @@ class LibraryBookModel implements LibraryBookType {
   note: string
   /** 書誌 */
   bibliography: BibliographyModel
+  /** 削除フラグ */
+  isDeleted: boolean
 
-  constructor (rentable: boolean, note: string, bibliography: BibliographyModel) {
+  constructor (rentable: boolean, note: string, bibliography: BibliographyModel, isDeleted: boolean) {
     this.rentable = rentable
     this.note = note
     this.bibliography = bibliography
+    this.isDeleted = isDeleted
   }
 }
 
@@ -42,8 +45,9 @@ class LibraryModel extends ContentModel implements LibraryType {
     owner: AdminId,
     admins: Record<string, AdminId>,
     books: Record<string, LibraryBookModel>,
+    isDeleted: boolean
   ) {
-    super(id, name, createdDateUnix, updatedDateUnix, histories, note)
+    super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
     this.owner = owner
     this.admins = admins
     this.createdDateUnix = createdDateUnix

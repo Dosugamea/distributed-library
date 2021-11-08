@@ -16,4 +16,6 @@ export type ContentType = {
     updatedDateUnix: number
     /** コンテンツ備考欄 */
     note: string
+    /** 削除フラグ */
+    isDeleted: boolean
   }

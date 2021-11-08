@@ -27,8 +27,9 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     publisher: string,
     publishedDateUnix: number,
     reviews: Record<string, ReviewModel>,
+    isDeleted: boolean
   ) {
-    super(id, name, createdDateUnix, updatedDateUnix, histories, note)
+    super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
     this.id = id
     this.image = image
     this.category = category

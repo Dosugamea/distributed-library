@@ -36,8 +36,9 @@ class ReviewModel extends ContentModel implements ReviewType {
     bibliographyId: string,
     comment: string,
     likes: Record<string, ReviewLikeModel>,
+    isDeleted: boolean
   ) {
-    super(id, name, createdDateUnix, updatedDateUnix, histories, note)
+    super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
     this.userId = userId
     this.bibliographyId = bibliographyId
     this.comment = comment

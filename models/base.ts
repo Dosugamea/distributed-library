@@ -30,6 +30,7 @@ class ContentModel implements ContentType {
   updatedDateUnix: number
   note: string
   histories: Record<string, LogModel>
+  isDeleted: boolean
 
   constructor (
     id: string,
@@ -37,6 +38,8 @@ class ContentModel implements ContentType {
     createdDateUnix: number,
     updatedDateUnix: number,
     histories: Record<string, LogModel>,
+    note: string,
+    isDeleted: boolean
   ) {
     this.id = id
     this.name = name
@@ -44,6 +47,7 @@ class ContentModel implements ContentType {
     this.updatedDateUnix = updatedDateUnix
     this.histories = histories
     this.note = note
+    this.isDeleted = isDeleted
   }
 }
 
