@@ -47,9 +47,24 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class IndexComponent extends Vue {
   name = 'HomePage'
 
-  mounted () {
-    const user = this.$db.user().recall({ sessionStorage: true })
-    user.get('aaa')
+  async mounted () {
+    // const user = this.$db.user().recall({ sessionStorage: true })
+    const newModel = this.$bibliographyDao.createModel(
+      '名前',
+      '説明文',
+      '画像URL',
+      'カテゴリ名',
+      '筆者',
+      '出版社'
+    )
+    console.log(newModel)
+    console.log('追加中')
+    await this.$bibliographyDao.add(newModel)
+    console.log('追加完了')
+
+    console.log('登録済みのモデル数取得')
+    const bibliographyCount = await this.$bibliographyDao.count()
+    console.log('取得完了:', bibliographyCount)
   }
 }
 </script>
