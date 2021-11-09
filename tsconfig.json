@@ -21,14 +21,15 @@
       ],
       "@/*": [
         "./*"
-      ]
+      ],
     },
     "types": [
       "@nuxt/types",
       "@nuxtjs/axios",
       "@nuxt/content",
       "@types/node",
-      "@types/jest"
+      "@types/jest",
+      "node_modules/short-uuid"
     ]
   },
   "exclude": [
