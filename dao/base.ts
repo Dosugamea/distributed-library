@@ -1,25 +1,148 @@
 import type { IGunChainReference } from 'gun/types/chain'
+import { getDiff } from 'recursive-diff'
+import shortUUID from 'short-uuid'
+import { ContentType } from '@/types/base/content'
+import { LogModel } from '@/models/base'
 
 /**
  * コンテンツ 基底インターフェイス
  */
 interface IDao<T> {
+  createModel(...params: any): T
   add(model: T): Promise<boolean>
   edit(model: T): Promise<boolean>
   remove(model: T): Promise<boolean>
-  find(query: any): Promise<object|undefined>
-  get(id: string): Promise<object>
+  list(): T[]
+  find(query: any): T[]
+  count(): number
+  get(id: string): Promise<T>
   isExist(id: string): Promise<boolean>
+  histories(model: T): Promise<LogModel[]>
 }
 
-class IDaoUtils {
+class IDaoBase<T extends ContentType> {
+  #objName = ''
+  #issuer = ''
+  #gun: IGunChainReference
+  #elements: ContentType[] = []
+
+  constructor (gun: IGunChainReference, objName: string, issuer: string) {
+    this.#gun = gun
+    this.#objName = objName
+    this.#issuer = issuer
+    const me = this
+    // @ts-ignore
+    this.#gun.map().on(function (data: ContentType, key: string) {
+      me.#elements = me.#elements.filter(data => data.id !== key)
+      if (!data.isDeleted) {
+        me.#elements.push(data)
+      }
+    })
+  }
+
+  protected async __add (model: T): Promise<boolean> {
+    const isExist = await this.__isExist(model.id)
+    if (isExist) {
+      throw new Error(`${this.#objName} ${model.id} already exist`)
+    }
+    return new Promise<boolean>((resolve, reject) => {
+      const modelRef = this.#gun.get(model.id)
+      const me = this
+      try {
+        // Put callback is not working for me
+        modelRef.put(model)
+        try {
+          me.addHistory('add', me.#objName, model.id, modelRef).then(function () {
+            resolve(true)
+          })
+        } catch (err) {
+          reject(new Error(`Failed to add ${me.#objName}: ${err}`))
+        }
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  protected async __edit (model: T): Promise<boolean> {
+    const existedModel = await this.__get(model.id)
+    const diff = getDiff(existedModel, model)
+    return new Promise<boolean>((resolve, reject) => {
+      const me = this
+      const modelRef = this.#gun.get(model.id)
+      try {
+        modelRef.put(model)
+        me.addHistory('edit', me.#objName, String(diff), modelRef).then(function () {
+          resolve(true)
+        })
+      } catch (e) {
+        reject(new Error(`Failed to edit ${this.#objName}: ${e}`))
+      }
+    })
+  }
+
+  protected async __remove (model: T): Promise<boolean> {
+    if (!model.id) {
+      throw new Error(`Bad ${this.#objName} : id was not existed`)
+    }
+    const isExist = await this.__isExist(model.id)
+    if (!isExist) {
+      throw new Error(`${this.#objName} ${model.id} doesn't exist`)
+    }
+    return new Promise<boolean>((resolve, reject) => {
+      try {
+        // @ts-ignore
+        this.#gun.get(model.id).get('isDeleted').put(true, () => {
+          resolve(true)
+        })
+      } catch (e) {
+        reject(new Error(`Failed to remove ${this.#objName}: ${e}`))
+      }
+    })
+  }
+
+  protected async __get (id: string): Promise<T> {
+    const model = await this.__shootPromise<T>(this.#gun.get(id))
+    if (model === undefined) {
+      throw new Error(`${this.#objName} ${id} doesn't exist`)
+    }
+    return model
+  }
+
+  protected async __isExist (id: string): Promise<boolean> {
+    // Trying get means isExist
+    const isDefined = await this.__shootPromise<T>(this.#gun.get(id))
+    return isDefined !== undefined
+  }
+
+  protected __list (): T[] {
+    return this.#elements as T[]
+  }
+
+  protected __count (): number {
+    return this.#elements.length
+  }
+
+  protected __find (query: (model: T) => boolean): T[] {
+    return this.#elements.filter(query as any) as T[]
+  }
+
+  protected async __histories (model: T): Promise<LogModel[]> {
+    const logRef = this.#gun.get(model.id).get('histories')
+    const keys = await this.__keys(logRef)
+    const logs = await this.__shootPromiseMultiple<LogModel>(
+      logRef.once().map(), keys
+    )
+    return logs
+  }
+
   /**
    * 指定した型のデータが返すものとしてPromiseを生成する
    * (指定した型通りのデータが返ることは保証されないので注意)
    *
    * Gun/lib/Then.jsの代わりの処理 (Thenの型が付属していなかったため)
   */
-  shootPromise<T> (gun: IGunChainReference): Promise<T|undefined> {
+  protected __shootPromise<T> (gun: IGunChainReference): Promise<T|undefined> {
     return new Promise<T|undefined>((resolve, reject) => {
       try {
         gun.once(function (data, _) {
@@ -38,7 +161,7 @@ class IDaoUtils {
    *
    * Referenced: https://github.com/amark/gun/issues/565
   */
-  shootPromiseMultiple<T> (gun: IGunChainReference, keys: string[]): Promise<T[]> {
+  protected __shootPromiseMultiple<T> (gun: IGunChainReference, keys: string[]): Promise<T[]> {
     return new Promise<T[]>((resolve, reject) => {
       if (keys.length === 0) {
         resolve([])
@@ -46,6 +169,7 @@ class IDaoUtils {
       const resp: T[] = []
       try {
         gun.once(function (data, key) {
+          console.log(keys.length)
           // ループ中に追加された要素は除外
           if (!keys.includes(key)) {
             return
@@ -72,7 +196,7 @@ class IDaoUtils {
     })
   }
 
-  allKeys (gun: IGunChainReference): Promise<string[]> {
+  protected __keys (gun: IGunChainReference): Promise<string[]> {
     // This function gets every keys includes the values are deleted.
     return new Promise<string[]>((resolve, reject) => {
       try {
@@ -92,8 +216,8 @@ class IDaoUtils {
     })
   }
 
-  protected async __count (gun: IGunChainReference): Promise<number> {
-    const keys = await this.allKeys(gun)
+  protected async __deepCount (gun: IGunChainReference): Promise<number> {
+    const keys = await this.__keys(gun)
     let loopCount = keys.length
     let objCount = 0
     return new Promise<number>((resolve, reject) => {
@@ -115,12 +239,41 @@ class IDaoUtils {
     })
   }
 
+  private addHistory (
+    action: string,
+    target: string,
+    value: string,
+    ref: IGunChainReference
+  ): Promise<boolean> {
+    const logTime = this.getCurrentUnixTime()
+    const log = new LogModel(
+      this.#issuer, action, target, value, logTime
+    )
+    const me = this
+    return new Promise<boolean>((resolve, reject) => {
+      ref.get('histories').get(String(logTime)).put(log, function (resp) {
+        if (resp.ok) {
+          resolve(true)
+        } else {
+          reject(new Error(`Failed to add ${me.#objName} history: ${resp.err}`))
+        }
+      })
+    })
+  }
+
   /**
    * 現在時刻をUnixTimeで返す
   */
   getCurrentUnixTime (): number {
     return Math.floor(Date.now() / 1000)
   }
+
+  /**
+   * 適当なIDを生成する
+   */
+  getNewId (): string {
+    return shortUUID().generate().toString()
+  }
 }
 
-export { IDao, IDaoUtils }
+export { IDao, IDaoBase }
