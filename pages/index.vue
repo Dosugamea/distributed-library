@@ -1,114 +1,74 @@
 <template>
-  <section class="section">
-    <div class="columns is-multiline">
-      <card
-        title="Free"
-        icon="github"
-      >
-        Now db has {{ bibliographyCount }}
-      </card>
-
-      <card
-        title="Responsive"
-        icon="cellphone-link"
-      >
-        <b class="has-text-grey">
-          Every
-        </b> component is responsive
-        <button type="button" class="btn btn-primary" @click="addBtn">
-          Click here to add!
-        </button>
-      </card>
-
-      <card
-        title="Modern"
-        icon="alert-decagram"
-      >
-        Built with <a href="https://vuejs.org/">
-          Vue.js
-        </a> and <a href="http://bulma.io/">
-          Bulma
-        </a>
-        <button type="button" class="btn btn-primary" @click="deleteBtn">
-          Click here to delete!
-        </button>
-      </card>
-
-      <card
-        title="Lightweight"
-        icon="arrange-bring-to-front"
-      >
-        <button type="button" class="btn btn-primary" @click="recall">
-          Click here to run db!
-        </button>
-      </card>
-
-      <div v-for="bibliography in bibliographies" :key="bibliography.id">
-        <card
-          :title="bibliography.id"
-          icon="cellphone-link"
-        >
-          {{ bibliography.name }}
-        </card>
+  <div>
+    <section class="hero has-text-centered is-medium has-background-cocoa">
+      <div class="hero-body">
+        <p class="title">
+          Distributed Library
+        </p>
+        <p class="subtitle">
+          P2P Integrated Library System Powered by GunDB
+        </p>
+        <p class="subtitle">
+          <b-button type="is-primary">
+            ログインして 本棚を開く
+          </b-button>
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
+    <section class="container mt-5">
+      <b-collapse
+        v-for="(collapse, index) of collapses"
+        :key="index"
+        class="card"
+        animation="slide"
+        :open="isOpen == index"
+        @open="isOpen = index"
+      >
+        <template #trigger="props">
+          <div
+            class="card-header"
+            role="button"
+          >
+            <p class="card-header-title">
+              {{ collapse.title }}
+            </p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'menu-down' : 'menu-up'" />
+            </a>
+          </div>
+        </template>
+        <div class="card-content">
+          <div class="content">
+            {{ collapse.text }}
+          </div>
+        </div>
+      </b-collapse>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { BibliographyModel } from '~/models/bibliography'
 
-@Component({})
+@Component({
+  layout: 'top'
+})
 export default class IndexComponent extends Vue {
   name = 'HomePage'
-  bibliographies: BibliographyModel[] = []
-
-  get bibliographyCount () {
-    return this.bibliographies.length
-  }
-
-  recall () {
-    this.$db.initDao()
-    setInterval(() => {
-      if (this.$db.bibliographyDao != null) {
-        this.bibliographies = this.$db!.bibliographyDao.list()
-      }
-    }, 100)
-  }
-
-  async addBtn () {
-    console.log('Adding')
-    if (this.$db.bibliographyDao == null) {
-      return
+  isOpen = 0
+  collapses = [
+    {
+      title: 'Title 1',
+      text: 'Text 1'
+    },
+    {
+      title: 'Title 2',
+      text: 'Text 2'
+    },
+    {
+      title: 'Title 3',
+      text: 'Text 3'
     }
-    const bibliography = this.$db.bibliographyDao.createModel(
-      'ごちうさ',
-      '新刊待ち',
-      'https://example.com',
-      '漫画',
-      'Koi',
-      '芳文社'
-    )
-    await this.$db.bibliographyDao.add(bibliography)
-    console.log('Added!')
-  }
-
-  async deleteBtn () {
-    console.log('Deleting')
-    if (this.$db.bibliographyDao == null) {
-      return
-    }
-    const bibliographies = this.$db.bibliographyDao.list()
-    console.log('一覧取得完了:', bibliographies)
-    for (const bibliography of bibliographies) {
-      try {
-        await this.$db.bibliographyDao.remove(bibliography)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    console.log('Deleted!')
-  }
+  ]
 }
 </script>

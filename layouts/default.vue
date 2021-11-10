@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <NavBar />
+      <NavBarUser />
     </header>
     <main class="main-content columns">
       <div class="container column is-10">
