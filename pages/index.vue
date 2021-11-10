@@ -1,13 +1,11 @@
 <template>
   <section class="section">
-    <div class="columns is-mobile">
+    <div class="columns is-multiline">
       <card
         title="Free"
         icon="github"
       >
-        Open source on <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
+        Now db has {{ bibliographyCount }}
       </card>
 
       <card
@@ -17,6 +15,9 @@
         <b class="has-text-grey">
           Every
         </b> component is responsive
+        <button type="button" class="btn btn-primary" @click="addBtn">
+          Click here to add!
+        </button>
       </card>
 
       <card
@@ -28,43 +29,86 @@
         </a> and <a href="http://bulma.io/">
           Bulma
         </a>
+        <button type="button" class="btn btn-primary" @click="deleteBtn">
+          Click here to delete!
+        </button>
       </card>
 
       <card
         title="Lightweight"
         icon="arrange-bring-to-front"
       >
-        No other internal dependency
+        <button type="button" class="btn btn-primary" @click="recall">
+          Click here to run db!
+        </button>
       </card>
+
+      <div v-for="bibliography in bibliographies" :key="bibliography.id">
+        <card
+          :title="bibliography.id"
+          icon="cellphone-link"
+        >
+          {{ bibliography.name }}
+        </card>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { BibliographyModel } from '~/models/bibliography'
 
 @Component({})
 export default class IndexComponent extends Vue {
   name = 'HomePage'
+  bibliographies: BibliographyModel[] = []
 
-  async mounted () {
-    // const user = this.$db.user().recall({ sessionStorage: true })
-    const newModel = this.$bibliographyDao.createModel(
-      '名前',
-      '説明文',
-      '画像URL',
-      'カテゴリ名',
-      '筆者',
-      '出版社'
+  get bibliographyCount () {
+    return this.bibliographies.length
+  }
+
+  recall () {
+    this.$db.initDao()
+    setInterval(() => {
+      if (this.$db.bibliographyDao != null) {
+        this.bibliographies = this.$db!.bibliographyDao.list()
+      }
+    }, 100)
+  }
+
+  async addBtn () {
+    console.log('Adding')
+    if (this.$db.bibliographyDao == null) {
+      return
+    }
+    const bibliography = this.$db.bibliographyDao.createModel(
+      'ごちうさ',
+      '新刊待ち',
+      'https://example.com',
+      '漫画',
+      'Koi',
+      '芳文社'
     )
-    console.log(newModel)
-    console.log('追加中')
-    await this.$bibliographyDao.add(newModel)
-    console.log('追加完了')
+    await this.$db.bibliographyDao.add(bibliography)
+    console.log('Added!')
+  }
 
-    console.log('登録済みのモデル数取得')
-    const bibliographyCount = await this.$bibliographyDao.count()
-    console.log('取得完了:', bibliographyCount)
+  async deleteBtn () {
+    console.log('Deleting')
+    if (this.$db.bibliographyDao == null) {
+      return
+    }
+    const bibliographies = this.$db.bibliographyDao.list()
+    console.log('一覧取得完了:', bibliographies)
+    for (const bibliography of bibliographies) {
+      try {
+        await this.$db.bibliographyDao.remove(bibliography)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    console.log('Deleted!')
   }
 }
 </script>
