@@ -33,9 +33,13 @@ class IDaoBase<T extends ContentType> {
     const me = this
     // @ts-ignore
     this.#gun.map().on(function (data: ContentType, key: string) {
-      me.#elements = me.#elements.filter(data => data.id !== key)
-      if (!data.isDeleted) {
-        me.#elements.push(data)
+      if (data.id) {
+        me.#elements = me.#elements.filter(data => data.id !== key)
+        if (!data.isDeleted) {
+          me.#elements.push(data)
+        }
+      } else {
+        console.log('Received Broken data...', data)
       }
     })
   }

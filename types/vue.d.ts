@@ -1,10 +1,7 @@
-import { IGunChainReference } from 'gun/types/chain'
-import { AppState } from '~/types/appState'
-import type { BibliographyDao } from '@/dao/bibliography'
+import type { MasterDao } from '@/dao/master'
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $db: IGunChainReference<AppState>
-    $bibliographyDao: BibliographyDao
+    $db: MasterDao
   }
 }
