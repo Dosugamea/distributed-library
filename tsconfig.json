@@ -28,8 +28,7 @@
       "@nuxtjs/axios",
       "@nuxt/content",
       "@types/node",
-      "@types/jest",
-      "node_modules/short-uuid"
+      "@types/jest"
     ]
   },
   "exclude": [
