@@ -7,7 +7,7 @@ import { BibliographyModel } from '@/models/bibliography'
 describe('dao-bibliographiesクラスのテスト', () => {
   let gunInstance: IGunChainReference<AppState, any, 'pre_root'>
   let dao: BibliographyDao
-  const errorHead = 'Bibliography'
+  const errorHead = 'bibliography'
   const issuerId: string = 'dosugamea'
   const createModel = () => {
     return dao.createModel(
@@ -93,5 +93,36 @@ describe('dao-bibliographiesクラスのテスト', () => {
     await expect(erroredGet).rejects.toThrow(
       `${errorHead} ${issuerId} doesn't exist`
     )
+  })
+
+  test('要素をカウントできる', async () => {
+    const counted = await dao.count()
+    expect(counted).toBeGreaterThan(0)
+  })
+
+  test('履歴を取得できる', async () => {
+    const model = createModel()
+    await dao.add(model)
+    const histories = await dao.histories(model)
+    expect(histories.length).toBeGreaterThan(0)
+  })
+
+  test('一覧を取得できる', async () => {
+    const models = await dao.list()
+    expect(models.length).toBeGreaterThan(0)
+  })
+
+  test('全データを削除した後要素数が0になる', async () => {
+    const models = await dao.list()
+    console.log(models)
+    for (const model of models) {
+      try {
+        await dao.remove(model)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const models2 = dao.list()
+    expect(models2.length).toEqual(0)
   })
 })

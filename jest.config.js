@@ -18,5 +18,6 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/dao/**.ts'
-  ]
+  ],
+  setupFilesAfterEnv: ['<rootDir>/test/setupJest.ts']
 }
