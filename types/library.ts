@@ -37,11 +37,11 @@ export type LibraryType = ContentType & {
   /** 図書室名 */
   name: string
   /** 図書室の作者ID */
-  owner: AdminId
+  readonly owner: AdminId
   /** 図書室の管理者配列 */
   admins: Record<string, AdminId>
   /** 図書室の作成日 */
-  createdDateUnix: number
+  readonly createdDateUnix: number
   /** 図書室の更新日 */
   updatedDateUnix: number
   /** 備考欄(図書室の扱う本/ポリシー等) */

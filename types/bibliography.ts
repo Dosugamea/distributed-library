@@ -29,7 +29,7 @@ export type BibliographyType = ContentType & {
   /** 書誌の発売日 */
   publishedDateUnix: number
   /** 書誌情報の作成日 */
-  createdDateUnix: number
+  readonly createdDateUnix: number
   /** 書誌情報の更新日 */
   updatedDateUnix: number
   /** 備考欄(その他の追加情報等) */

@@ -32,7 +32,7 @@ export type ReviewLikeType = {
  */
 export type ReviewType = ContentType & {
   /** ユーザーID */
-  userId: UserId
+  readonly userId: UserId
   /** 書誌ID */
   bibliographyId: BibliographyId
   /** レビュー本文 */

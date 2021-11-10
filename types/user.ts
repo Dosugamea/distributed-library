@@ -14,13 +14,13 @@ import { LogType } from './base/log'
  */
 export type UserType = ContentType & {
   /** アカウントID */
-  id: string
+  readonly id: string
   /** アカウント名 */
   name: string
   /** アカウント情報の編集履歴 */
   histories: LogType[]
   /** アカウントの作成日 */
-  createdDate: Date
+  readonly createdDate: Date
   /** アカウントの更新日 */
   updatedDate: Date
   /** 備考欄(プロフィール等) */

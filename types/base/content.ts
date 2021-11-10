@@ -5,13 +5,13 @@ import { LogType } from './log'
  */
 export type ContentType = {
     /** コンテンツID */
-    id: string
+    readonly id: string
     /** コンテンツ名 */
     name: string
     /** コンテンツ情報の編集履歴 */
     histories: Record<string, LogType>
     /** コンテンツの作成日 */
-    createdDateUnix: number
+    readonly createdDateUnix: number
     /** コンテンツの更新日 */
     updatedDateUnix: number
     /** コンテンツ備考欄 */
