@@ -22,8 +22,7 @@ class IDaoUtils {
   shootPromise<T> (gun: IGunChainReference): Promise<T|undefined> {
     return new Promise<T|undefined>((resolve, reject) => {
       try {
-        gun.once(function (data, key) {
-          console.log(data, key)
+        gun.once(function (data, _) {
           resolve(data as unknown as T|undefined)
         })
       } catch (err) {
@@ -47,22 +46,71 @@ class IDaoUtils {
       const resp: T[] = []
       try {
         gun.once(function (data, key) {
+          // ループ中に追加された要素は除外
           if (!keys.includes(key)) {
             return
           }
+          // 要素が消えている可能性がある
           if (data != null) {
-            resp.push(data as unknown as T)
+            // 削除されていなければ返す
+            if (!data.isDeleted) {
+              resp.push(data as unknown as T)
+            }
           }
+          // カウンターを減らす
           if (keys.includes(key)) {
             keys = keys.filter(k => k !== key)
           }
-          console.log(keys)
-          if (keys.length === 1) {
+          // 要素が揃ったらresolve
+          if (keys.length === 0) {
             resolve(resp)
           }
         })
       } catch (err) {
         reject(err)
+      }
+    })
+  }
+
+  allKeys (gun: IGunChainReference): Promise<string[]> {
+    // This function gets every keys includes the values are deleted.
+    return new Promise<string[]>((resolve, reject) => {
+      try {
+        gun.once(
+          function (list) {
+            if (list !== undefined) {
+              const keys = Object.keys(list).filter(key => key !== '_')
+              resolve(keys)
+            } else {
+              reject(new Error('Failed to get keys'))
+            }
+          }
+        )
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  protected async __count (gun: IGunChainReference): Promise<number> {
+    const keys = await this.allKeys(gun)
+    let loopCount = keys.length
+    let objCount = 0
+    return new Promise<number>((resolve, reject) => {
+      try {
+        gun.once().map().get('isDeleted').once(
+          function (value : any) {
+            if (value !== true) {
+              objCount += 1
+            }
+            loopCount -= 1
+            if (loopCount <= 0) {
+              resolve(objCount)
+            }
+          }
+        )
+      } catch (e) {
+        reject(e)
       }
     })
   }

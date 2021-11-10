@@ -62,12 +62,14 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
   async edit (bibliography: BibliographyModel): Promise<boolean> {
     // Not tested yet
     const existBiblio = await this.get(bibliography.id)
+    console.log(existBiblio.name, bibliography.name)
     const diff = getDiff(existBiblio, bibliography)
+    console.log(diff)
     return new Promise<boolean>((resolve, reject) => {
       const me = this
       const bibliographyRef = this.#gun.get(bibliography.id)
-      bibliographyRef.put(bibliography)
       try {
+        bibliographyRef.put(bibliography)
         me.addHistory('edit', 'bibliography', String(diff), bibliographyRef).then(function () {
           resolve(true)
         })
@@ -85,10 +87,11 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
     // This remove function makes model uncountable.
     // It will replaced with using isDeleted flag later.
     return new Promise<boolean>((resolve, reject) => {
-      // @ts-ignore
-      this.#gun.get(bibliography.id).put(null)
       try {
-        resolve(true)
+        // @ts-ignore
+        this.#gun.get(bibliography.id).get('isDeleted').put(true, () => {
+          resolve(true)
+        })
       } catch (e) {
         reject(new Error(`Failed to remove bibliography: ${e}`))
       }
@@ -97,13 +100,18 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
 
   async list (): Promise<BibliographyModel[]> {
     // Get total content count to wait all data loaded
-    const keys = await this.idKeys()
+    const keys = await this.allKeys(this.#gun)
     // This loads every models from db
-    const bibliographies = await this.shootPromiseMultiple<BibliographyModel>(this.#gun.map(), keys)
+    const bibliographies = await this.shootPromiseMultiple<BibliographyModel>(this.#gun.once().map(), keys)
     return bibliographies
   }
 
-  async find (query: (model: BibliographyModel) => BibliographyModel): Promise<BibliographyModel[]> {
+  async count (): Promise<number> {
+    const resp = await this.__count(this.#gun)
+    return resp
+  }
+
+  async find (query: (model: BibliographyModel) => boolean): Promise<BibliographyModel[]> {
     // Since using query makes model uncountable, it just get every contents, and filter later.
     const bibliographies = await this.list()
     return bibliographies.filter(query)
@@ -119,62 +127,19 @@ class BibliographyDao extends IDaoUtils implements IDao<BibliographyModel> {
     return bibliography
   }
 
-  async idKeys (): Promise<string[]> {
-    // This function gets working keys only
-    const allKeys = await this.allKeys()
-    console.log(allKeys)
-    return new Promise<string[]>((resolve, reject) => {
-      try {
-        const keys : string[] = []
-        let cnt = 0
-        this.#gun.map().get('isDeleted').once(
-          function (id) {
-            if (id !== undefined) {
-              keys.push(id as unknown as string)
-            }
-            cnt++
-            if (cnt === allKeys.length) {
-              resolve(keys)
-            }
-          }
-        )
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
-
-  allKeys (): Promise<string[]> {
-    // This function gets every keys includes the values are deleted.
-    // I couldn't found how to delete "key", not only value.
-    return new Promise<string[]>((resolve, reject) => {
-      try {
-        this.#gun.once(
-          function (list) {
-            if (list !== undefined) {
-              const keys = Object.keys(list).filter(key => key !== '_')
-              resolve(keys)
-            } else {
-              reject(new Error('Failed to get bibliography keys'))
-            }
-          }
-        )
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
-
-  async count (): Promise<number> {
-    // Counting working keys means counting models
-    const keys = await this.idKeys()
-    return keys.length
-  }
-
   async isExist (id: string): Promise<boolean> {
     // Trying get means isExist
     const isDefined = await this.shootPromise<BibliographyModel>(this.#gun.get(id))
     return isDefined !== undefined
+  }
+
+  async histories (model: BibliographyModel): Promise<LogModel[]> {
+    const logRef = this.#gun.get(model.id).get('histories')
+    const keys = await this.allKeys(logRef)
+    const logs = await this.shootPromiseMultiple<LogModel>(
+      logRef.once().map(), keys
+    )
+    return logs
   }
 
   private addHistory (
