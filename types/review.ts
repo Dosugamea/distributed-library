@@ -1,5 +1,6 @@
+import type { IGunChainReference } from 'gun/types/chain'
+import { BibliographyType } from './bibliography'
 import { ContentType } from './base/content'
-import { UserId, BibliographyId } from './base/ids'
 
 /*
 * レビュー型
@@ -20,11 +21,11 @@ import { UserId, BibliographyId } from './base/ids'
  */
 export type ReviewLikeType = {
   /** ユーザーID */
-  userId: UserId
+  readonly userId: string
   /** ユーザーが付与したコイン数 */
   coin: number
   /** レビュー評価の投稿日 */
-  createdDateUnix: number
+  readonly createdDateUnix: number
 }
 
 /**
@@ -32,13 +33,13 @@ export type ReviewLikeType = {
  */
 export type ReviewType = ContentType & {
   /** ユーザーID */
-  readonly userId: UserId
-  /** 書誌ID */
-  bibliographyId: BibliographyId
+  readonly userId: string
+  /** 書誌 */
+  bibliography: IGunChainReference<BibliographyType>
   /** レビュー本文 */
   comment: string
   /** レビューの投稿日 */
-  createdDateUnix: number
+  readonly createdDateUnix: number
   /** レビューへのいいね */
   likes: Record<string, ReviewLikeType>
 }

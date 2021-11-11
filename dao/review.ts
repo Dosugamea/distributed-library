@@ -3,6 +3,7 @@ import { ReviewModel } from '@/models/review'
 import type { AppState } from '@/types/appState'
 import { IDao, IDaoBase } from '@/dao/base'
 import { LogModel } from '@/models/base'
+import { BibliographyModel } from '@/models/bibliography'
 
 /**
  * This is review data access object.
@@ -16,7 +17,7 @@ class ReviewDao extends IDaoBase<ReviewModel> implements IDao<ReviewModel> {
     name: string,
     note: string,
     author: string,
-    bibliography: string,
+    bibliography: IGunChainReference<BibliographyModel>,
     comment: string
   ) {
     // creates new model and return instance
