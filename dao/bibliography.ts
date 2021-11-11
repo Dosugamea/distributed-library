@@ -18,13 +18,17 @@ class BibliographyDao extends IDaoBase<BibliographyModel> implements IDao<Biblio
     image: string,
     category: string,
     author: string,
-    publisher: string
+    publisher: string,
+    publishedDateUnix: number = this.getCurrentUnixTime(),
+    isbn: string | undefined
   ) {
     // creates new model and return instance
     const newId = this.getNewId()
     const logTime = this.getCurrentUnixTime()
     return new BibliographyModel(
-      newId, name, logTime, logTime, {}, note, image, category, author, publisher, logTime, {}, false
+      newId, name, logTime, logTime, {}, note,
+      image, category, author, publisher, publishedDateUnix, isbn,
+      {}, false
     )
   }
 

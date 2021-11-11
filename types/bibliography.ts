@@ -34,6 +34,8 @@ export type BibliographyType = ContentType & {
   updatedDateUnix: number
   /** 備考欄(その他の追加情報等) */
   note: string
+  /** ISBN(無い場合もある) */
+  isbn: string | undefined
   /** レビュー一覧 */
   reviews: Record<string, ReviewType>
 }

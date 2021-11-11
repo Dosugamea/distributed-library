@@ -12,6 +12,7 @@ class BibliographyModel extends ContentModel implements BibliographyType {
   author: string
   publisher: string
   publishedDateUnix: number
+  isbn: string | undefined
   reviews: Record<string, ReviewModel>
 
   constructor (
@@ -26,6 +27,7 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     author: string,
     publisher: string,
     publishedDateUnix: number,
+    isbn: string | undefined,
     reviews: Record<string, ReviewModel>,
     isDeleted: boolean
   ) {
@@ -36,6 +38,7 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     this.author = author
     this.publisher = publisher
     this.publishedDateUnix = publishedDateUnix
+    this.isbn = isbn
     this.reviews = reviews
   }
 }
