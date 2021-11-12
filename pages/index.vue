@@ -1,15 +1,15 @@
 <template>
   <div>
-    <section class="hero has-text-centered is-medium has-background-cocoa">
+    <section class="hero has-text-centered is-medium" style="background: linear-gradient(30deg, #5c3d31, #734c3a, #8a5b43, #a26c4c, #b97d54, #d18f5c, #e8a264, #ffb56b);">
       <div class="hero-body">
-        <p class="title">
+        <p class="title has-text-white">
           Distributed Library
         </p>
-        <p class="subtitle">
+        <p class="subtitle has-text-white">
           P2P Integrated Library System Powered by GunDB
         </p>
         <p class="subtitle">
-          <b-button type="is-primary">
+          <b-button type="is-primary" size="is-large" @click="openLoginForm = !openLoginForm">
             ログインして 本棚を開く
           </b-button>
         </p>
@@ -44,6 +44,52 @@
         </div>
       </b-collapse>
     </section>
+    <b-modal v-model="openLoginForm">
+      <form action="">
+        <div class="modal-card" style="width: auto">
+          <header class="modal-card-head">
+            <p class="modal-card-title">
+              ユーザーログイン
+            </p>
+            <button
+              type="button"
+              class="delete"
+              @click="$emit('close')"
+            />
+          </header>
+          <section class="modal-card-body">
+            <b-field label="ユーザー名">
+              <b-input
+                type="text"
+                :value="username"
+                placeholder="Your username"
+                required
+              />
+            </b-field>
+
+            <b-field label="パスワード">
+              <b-input
+                type="password"
+                :value="password"
+                password-reveal
+                placeholder="Your password"
+                required
+              />
+            </b-field>
+          </section>
+          <footer class="modal-card-foot">
+            <b-button
+              label="ログイン"
+              type="is-primary"
+            />
+            <b-button
+              label="アカウント作成"
+              type="is-secondary"
+            />
+          </footer>
+        </div>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -55,19 +101,20 @@ import { Component, Vue } from 'vue-property-decorator'
 })
 export default class IndexComponent extends Vue {
   name = 'HomePage'
+  openLoginForm = false
   isOpen = 0
   collapses = [
     {
-      title: 'Title 1',
-      text: 'Text 1'
+      title: 'Distributed Library とは?',
+      text: 'みんなの本棚をシェアする本のシェアリングコミュニティです。'
     },
     {
-      title: 'Title 2',
-      text: 'Text 2'
+      title: 'どうやって使うの?',
+      text: '(後で書く)'
     },
     {
-      title: 'Title 3',
-      text: 'Text 3'
+      title: 'どうやって本棚をシェアするの?',
+      text: '(後で書く)'
     }
   ]
 }
