@@ -7,7 +7,7 @@ import { LogModel } from '@/models/base'
 /**
  * コンテンツ 基底インターフェイス
  */
-interface IDao<T> {
+ interface IDao<T> {
   createModel(...params: any): T
   add(model: T): Promise<boolean>
   edit(model: T): Promise<boolean>
@@ -20,13 +20,133 @@ interface IDao<T> {
   histories(model: T): Promise<LogModel[]>
 }
 
-class IDaoBase<T extends ContentType> {
+class IDaoUtil {
+  /**
+   * 指定した型のデータが返すものとしてPromiseを生成する
+   * (指定した型通りのデータが返ることは保証されないので注意)
+   *
+   * Gun/lib/Then.jsの代わりの処理 (Thenの型が付属していなかったため)
+  */
+  protected __shootPromise<T> (gun: IGunChainReference): Promise<T|undefined> {
+    return new Promise<T|undefined>((resolve, reject) => {
+      try {
+        gun.once(function (data, _) {
+          resolve(data as unknown as T|undefined)
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
+  /**
+   * 指定した型のデータ複数を返すものとしてPromiseを生成する
+   * (指定した型通りのデータが返ることは保証されないので注意)
+   * この関数は Findと同時には動かない(フィルタされた結果が何個になるか取得する術がない)
+   *
+   * Referenced: https://github.com/amark/gun/issues/565
+  */
+  protected __shootPromiseMultiple<T> (gun: IGunChainReference, keys: string[]): Promise<T[]> {
+    return new Promise<T[]>((resolve, reject) => {
+      if (keys.length === 0) {
+        resolve([])
+      }
+      const resp: T[] = []
+      try {
+        gun.once(function (data, key) {
+          console.log(keys.length)
+          // ループ中に追加された要素は除外
+          if (!keys.includes(key)) {
+            return
+          }
+          // 要素が消えている可能性がある
+          if (data != null) {
+            // 削除されていなければ返す
+            if (!data.isDeleted) {
+              resp.push(data as unknown as T)
+            }
+          }
+          // カウンターを減らす
+          if (keys.includes(key)) {
+            keys = keys.filter(k => k !== key)
+          }
+          // 要素が揃ったらresolve
+          if (keys.length === 0) {
+            resolve(resp)
+          }
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
+  protected __keys (gun: IGunChainReference): Promise<string[]> {
+    // This function gets every keys includes the values are deleted.
+    return new Promise<string[]>((resolve, reject) => {
+      try {
+        gun.once(
+          function (list) {
+            if (list !== undefined) {
+              const keys = Object.keys(list).filter(key => key !== '_')
+              resolve(keys)
+            } else {
+              reject(new Error('Failed to get keys'))
+            }
+          }
+        )
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  protected async __deepCount (gun: IGunChainReference): Promise<number> {
+    const keys = await this.__keys(gun)
+    let loopCount = keys.length
+    let objCount = 0
+    return new Promise<number>((resolve, reject) => {
+      try {
+        gun.once().map().get('isDeleted').once(
+          function (value : any) {
+            if (value !== true) {
+              objCount += 1
+            }
+            loopCount -= 1
+            if (loopCount <= 0) {
+              resolve(objCount)
+            }
+          }
+        )
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  /**
+   * 現在時刻をUnixTimeで返す
+  */
+  getCurrentUnixTime (): number {
+    return Math.floor(Date.now() / 1000)
+  }
+
+  /**
+   * 適当なIDを生成する
+   */
+  getNewId (): string {
+    return shortUUID().generate().toString()
+  }
+}
+
+class IDaoBase<T extends ContentType> extends IDaoUtil {
   #objName = ''
   #issuer = ''
   #gun: IGunChainReference
   #elements: ContentType[] = []
 
   constructor (gun: IGunChainReference, objName: string, issuer: string) {
+    super()
     this.#gun = gun
     this.#objName = objName
     this.#issuer = issuer
@@ -140,109 +260,6 @@ class IDaoBase<T extends ContentType> {
     return logs
   }
 
-  /**
-   * 指定した型のデータが返すものとしてPromiseを生成する
-   * (指定した型通りのデータが返ることは保証されないので注意)
-   *
-   * Gun/lib/Then.jsの代わりの処理 (Thenの型が付属していなかったため)
-  */
-  protected __shootPromise<T> (gun: IGunChainReference): Promise<T|undefined> {
-    return new Promise<T|undefined>((resolve, reject) => {
-      try {
-        gun.once(function (data, _) {
-          resolve(data as unknown as T|undefined)
-        })
-      } catch (err) {
-        reject(err)
-      }
-    })
-  }
-
-  /**
-   * 指定した型のデータ複数を返すものとしてPromiseを生成する
-   * (指定した型通りのデータが返ることは保証されないので注意)
-   * この関数は Findと同時には動かない(フィルタされた結果が何個になるか取得する術がない)
-   *
-   * Referenced: https://github.com/amark/gun/issues/565
-  */
-  protected __shootPromiseMultiple<T> (gun: IGunChainReference, keys: string[]): Promise<T[]> {
-    return new Promise<T[]>((resolve, reject) => {
-      if (keys.length === 0) {
-        resolve([])
-      }
-      const resp: T[] = []
-      try {
-        gun.once(function (data, key) {
-          console.log(keys.length)
-          // ループ中に追加された要素は除外
-          if (!keys.includes(key)) {
-            return
-          }
-          // 要素が消えている可能性がある
-          if (data != null) {
-            // 削除されていなければ返す
-            if (!data.isDeleted) {
-              resp.push(data as unknown as T)
-            }
-          }
-          // カウンターを減らす
-          if (keys.includes(key)) {
-            keys = keys.filter(k => k !== key)
-          }
-          // 要素が揃ったらresolve
-          if (keys.length === 0) {
-            resolve(resp)
-          }
-        })
-      } catch (err) {
-        reject(err)
-      }
-    })
-  }
-
-  protected __keys (gun: IGunChainReference): Promise<string[]> {
-    // This function gets every keys includes the values are deleted.
-    return new Promise<string[]>((resolve, reject) => {
-      try {
-        gun.once(
-          function (list) {
-            if (list !== undefined) {
-              const keys = Object.keys(list).filter(key => key !== '_')
-              resolve(keys)
-            } else {
-              reject(new Error('Failed to get keys'))
-            }
-          }
-        )
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
-
-  protected async __deepCount (gun: IGunChainReference): Promise<number> {
-    const keys = await this.__keys(gun)
-    let loopCount = keys.length
-    let objCount = 0
-    return new Promise<number>((resolve, reject) => {
-      try {
-        gun.once().map().get('isDeleted').once(
-          function (value : any) {
-            if (value !== true) {
-              objCount += 1
-            }
-            loopCount -= 1
-            if (loopCount <= 0) {
-              resolve(objCount)
-            }
-          }
-        )
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
-
   private addHistory (
     action: string,
     target: string,
@@ -264,20 +281,6 @@ class IDaoBase<T extends ContentType> {
       })
     })
   }
-
-  /**
-   * 現在時刻をUnixTimeで返す
-  */
-  getCurrentUnixTime (): number {
-    return Math.floor(Date.now() / 1000)
-  }
-
-  /**
-   * 適当なIDを生成する
-   */
-  getNewId (): string {
-    return shortUUID().generate().toString()
-  }
 }
 
-export { IDao, IDaoBase }
+export { IDao, IDaoBase, IDaoUtil }
