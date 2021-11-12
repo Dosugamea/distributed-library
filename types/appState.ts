@@ -1,5 +1,6 @@
 import { ReviewModel } from '@/models/review'
 import { LibraryModel } from '@/models/library'
+import { LogModel } from '@/models/base'
 import { BibliographyModel } from '@/models/bibliography'
 
 /**
@@ -10,4 +11,5 @@ export type AppState = {
     reviews: Record<string, ReviewModel>
     libraries: Record<string, LibraryModel>
     bibliographies: Record<string, BibliographyModel>
+    borrowOrReturn: Record<string, LogModel>
 }
