@@ -8,17 +8,17 @@ import { UserState } from '@/types/userState'
 */
 class UserModel extends ContentModel implements UserState {
   /** ユーザー所持コイン */
-  myCoin: number
+  coin: number
   /** レビュー履歴 */
-  myReviews : IGunChainReference<Record<string, ReviewModel>>
+  reviews : IGunChainReference<Record<string, ReviewModel>>
   /** レビューした回数 */
-  myReviewCount: number
+  reviewCount: number
   /** 借りた履歴 */
-  myBorrowOrReturn: IGunChainReference<Record<string, LogModel>>
+  borrowOrReturn: IGunChainReference<Record<string, LogModel>>
   /** 借りた冊数 */
-  myBorrowCount: number
+  borrowCount: number
   /** 返した冊数 */
-  myReturnCount: number
+  returnCount: number
 
   constructor (
     id: string,
@@ -27,21 +27,21 @@ class UserModel extends ContentModel implements UserState {
     updatedDateUnix: number,
     histories: Record<string, LogModel>,
     note: string,
-    myCoin: number,
-    myReviews: IGunChainReference<Record<string, ReviewModel>>,
-    myReviewCount: number,
-    myBorrowOrReturn: IGunChainReference<Record<string, LogModel>>,
-    myBorrowCount: number,
-    myReturnCount: number,
+    coin: number,
+    reviews: IGunChainReference<Record<string, ReviewModel>>,
+    reviewCount: number,
+    borrowOrReturn: IGunChainReference<Record<string, LogModel>>,
+    borrowCount: number,
+    returnCount: number,
     isDeleted: boolean
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
-    this.myCoin = myCoin
-    this.myReviews = myReviews
-    this.myReviewCount = myReviewCount
-    this.myBorrowOrReturn = myBorrowOrReturn
-    this.myBorrowCount = myBorrowCount
-    this.myReturnCount = myReturnCount
+    this.coin = coin
+    this.reviews = reviews
+    this.reviewCount = reviewCount
+    this.borrowOrReturn = borrowOrReturn
+    this.borrowCount = borrowCount
+    this.returnCount = returnCount
   }
 }
 

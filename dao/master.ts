@@ -4,6 +4,7 @@ import { BibliographyDao } from '@/dao/bibliography'
 import { LibraryDao } from '@/dao/library'
 import { ReviewDao } from '@/dao/review'
 import { UserDao } from '@/dao/user'
+require('gun/sea')
 
 class MasterDao {
   bibliographyDao: BibliographyDao | null = null
