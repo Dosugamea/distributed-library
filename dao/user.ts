@@ -11,7 +11,7 @@ class UserDao extends IDaoUtil {
   #gun: IGunChainReference<AppState>
   #userRef: IGunChainReference
   #user: UserState | null = null
-  #userId: string | null = null
+  #userId: string = ''
   #isLoggedIn: boolean = false
 
   constructor (gun: IGunChainReference<AppState>) {
@@ -21,9 +21,9 @@ class UserDao extends IDaoUtil {
     // @ts-ignore
     this.#gun.on('auth', (cb) => {
       console.log('auth', cb)
-      this.#isLoggedIn = true
       this.#userRef.get('profile').once((user) => {
         if (user) {
+          this.#isLoggedIn = true
           this.#user = user as UserState | null
           this.#userId = user.id
         }
@@ -35,54 +35,77 @@ class UserDao extends IDaoUtil {
     return this.#isLoggedIn
   }
 
-  createUser (userId: string, password: string) {
-    if (this.isLoggedIn) {
-      throw new Error('You are already logged in')
-    }
-    this.#userRef.create(userId, password, async (callback) => {
-      if (!('err' in callback)) {
-        await this.loginUser(userId, password)
-        const createdTime = this.getCurrentUnixTime()
-        const newUserProfile : UserState = {
-          id: userId,
-          name: userId,
-          createdDateUnix: createdTime,
-          updatedDateUnix: createdTime,
-          histories: {},
-          note: '',
-          coin: 0,
-          reviews: null,
-          reviewCount: 0,
-          borrowOrReturn: null,
-          borrowCount: 0,
-          returnCount: 0,
-          isDeleted: false
-        }
-        this.#userRef.get('profile').put(
-          newUserProfile,
-          (callback) => {
-            if (!('err' in callback)) {
-              console.log('User created')
-            } else {
-              console.log(callback.err)
-            }
-          }
-        )
-      }
-    })
+  get userId (): string {
+    return this.#userId
   }
 
-  loginUser (userId: string, password: string) : Promise<void> {
+  createUser (userId: string, password: string): Promise<void> {
     if (this.isLoggedIn) {
       throw new Error('You are already logged in')
     }
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
         reject(new Error('Login time-outed'))
+      }, 3000)
+      this.#userRef.create(userId, password, async (callback) => {
+        if (!('err' in callback)) {
+          await this.loginUser(userId, password)
+          const createdTime = this.getCurrentUnixTime()
+          const newUserProfile: UserState = {
+            id: userId,
+            name: userId,
+            createdDateUnix: createdTime,
+            updatedDateUnix: createdTime,
+            histories: {},
+            note: '',
+            coin: 0,
+            reviews: null,
+            reviewCount: 0,
+            borrowOrReturn: null,
+            borrowCount: 0,
+            returnCount: 0,
+            isDeleted: false
+          }
+          this.#userRef.get('profile').put(
+            newUserProfile,
+            (callback) => {
+              if (!('err' in callback)) {
+                console.log('User created')
+                resolve()
+              } else {
+                reject(callback.err)
+              }
+            }
+          )
+        } else {
+          reject(callback.err)
+        }
+      })
+    })
+  }
+
+  loginUser (userId: string, password: string): Promise<void> {
+    if (this.isLoggedIn) {
+      throw new Error('You are already logged in')
+    }
+    return new Promise<void>((resolve, reject) => {
+      let waitForSuccess : NodeJS.Timer
+      setTimeout(() => {
+        clearInterval(waitForSuccess)
+        reject(new Error('Login time-outed'))
       }, 1000)
-      this.#userRef.auth(userId, password, () => {
-        console.log('login success')
-        resolve()
+      this.#userRef.auth(userId, password, (callback) => {
+        if (!('err' in callback)) {
+          waitForSuccess = setInterval(() => {
+            if (this.isLoggedIn) {
+              console.log('login success')
+              clearInterval(waitForSuccess)
+              resolve()
+            }
+          }, 200)
+        } else {
+          reject(callback.err)
+        }
       })
     })
   }

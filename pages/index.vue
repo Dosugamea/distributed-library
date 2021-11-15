@@ -60,8 +60,8 @@
           <section class="modal-card-body">
             <b-field label="ユーザー名">
               <b-input
+                v-model="username"
                 type="text"
-                :value="username"
                 placeholder="Your username"
                 required
               />
@@ -69,8 +69,8 @@
 
             <b-field label="パスワード">
               <b-input
+                v-model="password"
                 type="password"
-                :value="password"
                 password-reveal
                 placeholder="Your password"
                 required
@@ -81,10 +81,12 @@
             <b-button
               label="ログイン"
               type="is-primary"
+              @click="loginUser"
             />
             <b-button
               label="アカウント作成"
               type="is-secondary"
+              @click="createUser"
             />
           </footer>
         </div>
@@ -101,6 +103,8 @@ import { Component, Vue } from 'vue-property-decorator'
 })
 export default class IndexComponent extends Vue {
   name = 'HomePage'
+  username = ''
+  password = ''
   openLoginForm = false
   isOpen = 0
   collapses = [
@@ -117,5 +121,27 @@ export default class IndexComponent extends Vue {
       text: '(後で書く)'
     }
   ]
+
+  async loginUser () {
+    this.$db.initDao()
+    try {
+      await this.$db.userDao!.loginUser(this.username, this.password)
+      this.$db.startupDao()
+      alert('ログイン成功')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async createUser () {
+    this.$db.initDao()
+    try {
+      await this.$db.userDao!.createUser(this.username, this.password)
+      this.$db.startupDao()
+      alert('アカウント作成成功')
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 </script>
