@@ -8,8 +8,8 @@ import { ReviewType, ReviewLikeType } from '@/types/review'
  */
 class ReviewLikeModel implements ReviewLikeType {
   userId: string
-  coin: number
-  createdDateUnix: number
+  readonly coin: number
+  readonly createdDateUnix: number
 
   constructor (userId: string, coin: number, createdDateUnix: number) {
     this.userId = userId

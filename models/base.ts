@@ -5,11 +5,11 @@ import { LogType } from '@/types/base/log'
  * ログモデル
 */
 class LogModel implements LogType {
-  issuer: string
-  action: string
-  target: string
-  value: string | number
-  createdDateUnix: number
+  readonly issuer: string
+  readonly action: string
+  readonly target: string
+  readonly value: string | number
+  readonly createdDateUnix: number
 
   constructor (issuer: string, action: string, target: string, value: string | number, createdDateUnix: number) {
     this.issuer = issuer
