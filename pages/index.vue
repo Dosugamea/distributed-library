@@ -8,7 +8,7 @@
         <p class="subtitle has-text-white">
           P2P Integrated Library System Powered by GunDB
         </p>
-        <p class="subtitle">
+        <p v-if="!user" class="subtitle">
           <b-button type="is-primary" size="is-large" @click="openLoginForm = !openLoginForm">
             ログインして 本棚を開く
           </b-button>
@@ -16,6 +16,14 @@
       </div>
     </section>
     <section class="container mt-5">
+      <card
+        v-if="user"
+        title="Modern"
+        icon="account"
+      >
+        ログイン成功
+        {{ user }}
+      </card>
       <b-collapse
         v-for="(collapse, index) of collapses"
         :key="index"
@@ -97,6 +105,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type { UserState } from '@/types/userState'
 
 @Component({
   layout: 'top'
@@ -107,6 +116,7 @@ export default class IndexComponent extends Vue {
   password = ''
   openLoginForm = false
   isOpen = 0
+  user : UserState | null = null
   collapses = [
     {
       title: 'Distributed Library とは?',
@@ -127,7 +137,8 @@ export default class IndexComponent extends Vue {
     try {
       await this.$db.userDao!.loginUser(this.username, this.password)
       this.$db.startupDao()
-      alert('ログイン成功')
+      this.openLoginForm = false
+      this.user = this.$db.userDao!.getSelfProfile()
     } catch (e) {
       console.error(e)
     }
@@ -138,7 +149,8 @@ export default class IndexComponent extends Vue {
     try {
       await this.$db.userDao!.createUser(this.username, this.password)
       this.$db.startupDao()
-      alert('アカウント作成成功')
+      this.openLoginForm = false
+      this.user = this.$db.userDao!.getSelfProfile()
     } catch (e) {
       console.error(e)
     }
