@@ -16,7 +16,9 @@ describe('dao-bibliographiesクラスのテスト', () => {
       'https://example.com',
       '漫画',
       'Koi',
-      '芳文社'
+      '芳文社',
+      dao.getCurrentUnixTime(),
+      '1'
     )
   }
 
