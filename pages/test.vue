@@ -88,7 +88,9 @@ export default class IndexComponent extends Vue {
       'https://example.com',
       '漫画',
       'Koi',
-      '芳文社'
+      '芳文社',
+      this.$db.bibliographyDao.getCurrentUnixTime(),
+      '1'
     )
     await this.$db.bibliographyDao.add(bibliography)
     console.log('Added!')
