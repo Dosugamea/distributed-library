@@ -10,11 +10,11 @@ class UserModel extends ContentModel implements UserState {
   /** ユーザー所持コイン */
   coin: number
   /** レビュー履歴 */
-  reviews : IGunChainReference<Record<string, ReviewModel>>
+  reviews : IGunChainReference<Record<string, ReviewModel>> | null
   /** レビューした回数 */
   reviewCount: number
   /** 借りた履歴 */
-  borrowOrReturn: IGunChainReference<Record<string, LogModel>>
+  borrowOrReturn: IGunChainReference<Record<string, LogModel>> | null
   /** 借りた冊数 */
   borrowCount: number
   /** 返した冊数 */
@@ -28,9 +28,9 @@ class UserModel extends ContentModel implements UserState {
     histories: Record<string, LogModel>,
     note: string,
     coin: number,
-    reviews: IGunChainReference<Record<string, ReviewModel>>,
+    reviews: IGunChainReference<Record<string, ReviewModel>> | null,
     reviewCount: number,
-    borrowOrReturn: IGunChainReference<Record<string, LogModel>>,
+    borrowOrReturn: IGunChainReference<Record<string, LogModel>> | null,
     borrowCount: number,
     returnCount: number,
     isDeleted: boolean

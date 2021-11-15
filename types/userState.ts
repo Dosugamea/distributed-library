@@ -10,11 +10,11 @@ export type UserState = ContentType & {
   /** ユーザー所持コイン */
   coin: number
   /** レビュー履歴 */
-  reviews : IGunChainReference<Record<string, ReviewType>>
+  reviews : IGunChainReference<Record<string, ReviewType>> | null
   /** レビューした回数 */
   reviewCount: number
   /** 借りた履歴 */
-  borrowOrReturn: IGunChainReference<Record<string, LogType>>
+  borrowOrReturn: IGunChainReference<Record<string, LogType>> | null
   /** 借りた冊数 */
   borrowCount: number
   /** 返した冊数 */
