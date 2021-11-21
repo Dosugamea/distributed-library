@@ -68,8 +68,10 @@ export default class IndexComponent extends Vue {
     return this.bibliographies.length
   }
 
-  recall () {
+  async recall () {
     this.$db.initDao()
+    await this.$db.userDao!.loginUser('dosugamea', 'thisistestaccount')
+    this.$db.startupDao()
     setInterval(() => {
       if (this.$db.bibliographyDao != null) {
         this.bibliographies = this.$db!.bibliographyDao.list()
