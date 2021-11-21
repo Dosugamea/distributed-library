@@ -1,3 +1,4 @@
+import type { IGunChainReference } from 'gun/types/chain'
 import { ContentModel, LogModel } from '@/models/base'
 import { BibliographyModel } from '@/models/bibliography'
 import { LibraryType, LibraryBookType } from '@/types/library'
@@ -6,19 +7,25 @@ import { AdminId } from '@/types/base/ids'
 /**
  * 本棚の蔵書モデル
  */
-class LibraryBookModel implements LibraryBookType {
+class LibraryBookModel extends ContentModel implements LibraryBookType {
   /** 貸出可能な状態か */
   rentable: boolean
-  /** 備考欄(本の状態等) */
-  note: string
   /** 書誌 */
-  bibliography: BibliographyModel
+  bibliography: IGunChainReference<BibliographyModel>
   /** 削除フラグ */
   isDeleted: boolean
 
-  constructor (rentable: boolean, note: string, bibliography: BibliographyModel, isDeleted: boolean) {
+  constructor (
+    id: string,
+    name: string,
+    createdDateUnix: number,
+    note: string,
+    rentable: boolean,
+    bibliography: IGunChainReference<BibliographyModel>,
+    isDeleted: boolean
+  ) {
+    super(id, name, createdDateUnix, createdDateUnix, {}, note, isDeleted)
     this.rentable = rentable
-    this.note = note
     this.bibliography = bibliography
     this.isDeleted = isDeleted
   }

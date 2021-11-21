@@ -1,3 +1,4 @@
+import type { IGunChainReference } from 'gun/types/chain'
 import { ContentType } from './base/content'
 import { AdminId } from './base/ids'
 import { BibliographyType } from './bibliography'
@@ -12,15 +13,11 @@ import { BibliographyType } from './bibliography'
 /**
  * 図書室の蔵書情報
  */
-export type LibraryBookType = {
+export type LibraryBookType = ContentType & {
   /** 貸出可能な状態か */
   rentable: boolean
-  /** 備考欄(本の状態等) */
-  note: string
   /** 書誌 */
-  bibliography: BibliographyType
-  /** 削除フラグ */
-  isDeleted: boolean
+  bibliography: IGunChainReference<BibliographyType>
 }
 
 /*
