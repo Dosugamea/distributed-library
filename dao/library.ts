@@ -6,8 +6,9 @@ import { IDao, IDaoBase } from '@/dao/base'
 import { LogModel } from '@/models/base'
 
 class LibraryBookDao extends IDaoBase<LibraryBookModel> {
-  #gun: IGunChainReference<Record<string, LibraryBookModel>, 'books'>
   #topGun: IGunChainReference<AppState>
+  #gun: IGunChainReference<Record<string, LibraryBookModel>, 'books'>
+  #library: LibraryModel | undefined = undefined
   #issuer: string
 
   constructor (gun: IGunChainReference<AppState>, library: LibraryModel, issuer: string) {
@@ -15,59 +16,134 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     this.#gun = gun.get('libraries').get(library.id).get('books')
     this.#topGun = gun
     this.#issuer = issuer
+    this.__shootPromise<LibraryModel>(gun.get('libraries').get(library.id)).then(
+      (libraryModel: LibraryModel | undefined) => {
+        this.#library = libraryModel
+      }
+    )
   }
 
   async createModel (
     bibliography: BibliographyModel,
-    note: string,
-    owner: string
+    note: string
   ) {
     if (!bibliography.id) {
       throw new Error('Invalid bibliography model')
     }
-    const biblio = await this.__shootPromise<BibliographyModel>(
+    const dbBibliography = await this.__shootPromise<BibliographyModel>(
       this.#topGun.get('bibliographies').get(bibliography.id)
     )
-    if (!biblio) {
+    if (!dbBibliography) {
       throw new Error('Bibliography was not found')
     }
-    if (!biblio.id) {
+    if (!dbBibliography.id) {
       throw new Error('Bibliography was not found')
     }
-    const newId = this.getNewId()
-    const logTime = this.getCurrentUnixTime()
+    const bibliographyRef = this.#topGun.get('bibliographies').get(bibliography.id)
     return new LibraryBookModel(
-      newId, name, logTime, logTime, {}, note, owner, {}, {}, false
+      this.getNewId(), '', this.getCurrentUnixTime(),
+      note, true, bibliographyRef, false
     )
   }
 
-  async add (book: LibraryBookModel) {
+  async add (book: LibraryBookModel) : Promise<boolean> {
     if (!book.id) {
+      throw new Error('Invalid book model')
+    }
+    if (!this.#library) {
       throw new Error('Invalid library model')
     }
-    const dbLibrary = await this.get(library.id)
-    if (!dbLibrary.id) {
-      throw new Error('Library was not found')
+    await this.__verifyModeratorPermission()
+    return await this.__add(book)
+  }
+
+  async edit (book: LibraryBookModel) {
+    if (!book.id) {
+      throw new Error('Invalid book model')
     }
-    this.#gun.get(library.id).get('books').put(newBook)
-    await this.__verifyModeratorPermission(library)
-    console.log('Not yet implemented')
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    await this.__verifyModeratorPermission()
+    return await this.__edit(book)
   }
 
-  async editBook (library: LibraryModel, book: LibraryBookModel) {
-    await this.__verifyModeratorPermission(library)
-    console.log('Not yet implemented')
+  async remove (book: LibraryBookModel) {
+    if (!book.id) {
+      throw new Error('Invalid book model')
+    }
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    await this.__verifyModeratorPermission()
+    return await this.__remove(book)
   }
 
-  async removeBook (library: LibraryModel, book: LibraryBookModel) {
-    await this.__verifyModeratorPermission(library)
-    console.log('Not yet implemented')
+  list () {
+    return this.__list()
   }
 
-  async listBook (library: LibraryModel) {
-    console.log('Not yet implemented')
+  async rent (book: LibraryBookModel) {
+    if (!book.id) {
+      throw new Error('Invalid book model')
+    }
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    const dbBookRef = this.#gun.get(book.id)
+    const dbBook = await this.__shootPromise<LibraryBookModel>(
+      dbBookRef
+    )
+    if (!dbBook) {
+      throw new Error('Book was not found')
+    }
+    if (!dbBook.rentable) {
+      throw new Error('The book is not available.')
+    }
+    dbBook.rentable = false
+    await this.__edit(dbBook)
   }
 
+  async listBookAsBibliography (): Promise<BibliographyModel[]> {
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    const bibliographiesRef = this.#topGun
+      .get('libraries')
+      .get(this.#library.id)
+      .get('books')
+      .map()
+      .get('bibliography')
+    const keys = await this.__keys(bibliographiesRef)
+    const bibliographies = await this.__shootPromiseMultiple<BibliographyModel>(
+      bibliographiesRef.once().map(), keys
+    )
+    return bibliographies
+  }
+
+  count () {
+    return this.__count()
+  }
+
+  private async __verifyModeratorPermission () {
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    const owner = this.#library.owner
+    if (!owner) {
+      throw new Error('Library owner is not found')
+    }
+    const adminsRef = this.#topGun.get('libraries').get(this.#library.id).get('admins')
+    const obj = await this.__shootPromise<object>(adminsRef)
+    console.log(obj)
+    const keys = await this.__keys(adminsRef)
+    const admins = await this.__shootPromiseMultiple<string>(
+      adminsRef.once().map(), keys
+    )
+    if (!(owner + admins).includes(this.#issuer)) {
+      throw new Error("You can't modify this library")
+    }
+  }
 }
 
 /**
@@ -75,12 +151,14 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
 */
 class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
   #gun: IGunChainReference<Record<string, LibraryModel>, 'libraries'>
+  #topGun: IGunChainReference<AppState>
   #issuer: string
 
   constructor (gun: IGunChainReference<AppState>, issuer: string) {
     super(gun.get('libraries'), 'library', issuer)
     this.#gun = gun.get('libraries')
     this.#issuer = issuer
+    this.#topGun = gun
   }
 
   createModel (
@@ -108,6 +186,13 @@ class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
   async remove (library: LibraryModel): Promise<boolean> {
     await this.__verifyOwnerPermission(library)
     return await this.__remove(library)
+  }
+
+  getBookDao (library: LibraryModel): LibraryBookDao {
+    if (!library.id) {
+      throw new Error('Invalid library model')
+    }
+    return new LibraryBookDao(this.#topGun, library, this.#issuer)
   }
 
   list (): LibraryModel[] {
@@ -154,11 +239,7 @@ class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
     if (!owner) {
       throw new Error('Library owner is not found')
     }
-    const keys = await this.__keys(this.#gun.get(library.id).get('admins'))
-    const admins = await this.__shootPromiseMultiple<string>(
-      this.#gun.get(library.id).get('admins').once().map(), keys
-    )
-    if (!(owner + admins).includes(this.#issuer)) {
+    if (!(owner + []).includes(this.#issuer)) {
       throw new Error("You can't modify this library")
     }
   }
