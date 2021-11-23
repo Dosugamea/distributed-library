@@ -158,8 +158,6 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
         if (!data.isDeleted) {
           me.#elements.push(data)
         }
-      } else {
-        console.log('Received Broken data...', data)
       }
     })
   }
