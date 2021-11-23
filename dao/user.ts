@@ -13,6 +13,7 @@ class UserDao extends IDaoUtil {
   #user: UserState | null = null
   #userId: string = ''
   #isLoggedIn: boolean = false
+  #waitForCreate: boolean = false
 
   constructor (gun: IGunChainReference<AppState>) {
     super()
@@ -20,13 +21,42 @@ class UserDao extends IDaoUtil {
     this.#userRef = this.#gun.user() // .recall({ sessionStorage: true })
     // @ts-ignore
     this.#gun.on('auth', (cb) => {
-      console.log('auth', cb)
+      console.log('callback', cb)
       this.#userRef.get('profile').once((user) => {
-        if (user) {
-          this.#isLoggedIn = true
-          this.#user = user as UserState | null
+        if (!user) {
+          const createdTime = this.getCurrentUnixTime()
+          const newUserProfile: UserState = {
+            id: this.#userId,
+            name: this.#userId,
+            createdDateUnix: createdTime,
+            updatedDateUnix: createdTime,
+            histories: {},
+            note: '',
+            coin: 0,
+            reviews: {},
+            reviewCount: 0,
+            borrowOrReturn: {},
+            borrowCount: 0,
+            returnCount: 0,
+            isDeleted: false
+          }
+          console.log('start putting')
+          this.#userRef.get('profile').put(
+            newUserProfile,
+            (callback) => {
+              console.log(callback)
+              if (!('err' in callback)) {
+                console.log('User created')
+              }
+            }
+          )
+          this.#user = newUserProfile
+          this.#userId = newUserProfile.id
+        } else {
+          this.#user = user as UserState
           this.#userId = user.id
         }
+        this.#isLoggedIn = true
       })
     })
   }
@@ -39,44 +69,33 @@ class UserDao extends IDaoUtil {
     return this.#userId
   }
 
+  waitForLogin (): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const waiter = setInterval(() => {
+        if (this.#isLoggedIn) {
+          clearInterval(waiter)
+          resolve()
+        }
+      }, 200)
+      setTimeout(() => {
+        clearInterval(waiter)
+        reject(new Error('Login waiting time-outed'))
+      }, 3000)
+    })
+  }
+
   createUser (userId: string, password: string): Promise<void> {
     if (this.isLoggedIn) {
       throw new Error('You are already logged in')
     }
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error('Login time-outed'))
+        reject(new Error('Create user time-outed'))
       }, 3000)
-      this.#userRef.create(userId, password, async (callback) => {
+      this.#userRef.create(userId, password, (callback) => {
         if (!('err' in callback)) {
-          await this.loginUser(userId, password)
-          const createdTime = this.getCurrentUnixTime()
-          const newUserProfile: UserState = {
-            id: userId,
-            name: userId,
-            createdDateUnix: createdTime,
-            updatedDateUnix: createdTime,
-            histories: {},
-            note: '',
-            coin: 0,
-            reviews: null,
-            reviewCount: 0,
-            borrowOrReturn: null,
-            borrowCount: 0,
-            returnCount: 0,
-            isDeleted: false
-          }
-          this.#userRef.get('profile').put(
-            newUserProfile,
-            (callback) => {
-              if (!('err' in callback)) {
-                console.log('User created')
-                resolve()
-              } else {
-                reject(callback.err)
-              }
-            }
-          )
+          this.#userId = userId
+          resolve()
         } else {
           reject(callback.err)
         }
@@ -89,14 +108,14 @@ class UserDao extends IDaoUtil {
       throw new Error('You are already logged in')
     }
     return new Promise<void>((resolve, reject) => {
-      let waitForSuccess : NodeJS.Timer
       setTimeout(() => {
-        clearInterval(waitForSuccess)
         reject(new Error('Login time-outed'))
-      }, 1000)
+      }, 3000)
       this.#userRef.auth(userId, password, (callback) => {
         if (!('err' in callback)) {
-          waitForSuccess = setInterval(() => {
+          this.#userId = userId
+          //  this.#gun.on('auth', (_)が返ってくるまで待つ
+          const waitForSuccess = setInterval(() => {
             if (this.isLoggedIn) {
               console.log('login success')
               clearInterval(waitForSuccess)

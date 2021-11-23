@@ -1,4 +1,3 @@
-import type { IGunChainReference } from 'gun/types/chain'
 import { ContentModel, LogModel } from '@/models/base'
 import { ReviewModel } from '@/models/review'
 import { UserState } from '@/types/userState'
@@ -10,11 +9,11 @@ class UserModel extends ContentModel implements UserState {
   /** ユーザー所持コイン */
   coin: number
   /** レビュー履歴 */
-  reviews : IGunChainReference<Record<string, ReviewModel>> | null
+  reviews : Record<string, ReviewModel>
   /** レビューした回数 */
   reviewCount: number
   /** 借りた履歴 */
-  borrowOrReturn: IGunChainReference<Record<string, LogModel>> | null
+  borrowOrReturn: Record<string, LogModel>
   /** 借りた冊数 */
   borrowCount: number
   /** 返した冊数 */
@@ -28,9 +27,9 @@ class UserModel extends ContentModel implements UserState {
     histories: Record<string, LogModel>,
     note: string,
     coin: number,
-    reviews: IGunChainReference<Record<string, ReviewModel>> | null,
+    reviews: Record<string, ReviewModel>,
     reviewCount: number,
-    borrowOrReturn: IGunChainReference<Record<string, LogModel>> | null,
+    borrowOrReturn: Record<string, LogModel>,
     borrowCount: number,
     returnCount: number,
     isDeleted: boolean

@@ -148,6 +148,7 @@ export default class IndexComponent extends Vue {
     this.$db.initDao()
     try {
       await this.$db.userDao!.createUser(this.username, this.password)
+      await this.$db.userDao!.loginUser(this.username, this.password)
       this.$db.startupDao()
       this.openLoginForm = false
       this.user = this.$db.userDao!.getSelfProfile()
