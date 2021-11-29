@@ -1,5 +1,6 @@
 import { ContentModel, LogModel } from '@/models/base'
 import { ReviewModel } from '@/models/review'
+import { LibraryModel } from '@/models/library'
 import { UserState } from '@/types/userState'
 
 /**
@@ -18,6 +19,10 @@ class UserModel extends ContentModel implements UserState {
   borrowCount: number
   /** 返した冊数 */
   returnCount: number
+  /** 所有する本棚 */
+  libraries: Record<string, LibraryModel>
+  /** 所有する本棚数 */
+  libraryCount: number
 
   constructor (
     id: string,
@@ -32,6 +37,8 @@ class UserModel extends ContentModel implements UserState {
     borrowOrReturn: Record<string, LogModel>,
     borrowCount: number,
     returnCount: number,
+    libraries: Record<string, LibraryModel>,
+    libraryCount: number,
     isDeleted: boolean
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
@@ -41,6 +48,8 @@ class UserModel extends ContentModel implements UserState {
     this.borrowOrReturn = borrowOrReturn
     this.borrowCount = borrowCount
     this.returnCount = returnCount
+    this.libraries = libraries
+    this.libraryCount = libraryCount
   }
 }
 

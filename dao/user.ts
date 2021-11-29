@@ -38,13 +38,13 @@ class UserDao extends IDaoUtil {
             borrowOrReturn: {},
             borrowCount: 0,
             returnCount: 0,
+            libraries: {},
+            libraryCount: 0,
             isDeleted: false
           }
-          console.log('start putting')
           this.#userRef.get('profile').put(
             newUserProfile,
             (callback) => {
-              console.log(callback)
               if (!('err' in callback)) {
                 console.log('User created')
               }

@@ -1,6 +1,7 @@
 import { ContentType } from './base/content'
 import { LogType } from './base/log'
 import { ReviewType } from './review'
+import { LibraryType } from './library'
 
 /**
  * ユーザー情報
@@ -18,4 +19,8 @@ export type UserState = ContentType & {
   borrowCount: number
   /** 返した冊数 */
   returnCount: number
+  /** 所有する本棚 */
+  libraries: Record<string, LibraryType>
+  /** 所有する本棚数 */
+  libraryCount: number
 }
