@@ -139,11 +139,14 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     }
     const adminsRef = this.#topGun.get('libraries').get(this.#library.id).get('admins')
     const obj = await this.__shootPromise<object>(adminsRef)
-    console.log(obj)
-    const keys = await this.__keys(adminsRef)
-    const admins = await this.__shootPromiseMultiple<string>(
-      adminsRef.once().map(), keys
-    )
+    let admins: string[] = []
+    // @ts-ignore
+    if (obj === 'aaa') {
+      const keys = await this.__keys(adminsRef)
+      admins = await this.__shootPromiseMultiple<string>(
+        adminsRef.once().map(), keys
+      )
+    }
     if (!(owner + admins).includes(this.#issuer)) {
       throw new Error("You can't modify this library")
     }
