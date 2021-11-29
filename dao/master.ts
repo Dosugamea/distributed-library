@@ -8,6 +8,7 @@ import { UserDao } from '@/dao/user'
 require('gun/sea')
 
 class MasterDao {
+  gun: IGunChainReference<AppState> | null = null
   #gun: IGunChainReference<AppState> | null = null
   bibliographyDao: BibliographyDao | null = null
   libraryDao: LibraryDao | null = null
@@ -18,6 +19,9 @@ class MasterDao {
     if (!this.#gun) {
       this.#gun = new GUN<AppState>(peers)
       this.userDao = new UserDao(this.#gun)
+      if (process.env.NODE_ENV === 'development') {
+        this.gun = this.#gun
+      }
     }
   }
 
