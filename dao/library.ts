@@ -54,7 +54,11 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
       throw new Error('Invalid library model')
     }
     await this.__verifyModeratorPermission()
-    return await this.__add(book)
+    // Below code does not work (makes different element 5 times)
+    // const newId = this.getNewId()
+    // this.#topGun.get('libraries').get(this.#library.id).get('books').get(newId).put(book)
+    await this.__add(book)
+    return true
   }
 
   async edit (book: LibraryBookModel) {
