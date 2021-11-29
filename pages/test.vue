@@ -70,8 +70,25 @@ export default class IndexComponent extends Vue {
 
   async recall () {
     this.$db.initDao()
-    await this.$db.userDao!.loginUser('dosugamea', 'thisistestaccount')
+    await this.$db.userDao!.loginUser('omado333', 'omadosandesuyo')
     this.$db.startupDao()
+    // 初期化が終わってストリーミングデータが貯まるまで待つ (ものすごく大雑把)
+    setTimeout(async () => {
+      // 本棚一覧から本棚情報の取得 TODO: この段階でもまだlibraryが無い可能性がある
+      const library = this.$db.libraryDao!.list()[0]
+      // 本棚内の本一覧の操作DAO生成
+      const libraryBookDao = this.$db.libraryDao!.getBookDao(library)
+      // 蔵書一覧から蔵書情報の取得
+      const bibliography = this.$db.bibliographyDao!.list()[0]
+      // 本棚内の本情報の作成
+      const book = await libraryBookDao.createModel(bibliography, 'test')
+      // 本棚内に本情報を登録
+      await libraryBookDao.add(book)
+      // すると挿入されない(resolveが発火せず進まなくなるので)この理由を調査中
+      setTimeout(() => {
+        console.log(libraryBookDao.list())
+      }, 1500)
+    }, 5000)
     setInterval(() => {
       if (this.$db.bibliographyDao != null) {
         this.bibliographies = this.$db!.bibliographyDao.list()
