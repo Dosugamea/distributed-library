@@ -30,7 +30,7 @@
     "sass-loader": "^10",
     "short-uuid": "^4.2.0",
     "vuex-module-decorators": "^1.0.1",
-    "vuex-persistedstate": "^4.0.0"
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
