@@ -212,9 +212,12 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
       throw new Error(`${this.#objName} ${model.id} doesn't exist`)
     }
     return new Promise<boolean>((resolve, reject) => {
+      const me = this
+      const modelRef = this.#gun.get(model.id)
       try {
         // @ts-ignore
-        this.#gun.get(model.id).get('isDeleted').put(true, () => {
+        this.#gun.get(model.id).get('isDeleted').put(true)
+        me.addHistory('delete', me.#objName, '', modelRef).then(function () {
           resolve(true)
         })
       } catch (e) {
