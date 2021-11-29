@@ -55,8 +55,25 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
-    '@nuxt/content'
+    '@nuxt/content',
+    // https://auth.nuxtjs.org/
+    '@nuxtjs/auth-next'
   ],
+
+  // Auth module configuration: https://go.nuxtjs.dev/config-axios
+  auth: {
+    redirect: {
+      login: '/',
+      logout: '/',
+      callback: '/',
+      home: '/home'
+    },
+    strategies: {
+      gun: {
+        scheme: '~/schemes/gun-scheme'
+      }
+    }
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
@@ -82,6 +99,11 @@ export default {
 
   // Content module configuration: https://go.nuxtjs.dev/config-content
   content: {},
+
+  // Router
+  router: {
+    middleware: ['auth']
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

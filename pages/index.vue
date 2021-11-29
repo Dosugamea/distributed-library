@@ -111,6 +111,7 @@ import type { UserState } from '@/types/userState'
   layout: 'top'
 })
 export default class IndexComponent extends Vue {
+  auth = false
   name = 'HomePage'
   username = ''
   password = ''
@@ -132,13 +133,18 @@ export default class IndexComponent extends Vue {
     }
   ]
 
+  async processLoggedIn () {
+    this.$db.startupDao()
+    this.openLoginForm = false
+    this.user = this.$db.userDao!.getSelfProfile()
+    await this.$auth.loginWith('gun', this.user)
+  }
+
   async loginUser () {
     this.$db.initDao()
     try {
       await this.$db.userDao!.loginUser(this.username, this.password)
-      this.$db.startupDao()
-      this.openLoginForm = false
-      this.user = this.$db.userDao!.getSelfProfile()
+      await this.processLoggedIn()
     } catch (e) {
       console.error(e)
     }
@@ -149,9 +155,7 @@ export default class IndexComponent extends Vue {
     try {
       await this.$db.userDao!.createUser(this.username, this.password)
       await this.$db.userDao!.loginUser(this.username, this.password)
-      this.$db.startupDao()
-      this.openLoginForm = false
-      this.user = this.$db.userDao!.getSelfProfile()
+      await this.processLoggedIn()
     } catch (e) {
       console.error(e)
     }
