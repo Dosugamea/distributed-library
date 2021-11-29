@@ -133,18 +133,30 @@ export default class IndexComponent extends Vue {
     }
   ]
 
-  async processLoggedIn () {
+  mounted () {
+    this.$db.initDao()
+    setTimeout(() => {
+      if (this.$db.userDao!.isLoggedIn) {
+        this.$db.startupDao()
+        this.openLoginForm = false
+        this.user = this.$db.userDao!.getSelfProfile()
+        this.$auth.loginWith('gun', this.user)
+      }
+    }, 1500)
+  }
+
+  processLoggedIn () {
     this.$db.startupDao()
     this.openLoginForm = false
     this.user = this.$db.userDao!.getSelfProfile()
-    await this.$auth.loginWith('gun', this.user)
+    this.$auth.loginWith('gun', this.user)
   }
 
   async loginUser () {
     this.$db.initDao()
     try {
       await this.$db.userDao!.loginUser(this.username, this.password)
-      await this.processLoggedIn()
+      this.processLoggedIn()
     } catch (e) {
       console.error(e)
     }
@@ -155,7 +167,7 @@ export default class IndexComponent extends Vue {
     try {
       await this.$db.userDao!.createUser(this.username, this.password)
       await this.$db.userDao!.loginUser(this.username, this.password)
-      await this.processLoggedIn()
+      this.processLoggedIn()
     } catch (e) {
       console.error(e)
     }

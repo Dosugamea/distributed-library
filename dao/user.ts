@@ -18,10 +18,10 @@ class UserDao extends IDaoUtil {
   constructor (gun: IGunChainReference<AppState>) {
     super()
     this.#gun = gun
-    this.#userRef = this.#gun.user() // .recall({ sessionStorage: true })
+    this.#userRef = this.#gun.user()
+    this.#userRef.recall({ sessionStorage: true })
     // @ts-ignore
-    this.#gun.on('auth', (cb) => {
-      console.log('callback', cb)
+    this.#gun.on('auth', (_) => {
       this.#userRef.get('profile').once((user) => {
         if (!user) {
           const createdTime = this.getCurrentUnixTime()
