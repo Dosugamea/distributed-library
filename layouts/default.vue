@@ -3,9 +3,11 @@
     <header>
       <NavBarUser />
     </header>
-    <main class="main-content columns">
-      <div class="container column is-10">
-        <Nuxt />
+    <main class="section">
+      <div class="columns is-centered">
+        <div class="column is-10-desktop">
+          <Nuxt />
+        </div>
       </div>
     </main>
   </div>
