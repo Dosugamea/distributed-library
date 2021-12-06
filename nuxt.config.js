@@ -26,6 +26,11 @@ export default {
     ]
   },
 
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '~/assets/style.scss',
@@ -35,7 +40,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     // { src: '~/plugins/persistedstate', ssr: false },
-    { src: '~/plugins/gun' }
+    { src: '~/plugins/gun', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
