@@ -8,7 +8,8 @@ import { LogModel } from '@/models/base'
  * コンテンツ 基底インターフェイス
  */
  interface IDao<T> {
-  createModel(...params: any): T
+  createModel?(...params: any): T
+  createModelAsync?(...params: any): Promise<T>
   add(model: T): Promise<boolean>
   edit(model: T): Promise<boolean>
   remove(model: T): Promise<boolean>

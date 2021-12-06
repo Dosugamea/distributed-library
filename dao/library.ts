@@ -23,31 +23,33 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     )
   }
 
-  createModel (
+  async createModelAsync (
     bibliography: BibliographyModel,
     note: string
   ) {
     if (!bibliography.id) {
       throw new Error('Invalid bibliography model')
     }
-    const me = this
-    const resp = this.#topGun.get('bibliographies').get(bibliography.id).once(function (dbBibliography, _) {
-      if (!dbBibliography) {
-        throw new Error('Bibliography was not found')
-      }
-      if (!dbBibliography.id) {
-        throw new Error('Bibliography was not found')
-      }
-      const bibliographyRef = me.#topGun.get('bibliographies').get(bibliography.id)
-      return new LibraryBookModel(
-        me.getNewId(), '', me.getCurrentUnixTime(),
-        note, true, bibliographyRef, false
-      )
-    }) as unknown as LibraryBookModel
-    return resp
+    const dbBibliography = await this.__shootPromise<LibraryBookModel>(
+      this.#topGun.get('bibliographies').get(bibliography.id)
+    )
+    if (!dbBibliography) {
+      throw new Error('Bibliography was not found')
+    }
+    if (!dbBibliography.id) {
+      throw new Error('Bibliography was not found')
+    }
+    const bibliographyRef = this.#topGun.get('bibliographies').get(
+      dbBibliography.id
+    )
+    return new LibraryBookModel(
+      this.getNewId(), '', this.getCurrentUnixTime(),
+      note, true, bibliographyRef, false
+    )
   }
 
-  async add (book: LibraryBookModel) : Promise<boolean> {
+  async add (book: LibraryBookModel): Promise<boolean> {
+    console.log(book)
     if (!book.id) {
       throw new Error('Invalid book model')
     }
