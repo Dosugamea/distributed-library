@@ -1,5 +1,10 @@
 <template>
   <section>
+    <CodeReader
+      :active="isModalOpen"
+      @cancel="isModalOpen = false"
+      @success="model.isbn = $event.code"
+    />
     <p class="title has-text-centered">
       新規書誌情報の追加
     </p>
@@ -134,6 +139,7 @@ export default class BibliographyAddPage extends Vue {
 
   publishDate: string = new Date().toJSON().slice(0, 10)
   labelPosition = 'on-border'
+  isModalOpen: boolean = false
 
   async onSubmit () {
     this.model.publishedDateUnix = Date.parse(this.publishDate) / 1000
@@ -172,7 +178,22 @@ export default class BibliographyAddPage extends Vue {
   }
 
   openModal () {
-    console.log(this.model)
+    this.isModalOpen = true
+  }
+
+  async callOpenBD () {
+    const resp = await this.$axios.get(
+      `https://api.openbd.jp/v1/get?isbn=${this.model.isbn}`
+    )
+    if (resp.data[0] != null) {
+      const summary = resp.data[0].summary
+      this.model.name = summary.title
+      this.model.author = summary.author
+      this.model.publisher = summary.publisher
+      if (summary.cover !== undefined) {
+        this.model.image = summary.cover
+      }
+    }
   }
 }
 </script>
