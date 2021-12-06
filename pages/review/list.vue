@@ -1,7 +1,7 @@
 <template>
   <ElementList
-    title="蔵書一覧"
-    icon="book"
+    title="レビュー一覧"
+    icon="star"
     :elements="elements"
   >
     <template #card="slotProps">
@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import ElementList from '~/components/ElementList.vue'
-import { BibliographyModel } from '~/models/bibliography'
+import { ReviewModel } from '~/models/review'
 import { DaoWatcher, DaoWatcherState } from '~/dao/watcher'
 
 @Component({
@@ -26,18 +26,18 @@ import { DaoWatcher, DaoWatcherState } from '~/dao/watcher'
     ElementList
   }
 })
-export default class BibliographyListComponent extends Vue {
-  watcher: DaoWatcher<BibliographyModel> | null = null
+export default class ReviewListComponent extends Vue {
+  daoWatcher: DaoWatcher<ReviewModel> | null = null
 
   mounted () {
-    if (this.$db.bibliographyDao != null) {
-      this.watcher = new DaoWatcher<BibliographyModel>(this.$db.bibliographyDao)
+    if (this.$db.reviewDao != null) {
+      this.daoWatcher = new DaoWatcher<ReviewModel>(this.$db.reviewDao)
     }
   }
 
   beforeDestroy () {
-    if (this.watcher != null) {
-      this.watcher.destroy()
+    if (this.daoWatcher != null) {
+      this.daoWatcher.destroy()
     }
   }
 
