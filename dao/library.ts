@@ -5,7 +5,7 @@ import type { AppState } from '@/types/appState'
 import { IDao, IDaoBase } from '@/dao/base'
 import { LogModel } from '@/models/base'
 
-class LibraryBookDao extends IDaoBase<LibraryBookModel> {
+class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryBookModel> {
   #topGun: IGunChainReference<AppState>
   #gun: IGunChainReference<Record<string, LibraryBookModel>, 'books'>
   #library: LibraryModel | undefined = undefined
@@ -23,27 +23,28 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     )
   }
 
-  async createModel (
+  createModel (
     bibliography: BibliographyModel,
     note: string
   ) {
     if (!bibliography.id) {
       throw new Error('Invalid bibliography model')
     }
-    const dbBibliography = await this.__shootPromise<BibliographyModel>(
-      this.#topGun.get('bibliographies').get(bibliography.id)
-    )
-    if (!dbBibliography) {
-      throw new Error('Bibliography was not found')
-    }
-    if (!dbBibliography.id) {
-      throw new Error('Bibliography was not found')
-    }
-    const bibliographyRef = this.#topGun.get('bibliographies').get(bibliography.id)
-    return new LibraryBookModel(
-      this.getNewId(), '', this.getCurrentUnixTime(),
-      note, true, bibliographyRef, false
-    )
+    const me = this
+    const resp = this.#topGun.get('bibliographies').get(bibliography.id).once(function (dbBibliography, _) {
+      if (!dbBibliography) {
+        throw new Error('Bibliography was not found')
+      }
+      if (!dbBibliography.id) {
+        throw new Error('Bibliography was not found')
+      }
+      const bibliographyRef = me.#topGun.get('bibliographies').get(bibliography.id)
+      return new LibraryBookModel(
+        me.getNewId(), '', me.getCurrentUnixTime(),
+        note, true, bibliographyRef, false
+      )
+    }) as unknown as LibraryBookModel
+    return resp
   }
 
   async add (book: LibraryBookModel) : Promise<boolean> {
@@ -54,9 +55,6 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
       throw new Error('Invalid library model')
     }
     await this.__verifyModeratorPermission()
-    // Below code does not work (makes different element 5 times)
-    // const newId = this.getNewId()
-    // this.#topGun.get('libraries').get(this.#library.id).get('books').get(newId).put(book)
     await this.__add(book)
     return true
   }
@@ -83,10 +81,6 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     return await this.__remove(book)
   }
 
-  list () {
-    return this.__list()
-  }
-
   async rent (book: LibraryBookModel) {
     if (!book.id) {
       throw new Error('Invalid book model')
@@ -108,25 +102,28 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     await this.__edit(dbBook)
   }
 
-  async listBookAsBibliography (): Promise<BibliographyModel[]> {
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    const bibliographiesRef = this.#topGun
-      .get('libraries')
-      .get(this.#library.id)
-      .get('books')
-      .map()
-      .get('bibliography')
-    const keys = await this.__keys(bibliographiesRef)
-    const bibliographies = await this.__shootPromiseMultiple<BibliographyModel>(
-      bibliographiesRef.once().map(), keys
-    )
-    return bibliographies
+  list () {
+    return this.__list()
+  }
+
+  async isExist (id: string): Promise<boolean> {
+    return await this.__isExist(id)
+  }
+
+  find (query: (model: LibraryBookModel) => boolean): LibraryBookModel[] {
+    return this.__find(query)
   }
 
   count () {
     return this.__count()
+  }
+
+  async get (id: string): Promise<LibraryBookModel> {
+    return await this.__get(id)
+  }
+
+  async histories (model: LibraryBookModel): Promise<LogModel[]> {
+    return await this.__histories(model)
   }
 
   private async __verifyModeratorPermission () {
@@ -150,6 +147,23 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> {
     if (!(owner + admins).includes(this.#issuer)) {
       throw new Error("You can't modify this library")
     }
+  }
+
+  async listBookAsBibliography (): Promise<BibliographyModel[]> {
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    const bibliographiesRef = this.#topGun
+      .get('libraries')
+      .get(this.#library.id)
+      .get('books')
+      .map()
+      .get('bibliography')
+    const keys = await this.__keys(bibliographiesRef)
+    const bibliographies = await this.__shootPromiseMultiple<BibliographyModel>(
+      bibliographiesRef.once().map(), keys
+    )
+    return bibliographies
   }
 }
 
