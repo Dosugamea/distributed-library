@@ -9,7 +9,7 @@
           P2P Integrated Library System Powered by GunDB
         </p>
         <p v-if="!user" class="subtitle">
-          <b-button type="is-primary" size="is-large" @click="openLoginForm = !openLoginForm">
+          <b-button type="is-secondary" size="is-large" @click="openLoginForm = !openLoginForm">
             ログインして 本棚を開く
           </b-button>
         </p>

@@ -1,35 +1,10 @@
 <template>
   <div>
     <header>
-      <NavBarUser />
+      <NavBar />
     </header>
-    <main class="section">
-      <div class="columns is-centered">
-        <div class="column is-10-desktop">
-          <Nuxt />
-        </div>
-      </div>
+    <main :class="{section: $auth.loggedIn, columns: $auth.loggedIn, 'is-centered': $auth.loggedIn}">
+      <Nuxt :class="{'column is-8-desktop is-8-widescreen': $auth.loggedIn}" />
     </main>
   </div>
 </template>
-
-<script>
-export default {
-  data () {
-    return {
-      items: [
-        {
-          title: 'Home',
-          icon: 'home',
-          to: { name: 'index' }
-        },
-        {
-          title: 'Inspire',
-          icon: 'lightbulb',
-          to: { name: 'inspire' }
-        }
-      ]
-    }
-  }
-}
-</script>
