@@ -22,8 +22,8 @@
             />
           </div>
           <div class="control">
-            <b-button type="is-info" @click="openModal">
-              読み取り
+            <b-button type="is-info" @click="callOpenBD">
+              自動取得
             </b-button>
           </div>
         </div>
@@ -134,7 +134,8 @@ export default class BibliographyAddPage extends Vue {
     author: '',
     publisher: '',
     publishedDateUnix: 0,
-    reviews: {}
+    reviews: [],
+    libraries: []
   }
 
   publishDate: string = new Date().toJSON().slice(0, 10)
