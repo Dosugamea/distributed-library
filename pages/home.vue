@@ -109,10 +109,16 @@ export default class IndexComponent extends Vue {
       to: '/library/add'
     },
     {
-      title: '蔵書 登録',
+      title: '書誌 登録',
       subtitle: '連合に 書誌を追加します',
       icon: 'book',
       to: '/bibliography/add'
+    },
+    {
+      title: '蔵書 登録',
+      subtitle: '特定の本棚に 書誌を追加します',
+      icon: 'book',
+      to: '/test2'
     }
   ]
 
