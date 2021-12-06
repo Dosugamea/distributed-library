@@ -27,7 +27,8 @@
       "@nuxt/types",
       "@nuxt/content",
       "@types/node",
-      "@types/jest"
+      "@types/jest",
+      "buefy/types"
     ]
   },
   "exclude": [
