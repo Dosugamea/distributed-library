@@ -3,6 +3,7 @@ import { getDiff } from 'recursive-diff'
 import shortUUID from 'short-uuid'
 import { ContentType } from '@/types/base/content'
 import { LogModel } from '@/models/base'
+import { BibliographyModel } from '@/models/bibliography'
 
 /**
  * コンテンツ 基底インターフェイス
@@ -14,6 +15,7 @@ import { LogModel } from '@/models/base'
   edit(model: T): Promise<boolean>
   remove(model: T): Promise<boolean>
   list(): T[]
+  listBookAsBibliography?(): Promise<BibliographyModel[]>
   find(query: any): T[]
   count(): number
   get(id: string): Promise<T>

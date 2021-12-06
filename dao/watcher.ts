@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import { IDao } from './base'
 import { ContentType } from '~/types/base/content'
+import type { BibliographyModel } from '@/models/bibliography'
+import type { LibraryBookModel } from '@/models/library'
 
 type State<T extends ContentType> = {
   elements: T[]
@@ -14,15 +16,29 @@ const DaoWatcherMutations = {
   }
 }
 
-class DaoWatcher<T extends ContentType> {
-  #timer : NodeJS.Timer | null = null
+class DaoWatcherBase<T extends ContentType, U extends ContentType> {
+  protected dao: IDao<T>
+  #timer: NodeJS.Timer | null = null
 
   constructor (dao: IDao<T>) {
+    this.dao = dao
     this.#timer = setInterval(() => {
       if (dao != null) {
-        DaoWatcherMutations.setElements(dao.list())
+        this.getElements().then((resp) => {
+          DaoWatcherMutations.setElements(resp)
+        })
       }
     }, 500)
+  }
+
+  getElements () : Promise<U[]> {
+    return new Promise<U[]>((resolve, reject) => {
+      try {
+        resolve([])
+      } catch {
+        reject(new Error('Failed to get elements'))
+      }
+    })
   }
 
   destroy () {
@@ -33,4 +49,25 @@ class DaoWatcher<T extends ContentType> {
   }
 }
 
-export { DaoWatcher, DaoWatcherState }
+class DaoWatcher<T extends ContentType> extends DaoWatcherBase<T, T> {
+  getElements () : Promise<T[]> {
+    return new Promise<T[]>((resolve, reject) => {
+      try {
+        resolve(this.dao.list())
+      } catch {
+        reject(new Error('Failed to get elements'))
+      }
+    })
+  }
+}
+
+class DaoLibraryBookWatcher extends DaoWatcherBase<LibraryBookModel, BibliographyModel> {
+  async getElements (): Promise<BibliographyModel[]> {
+    if (this.dao.listBookAsBibliography) {
+      return await this.dao.listBookAsBibliography()
+    }
+    return []
+  }
+}
+
+export { DaoWatcher, DaoWatcherState, DaoLibraryBookWatcher }

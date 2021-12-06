@@ -4,11 +4,13 @@ import { BibliographyModel } from '@/models/bibliography'
 import type { AppState } from '@/types/appState'
 import { IDao, IDaoBase } from '@/dao/base'
 import { LogModel } from '@/models/base'
+import { BibliographyType } from '~/types/bibliography'
 
 class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryBookModel> {
   #topGun: IGunChainReference<AppState>
   #gun: IGunChainReference<Record<string, LibraryBookModel>, 'books'>
   #library: LibraryModel | undefined = undefined
+  #bibliographies: BibliographyModel[] = []
   #issuer: string
 
   constructor (gun: IGunChainReference<AppState>, library: LibraryModel, issuer: string) {
@@ -21,6 +23,16 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
         this.#library = libraryModel
       }
     )
+    const me = this
+    // @ts-ignore
+    this.#gun.map().on(function (data: BibliographyType, key: string) {
+      if (data.id) {
+        me.#bibliographies = me.#bibliographies.filter(data => data.id !== key)
+        if (!data.isDeleted) {
+          me.#bibliographies.push(data)
+        }
+      }
+    })
   }
 
   async createModelAsync (
@@ -165,6 +177,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     const bibliographies = await this.__shootPromiseMultiple<BibliographyModel>(
       bibliographiesRef.once().map(), keys
     )
+    console.log(bibliographies)
     return bibliographies
   }
 }

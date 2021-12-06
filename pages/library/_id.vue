@@ -6,7 +6,7 @@
       :can-cancel="false"
     />
     <ElementList
-      title="蔵書一覧"
+      title="本棚の蔵書一覧"
       icon="book"
       :elements="elements"
     >
@@ -16,7 +16,8 @@
             :title="slotProps.element.id"
             icon="cellphone-link"
           >
-            {{ slotProps.element.name }}
+            {{ slotProps.element.note }}
+            {{ slotProps.element.bibliography }}
           </card>
         </nuxt-link>
       </template>
@@ -62,7 +63,7 @@ export default class LibraryBooksListComponent extends Vue {
     const library = await this.$db.libraryDao.get(this.libraryId)
     this.library = library
     const libraryBookDao = this.$db.libraryDao.getBookDao(library)
-    this.watcher = new DaoWatcher<LibraryBookModel>(libraryBookDao)
+    this.watcher = new DaoWatcher(libraryBookDao)
     this.isLoading = false
     clearTimeout(this.timer)
   }
