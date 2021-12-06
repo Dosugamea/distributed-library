@@ -153,6 +153,10 @@ class UserDao extends IDaoUtil {
     return this.#user
   }
 
+  logout () {
+    this.#userRef.leave()
+  }
+
   async getUserProfile (userId: string) : Promise<UserState | undefined> {
     const user = await this.__shootPromise<UserState>(
       this.#gun.user(userId).get('profile')

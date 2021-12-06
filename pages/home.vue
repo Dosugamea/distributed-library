@@ -47,6 +47,17 @@
           :to="card.to"
         />
       </div>
+      <div
+        class="column is-12"
+        @click="logout"
+      >
+        <card
+          title="ログアウトする"
+          icon="logout"
+        >
+          現在のアカウントからログアウトします
+        </card>
+      </div>
     </div>
   </div>
 </template>
@@ -118,6 +129,14 @@ export default class IndexComponent extends Vue {
     if (this.timer) {
       clearInterval(this.timer)
     }
+  }
+
+  logout () {
+    localStorage.clear()
+    sessionStorage.clear()
+    document.cookie = 'name=; expires=0'
+    this.$db.userDao!.logout()
+    location.reload()
   }
 }
 </script>
