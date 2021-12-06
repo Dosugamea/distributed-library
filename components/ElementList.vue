@@ -19,7 +19,7 @@
           range-before="3"
           range-after="3"
           order="is-centered"
-          size="is-small"
+          size="is-medium"
           aria-next-label="Next page"
           aria-previous-label="Previous page"
           aria-page-label="Page"
