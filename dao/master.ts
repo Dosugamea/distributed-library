@@ -15,7 +15,7 @@ class MasterDao {
   reviewDao: ReviewDao | null = null
   userDao: UserDao | null = null
 
-  initDao (peers: string[] = ['http://localhost:8765/gun']) {
+  initDao (peers: string[] = ['https://gun-test-omado.herokuapp.com/gun']) {
     if (!this.#gun) {
       this.#gun = new GUN<AppState>(peers)
       this.userDao = new UserDao(this.#gun)
