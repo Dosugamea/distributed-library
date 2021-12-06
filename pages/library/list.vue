@@ -5,12 +5,14 @@
     :elements="elements"
   >
     <template #card="slotProps">
-      <card
-        :title="slotProps.element.id"
-        icon="cellphone-link"
-      >
-        {{ slotProps.element.name }}
-      </card>
+      <nuxt-link :to="`/library/${slotProps.element.id}`">
+        <card
+          :title="slotProps.element.id"
+          icon="cellphone-link"
+        >
+          {{ slotProps.element.name }}
+        </card>
+      </nuxt-link>
     </template>
   </ElementList>
 </template>
