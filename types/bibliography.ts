@@ -1,5 +1,7 @@
+import type { IGunChainReference } from 'gun/types/chain'
 import { ContentType } from './base/content'
 import { ReviewType } from './review'
+import { LibraryType } from './library'
 
 /*
 * 書誌情報型
@@ -37,5 +39,7 @@ export type BibliographyType = ContentType & {
   /** ISBN(無い場合もある) */
   isbn: string | undefined
   /** レビュー一覧 */
-  reviews: Record<string, ReviewType>
+  reviews: IGunChainReference<ReviewType>[]
+  /** この本を持つ本棚一覧 */
+  libraries: IGunChainReference<LibraryType>[]
 }

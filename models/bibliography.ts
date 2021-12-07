@@ -1,6 +1,8 @@
+import type { IGunChainReference } from 'gun/types/chain'
 import { ContentModel, LogModel } from '@/models/base'
-import { ReviewModel } from '@/models/review'
 import { BibliographyType } from '@/types/bibliography'
+import { ReviewType } from '@/types/review'
+import { LibraryType } from '@/types/library'
 
 /**
  * Bibliography model instance for add/edit/remove bibliography entries.
@@ -13,7 +15,8 @@ class BibliographyModel extends ContentModel implements BibliographyType {
   publisher: string
   publishedDateUnix: number
   isbn: string | undefined
-  reviews: Record<string, ReviewModel>
+  reviews: IGunChainReference<ReviewType>[]
+  libraries: IGunChainReference<LibraryType>[]
 
   constructor (
     id: string,
@@ -28,7 +31,8 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     publisher: string,
     publishedDateUnix: number,
     isbn: string | undefined,
-    reviews: Record<string, ReviewModel>,
+    reviews: IGunChainReference<ReviewType>[],
+    libraries: IGunChainReference<LibraryType>[],
     isDeleted: boolean
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)
@@ -40,6 +44,7 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     this.publishedDateUnix = publishedDateUnix
     this.isbn = isbn
     this.reviews = reviews
+    this.libraries = libraries
   }
 }
 
