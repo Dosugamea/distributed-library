@@ -28,7 +28,8 @@ class BibliographyDao extends IDaoBase<BibliographyModel> implements IDao<Biblio
     return new BibliographyModel(
       newId, name, logTime, logTime, {}, note,
       image, category, author, publisher, publishedDateUnix, isbn,
-      [], [], false
+      // @ts-ignore
+      {}, {}, false
     )
   }
 

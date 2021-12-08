@@ -39,7 +39,7 @@ export type BibliographyType = ContentType & {
   /** ISBN(無い場合もある) */
   isbn: string | undefined
   /** レビュー一覧 */
-  reviews: IGunChainReference<ReviewType>[]
+  reviews: IGunChainReference<ReviewType>
   /** この本を持つ本棚一覧 */
-  libraries: IGunChainReference<LibraryType>[]
+  libraries: IGunChainReference<LibraryType>
 }
