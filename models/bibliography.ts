@@ -15,8 +15,8 @@ class BibliographyModel extends ContentModel implements BibliographyType {
   publisher: string
   publishedDateUnix: number
   isbn: string | undefined
-  reviews: IGunChainReference<ReviewType>
-  libraries: IGunChainReference<LibraryType>
+  reviews: Record<string, IGunChainReference<ReviewType, string, false>>
+  libraries: Record<string, IGunChainReference<LibraryType, string, false>>
 
   constructor (
     id: string,
@@ -31,8 +31,8 @@ class BibliographyModel extends ContentModel implements BibliographyType {
     publisher: string,
     publishedDateUnix: number,
     isbn: string | undefined,
-    reviews: IGunChainReference<ReviewType>,
-    libraries: IGunChainReference<LibraryType>,
+    reviews: Record<string, IGunChainReference<ReviewType, string, false>>,
+    libraries: Record<string, IGunChainReference<LibraryType, string, false>>,
     isDeleted: boolean
   ) {
     super(id, name, createdDateUnix, updatedDateUnix, histories, note, isDeleted)

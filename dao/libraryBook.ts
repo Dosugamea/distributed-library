@@ -96,6 +96,16 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     this.#gun.get(book.id).get('bibliography').put(bibliographyRef)
     // @ts-ignore
     this.#gun.get(book.id).get('library').put(libraryRef)
+    this.#topGun.get(
+      'bibliographies'
+    ).get(
+      bibliography.id
+    ).get(
+      'libraries'
+    ).get(
+      this.getNewId()
+    // @ts-ignore
+    ).put(libraryRef)
     return true
   }
 
