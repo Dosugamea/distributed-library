@@ -107,6 +107,9 @@ export default class LibraryAddPage extends Vue {
     if (this.library == null) {
       return
     }
+    if (this.libraryBookDao == null) {
+      return
+    }
     const bibliography = await this.$db.bibliographyDao!.get(this.targetBibliographyId)
     if (bibliography == null) {
       this.$buefy.snackbar.open({
@@ -120,6 +123,14 @@ export default class LibraryAddPage extends Vue {
       this.library,
       this.targetNote
     )
+    const existedBook = this.libraryBookDao!.findBookByBibliographyId(bibliography.id)
+    if (existedBook != null) {
+      this.$buefy.snackbar.open({
+        message: 'この書誌は既に追加済みです',
+        type: 'is-danger'
+      })
+      return
+    }
     await this.libraryBookDao!.add(newModel, bibliography, this.library)
     this.$buefy.snackbar.open({
       message: '登録に成功しました',

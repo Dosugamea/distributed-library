@@ -146,10 +146,10 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     return this.#bibliographies
   }
 
-  findBookByBibliographyId (bibliographyId: string): LibraryBookModel {
+  findBookByBibliographyId (bibliographyId: string): LibraryBookModel | null {
     const books = this.__list().filter(book => book.bibliographyId === bibliographyId)
     if (books.length === 0) {
-      throw new Error('Specified bibliography was not found')
+      return null
     }
     return books[0]
   }

@@ -81,7 +81,10 @@ export default class LibraryBooksListComponent extends Vue {
 
   findLibraryBook (bibliographyId: string) {
     const resp = this.libraryBookDao?.findBookByBibliographyId(bibliographyId)
-    return resp
+    if (resp == null) {
+      return
+    }
+    console.log(resp)
   }
 }
 </script>
