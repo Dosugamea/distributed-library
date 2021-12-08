@@ -1,10 +1,5 @@
 <template>
   <section>
-    <CodeReader
-      :active="isModalOpen"
-      @cancel="isModalOpen = false"
-      @success="model.isbn = $event.code"
-    />
     <p class="title has-text-centered">
       新規書誌情報の追加
     </p>
