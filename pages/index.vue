@@ -21,8 +21,8 @@
         title="Modern"
         icon="account"
       >
-        ログイン成功
-        {{ user }}
+        ログインに成功しました。
+        リダイレクトします...
       </card>
       <b-collapse
         v-for="(collapse, index) of collapses"

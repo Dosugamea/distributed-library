@@ -59,7 +59,7 @@ import { DaoWatcher, DaoWatcherState } from '@/dao/watcher'
 export default class LibraryAddPage extends Vue {
   labelPosition = 'on-border'
   isLoading = true
-  libraryId = 'u9iNrCLYjeWrmrj2dvCoP3'
+  libraryId = this.$route.params.id
   library: LibraryModel | null = null
   timer: NodeJS.Timeout | null = null
   libraryBookDao: LibraryBookDao | null = null

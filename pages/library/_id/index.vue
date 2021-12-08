@@ -5,6 +5,29 @@
       :is-full-page="true"
       :can-cancel="false"
     />
+    <div class="box">
+      <div class="columns is-vcentered is-justify-content-space-around">
+        <div class="is-4">
+          <b-icon
+            icon="bookshelf"
+            size="is-large"
+          />
+        </div>
+        <div class="is-4 has-text-centered">
+          <p class="title">
+            {{ libraryName }}
+          </p>
+          <p class="subtitle">
+            {{ libraryNote }}
+          </p>
+        </div>
+        <div class="is-4">
+          <p class="subtitle">
+            作成者: {{ libraryOwner }}
+          </p>
+        </div>
+      </div>
+    </div>
     <ElementList
       title="本棚の蔵書一覧"
       icon="book"
@@ -14,7 +37,7 @@
         <div @click="findLibraryBook(slotProps.element.id)">
           <card
             :title="slotProps.element.id"
-            icon="cellphone-link"
+            icon="book"
           >
             {{ slotProps.element.name }}
           </card>
@@ -66,6 +89,7 @@ export default class LibraryBooksListComponent extends Vue {
     this.libraryBookDao = this.$db.libraryDao.getBookDao(library)
     this.watcher = new DaoLibraryBookWatcher(this.libraryBookDao)
     this.isLoading = false
+    console.log(library)
     clearTimeout(this.timer)
   }
 
@@ -79,12 +103,33 @@ export default class LibraryBooksListComponent extends Vue {
     return DaoWatcherState.elements
   }
 
+  get libraryName () {
+    if (this.library == null) {
+      return ''
+    }
+    return this.library.name
+  }
+
+  get libraryNote () {
+    if (this.library == null) {
+      return ''
+    }
+    return this.library.note
+  }
+
+  get libraryOwner () {
+    if (this.library == null) {
+      return ''
+    }
+    return this.library.owner
+  }
+
   findLibraryBook (bibliographyId: string) {
     const resp = this.libraryBookDao?.findBookByBibliographyId(bibliographyId)
     if (resp == null) {
       return
     }
-    console.log(resp)
+    this.$router.push(`/bibliography/${bibliographyId}`)
   }
 }
 </script>
