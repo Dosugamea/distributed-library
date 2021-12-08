@@ -134,8 +134,10 @@ export default class BibliographyAddPage extends Vue {
     author: '',
     publisher: '',
     publishedDateUnix: 0,
-    reviews: [],
-    libraries: []
+    // @ts-ignore
+    reviews: {},
+    // @ts-ignore
+    libraries: {}
   }
 
   publishDate: string = new Date().toJSON().slice(0, 10)

@@ -50,20 +50,21 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     bibliography: BibliographyModel,
     library: LibraryModel
   ): Promise<boolean> {
+    // 与えられた引数の検証
     if (!book.id) {
       throw new Error('Invalid book model')
     }
     if (!this.#library) {
       throw new Error('Invalid library model')
     }
-    await this.__verifyModeratorPermission()
-    await this.__add(book)
     if (!bibliography.id) {
       throw new Error('Invalid bibliography model')
     }
     if (!library.id) {
       throw new Error('Invalid library model')
     }
+    await this.__verifyModeratorPermission()
+    // 書誌への参照を取得
     const dbBibliography = await this.__shootPromise<BibliographyModel>(
       this.#topGun.get('bibliographies').get(bibliography.id)
     )
@@ -76,8 +77,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     const bibliographyRef = this.#topGun.get('bibliographies').get(
       dbBibliography.id
     )
-    // @ts-ignore
-    this.#gun.get(book.id).get('bibliography').put(bibliographyRef)
+    // 本棚への参照を取得
     const dbLibrary = await this.__shootPromise<LibraryModel>(
       this.#topGun.get('libraries').get(library.id)
     )
@@ -90,6 +90,10 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     const libraryRef = this.#topGun.get('libraries').get(
       dbLibrary.id
     )
+    // データの登録
+    await this.__add(book)
+    // @ts-ignore
+    this.#gun.get(book.id).get('bibliography').put(bibliographyRef)
     // @ts-ignore
     this.#gun.get(book.id).get('library').put(libraryRef)
     return true
