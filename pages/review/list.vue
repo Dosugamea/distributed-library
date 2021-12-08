@@ -7,7 +7,7 @@
     <template #card="slotProps">
       <card
         :title="slotProps.element.id"
-        icon="cellphone-link"
+        icon="star"
       >
         {{ slotProps.element.name }}
       </card>

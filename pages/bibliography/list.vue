@@ -8,7 +8,7 @@
       <nuxt-link :to="`/bibliography/${slotProps.element.id}`">
         <card
           :title="slotProps.element.id"
-          icon="cellphone-link"
+          icon="book"
         >
           {{ slotProps.element.name }}
         </card>
