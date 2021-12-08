@@ -1,198 +1,19 @@
 import type { IGunChainReference } from 'gun/types/chain'
-import { LibraryModel, LibraryBookModel } from '@/models/library'
-import { BibliographyModel } from '@/models/bibliography'
+import { LibraryModel } from '@/models/library'
 import type { AppState } from '@/types/appState'
 import { IDao, IDaoBase } from '@/dao/base'
+import { LibraryBookDao } from '@/dao/libraryBook'
 import { LogModel } from '@/models/base'
-import { BibliographyType } from '~/types/bibliography'
-
-class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryBookModel> {
-  #topGun: IGunChainReference<AppState>
-  #gun: IGunChainReference<Record<string, LibraryBookModel>, 'books'>
-  #library: LibraryModel | undefined = undefined
-  #bibliographies: BibliographyModel[] = []
-  #issuer: string
-
-  constructor (gun: IGunChainReference<AppState>, library: LibraryModel, issuer: string) {
-    super(gun.get('libraries').get(library.id).get('books'), 'library-book', issuer)
-    this.#gun = gun.get('libraries').get(library.id).get('books')
-    this.#topGun = gun
-    this.#issuer = issuer
-    this.__shootPromise<LibraryModel>(gun.get('libraries').get(library.id)).then(
-      (libraryModel: LibraryModel | undefined) => {
-        this.#library = libraryModel
-      }
-    )
-    const me = this
-    // @ts-ignore
-    this.#gun.map().on(function (data: BibliographyType, key: string) {
-      if (data.id) {
-        me.#bibliographies = me.#bibliographies.filter(data => data.id !== key)
-        if (!data.isDeleted) {
-          me.#bibliographies.push(data)
-        }
-      }
-    })
-  }
-
-  async createModelAsync (
-    bibliography: BibliographyModel,
-    note: string
-  ) {
-    if (!bibliography.id) {
-      throw new Error('Invalid bibliography model')
-    }
-    const dbBibliography = await this.__shootPromise<LibraryBookModel>(
-      this.#topGun.get('bibliographies').get(bibliography.id)
-    )
-    if (!dbBibliography) {
-      throw new Error('Bibliography was not found')
-    }
-    if (!dbBibliography.id) {
-      throw new Error('Bibliography was not found')
-    }
-    const bibliographyRef = this.#topGun.get('bibliographies').get(
-      dbBibliography.id
-    )
-    return new LibraryBookModel(
-      this.getNewId(), '', this.getCurrentUnixTime(),
-      note, true, bibliographyRef, false
-    )
-  }
-
-  async add (book: LibraryBookModel): Promise<boolean> {
-    console.log(book)
-    if (!book.id) {
-      throw new Error('Invalid book model')
-    }
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    await this.__verifyModeratorPermission()
-    await this.__add(book)
-    return true
-  }
-
-  async edit (book: LibraryBookModel) {
-    if (!book.id) {
-      throw new Error('Invalid book model')
-    }
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    await this.__verifyModeratorPermission()
-    return await this.__edit(book)
-  }
-
-  async remove (book: LibraryBookModel) {
-    if (!book.id) {
-      throw new Error('Invalid book model')
-    }
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    await this.__verifyModeratorPermission()
-    return await this.__remove(book)
-  }
-
-  async rent (book: LibraryBookModel) {
-    if (!book.id) {
-      throw new Error('Invalid book model')
-    }
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    const dbBookRef = this.#gun.get(book.id)
-    const dbBook = await this.__shootPromise<LibraryBookModel>(
-      dbBookRef
-    )
-    if (!dbBook) {
-      throw new Error('Book was not found')
-    }
-    if (!dbBook.rentable) {
-      throw new Error('The book is not available.')
-    }
-    dbBook.rentable = false
-    await this.__edit(dbBook)
-  }
-
-  list () {
-    return this.__list()
-  }
-
-  async isExist (id: string): Promise<boolean> {
-    return await this.__isExist(id)
-  }
-
-  find (query: (model: LibraryBookModel) => boolean): LibraryBookModel[] {
-    return this.__find(query)
-  }
-
-  count () {
-    return this.__count()
-  }
-
-  async get (id: string): Promise<LibraryBookModel> {
-    return await this.__get(id)
-  }
-
-  async histories (model: LibraryBookModel): Promise<LogModel[]> {
-    return await this.__histories(model)
-  }
-
-  private async __verifyModeratorPermission () {
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    const owner = this.#library.owner
-    if (!owner) {
-      throw new Error('Library owner is not found')
-    }
-    const adminsRef = this.#topGun.get('libraries').get(this.#library.id).get('admins')
-    const obj = await this.__shootPromise<object>(adminsRef)
-    let admins: string[] = []
-    // @ts-ignore
-    if (obj === 'aaa') {
-      const keys = await this.__keys(adminsRef)
-      admins = await this.__shootPromiseMultiple<string>(
-        adminsRef.once().map(), keys
-      )
-    }
-    if (!(owner + admins).includes(this.#issuer)) {
-      throw new Error("You can't modify this library")
-    }
-  }
-
-  async listBookAsBibliography (): Promise<BibliographyModel[]> {
-    if (!this.#library) {
-      throw new Error('Invalid library model')
-    }
-    const bibliographiesRef = this.#topGun
-      .get('libraries')
-      .get(this.#library.id)
-      .get('books')
-      .map()
-      .get('bibliography')
-    const keys = await this.__keys(bibliographiesRef)
-    const bibliographies = await this.__shootPromiseMultiple<BibliographyModel>(
-      bibliographiesRef.once().map(), keys
-    )
-    console.log(bibliographies)
-    return bibliographies
-  }
-}
 
 /**
  * This is library data access object.
 */
 class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
-  #gun: IGunChainReference<Record<string, LibraryModel>, 'libraries'>
   #topGun: IGunChainReference<AppState>
   #issuer: string
 
   constructor (gun: IGunChainReference<AppState>, issuer: string) {
     super(gun.get('libraries'), 'library', issuer)
-    this.#gun = gun.get('libraries')
     this.#issuer = issuer
     this.#topGun = gun
   }
@@ -281,4 +102,4 @@ class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
   }
 }
 
-export { LibraryDao, LibraryBookDao }
+export { LibraryDao }

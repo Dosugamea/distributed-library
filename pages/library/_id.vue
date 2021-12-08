@@ -11,15 +11,14 @@
       :elements="elements"
     >
       <template #card="slotProps">
-        <nuxt-link :to="`/library/${slotProps.element.id}`">
+        <div @click="findLibraryBook(slotProps.element.id)">
           <card
             :title="slotProps.element.id"
             icon="cellphone-link"
           >
-            {{ slotProps.element.note }}
-            {{ slotProps.element.bibliography }}
+            {{ slotProps.element.name }}
           </card>
-        </nuxt-link>
+        </div>
       </template>
     </ElementList>
   </div>
@@ -28,8 +27,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import ElementList from '~/components/ElementList.vue'
-import { LibraryBookModel, LibraryModel } from '~/models/library'
-import { DaoWatcher, DaoWatcherState } from '~/dao/watcher'
+import { LibraryModel } from '~/models/library'
+import { DaoLibraryBookWatcher, DaoWatcherState } from '~/dao/watcher'
+import { LibraryBookDao } from '~/dao/libraryBook'
 
 @Component({
   components: {
@@ -41,7 +41,8 @@ export default class LibraryBooksListComponent extends Vue {
   libraryId = this.$route.params.id
   library: LibraryModel | null = null
   timer: NodeJS.Timeout | null = null
-  watcher: DaoWatcher<LibraryBookModel> | null = null
+  watcher: DaoLibraryBookWatcher | null = null
+  libraryBookDao: LibraryBookDao | null = null
 
   loadFailed () {
     if (this.timer != null) {
@@ -62,8 +63,8 @@ export default class LibraryBooksListComponent extends Vue {
     }, 5 * 1000)
     const library = await this.$db.libraryDao.get(this.libraryId)
     this.library = library
-    const libraryBookDao = this.$db.libraryDao.getBookDao(library)
-    this.watcher = new DaoWatcher(libraryBookDao)
+    this.libraryBookDao = this.$db.libraryDao.getBookDao(library)
+    this.watcher = new DaoLibraryBookWatcher(this.libraryBookDao)
     this.isLoading = false
     clearTimeout(this.timer)
   }
@@ -76,6 +77,11 @@ export default class LibraryBooksListComponent extends Vue {
 
   get elements () {
     return DaoWatcherState.elements
+  }
+
+  findLibraryBook (bibliographyId: string) {
+    const resp = this.libraryBookDao?.findBookByBibliographyId(bibliographyId)
+    return resp
   }
 }
 </script>

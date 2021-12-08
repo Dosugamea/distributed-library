@@ -11,11 +11,11 @@ import { BibliographyModel } from '@/models/bibliography'
  interface IDao<T> {
   createModel?(...params: any): T
   createModelAsync?(...params: any): Promise<T>
-  add(model: T): Promise<boolean>
+  add(model: T, ...params: any): Promise<boolean>
   edit(model: T): Promise<boolean>
   remove(model: T): Promise<boolean>
   list(): T[]
-  listBookAsBibliography?(): Promise<BibliographyModel[]>
+  listBookAsBibliography?(): BibliographyModel[]
   find(query: any): T[]
   count(): number
   get(id: string): Promise<T>

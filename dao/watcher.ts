@@ -62,11 +62,16 @@ class DaoWatcher<T extends ContentType> extends DaoWatcherBase<T, T> {
 }
 
 class DaoLibraryBookWatcher extends DaoWatcherBase<LibraryBookModel, BibliographyModel> {
-  async getElements (): Promise<BibliographyModel[]> {
-    if (this.dao.listBookAsBibliography) {
-      return await this.dao.listBookAsBibliography()
-    }
-    return []
+  getElements (): Promise<BibliographyModel[]> {
+    return new Promise<BibliographyModel[]>((resolve, reject) => {
+      try {
+        if (this.dao.listBookAsBibliography) {
+          resolve(this.dao.listBookAsBibliography())
+        }
+      } catch {
+        reject(new Error('Failed to get elements'))
+      }
+    })
   }
 }
 

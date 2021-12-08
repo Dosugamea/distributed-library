@@ -1,31 +1,6 @@
-import type { IGunChainReference } from 'gun/types/chain'
 import { ContentType } from './base/content'
 import { AdminId } from './base/ids'
-import { BibliographyType } from './bibliography'
-
-/*
-* 図書室の蔵書情報型
-*  インスタンス個別の蔵書情報DB(docs)で使用
-*
-* 編集可能なノード: 図書室の管理者
-*/
-
-/**
- * 図書室の蔵書情報
- */
-export type LibraryBookType = ContentType & {
-  /** 貸出可能な状態か */
-  rentable: boolean
-  /** 書誌 */
-  bibliography: IGunChainReference<BibliographyType>
-}
-
-/*
-* 図書室型
-*  インスタンス個別の蔵書情報DB(key-value)で使用
-*
-* 編集可能なノード: インスタンス内の(過半数以上にtrustされている)管理者
-*/
+import type { LibraryBookType } from './libraryBook'
 
 /**
  * 図書室情報

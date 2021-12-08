@@ -52,14 +52,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { LibraryModel } from '@/models/library'
 import { BibliographyModel } from '@/models/bibliography'
-import { LibraryBookDao } from '@/dao/library'
+import { LibraryBookDao } from '@/dao/libraryBook'
 import { DaoWatcher, DaoWatcherState } from '@/dao/watcher'
 
 @Component({})
 export default class LibraryAddPage extends Vue {
   labelPosition = 'on-border'
   isLoading = true
-  libraryId = 'vq7782C1oG5vJUWHybhvB8'
+  libraryId = 'u9iNrCLYjeWrmrj2dvCoP3'
   library: LibraryModel | null = null
   timer: NodeJS.Timeout | null = null
   libraryBookDao: LibraryBookDao | null = null
@@ -104,6 +104,9 @@ export default class LibraryAddPage extends Vue {
     if (this.targetBibliographyId == null) {
       return
     }
+    if (this.library == null) {
+      return
+    }
     const bibliography = await this.$db.bibliographyDao!.get(this.targetBibliographyId)
     if (bibliography == null) {
       this.$buefy.snackbar.open({
@@ -112,11 +115,12 @@ export default class LibraryAddPage extends Vue {
       })
       return
     }
-    const newModel = await this.libraryBookDao!.createModelAsync(
+    const newModel = this.libraryBookDao!.createModel(
       bibliography,
+      this.library,
       this.targetNote
     )
-    await this.libraryBookDao!.add(newModel)
+    await this.libraryBookDao!.add(newModel, bibliography, this.library)
     this.$buefy.snackbar.open({
       message: '登録に成功しました',
       type: 'is-success'
