@@ -145,11 +145,10 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     if (!dbBook) {
       throw new Error('Book was not found')
     }
-    if (!dbBook.rentable) {
+    if (dbBook.rentable === false) {
       throw new Error('The book is not available.')
     }
-    dbBook.rentable = false
-    await this.__edit(dbBook)
+    return await this.__editBoolean(dbBookRef.get('rentable'), false)
   }
 
   list () {

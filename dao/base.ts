@@ -206,6 +206,22 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
     })
   }
 
+  protected __editBoolean (modelRef: IGunChainReference<boolean, any, any>, value: boolean): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      const me = this
+      try {
+        // @ts-ignore
+        modelRef.put(value)
+        // @ts-ignore
+        me.addHistory('edit', me.#objName, String(value), modelRef).then(function () {
+          resolve(true)
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
   protected async __remove (model: T): Promise<boolean> {
     if (!model.id) {
       throw new Error(`Bad ${this.#objName} : id was not existed`)
