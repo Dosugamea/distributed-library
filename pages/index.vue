@@ -1,5 +1,10 @@
 <template>
   <div>
+    <b-loading
+      v-model="isLoading"
+      :is-full-page="true"
+      :can-cancel="false"
+    />
     <section class="hero has-text-centered is-medium" style="background: linear-gradient(30deg, #5c3d31, #734c3a, #8a5b43, #a26c4c, #b97d54, #d18f5c, #e8a264, #ffb56b);">
       <div class="hero-body">
         <p class="title has-text-white">
@@ -115,6 +120,7 @@ export default class IndexComponent extends Vue {
   name = 'HomePage'
   username = ''
   password = ''
+  isLoading = true
   openLoginForm = false
   isOpen = 0
   user : UserState | null = null
@@ -142,6 +148,7 @@ export default class IndexComponent extends Vue {
         this.user = this.$db.userDao!.getSelfProfile()
         this.$auth.loginWith('gun', this.user)
       }
+      this.isLoading = false
     }, 1500)
   }
 
