@@ -190,10 +190,10 @@ export default class BibliographyPage extends Vue {
 
   get bibliographyImage () {
     if (this.bibliography == null) {
-      return 'http://placehold.jp/800x1200.png'
+      return 'http://placehold.jp/800x1200.png?text=?'
     }
     if (this.bibliography.image === '') {
-      return 'http://placehold.jp/800x1200.png'
+      return 'http://placehold.jp/800x1200.png?text=?'
     }
     return this.bibliography.image
   }
