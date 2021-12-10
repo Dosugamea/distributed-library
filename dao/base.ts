@@ -288,17 +288,16 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
   ): Promise<boolean> {
     const logTime = this.getCurrentUnixTime()
     const log = new LogModel(
-      this.#issuer, action, target, value, logTime
+      this.getNewId(), this.#issuer, action, target, value, logTime
     )
     const me = this
     return new Promise<boolean>((resolve, reject) => {
-      ref.get('histories').get(String(logTime)).put(log, function (resp) {
-        if (resp.ok) {
-          resolve(true)
-        } else {
-          reject(new Error(`Failed to add ${me.#objName} history: ${resp.err}`))
-        }
-      })
+      try {
+        ref.get('histories').get(log.id).put(log)
+        resolve(true)
+      } catch (e) {
+        reject(new Error(`Failed to add ${me.#objName} history: ${e}`))
+      }
     })
   }
 }
