@@ -145,7 +145,7 @@ export default class BibliographyAddPage extends Vue {
       this.model.isbn = ''
     }
     const isbnMatched = this.$db.bibliographyDao!.find(
-      m => m.isbn === this.model.isbn
+      m => m.isbn === this.model.isbn && this.model.isbn !== ''
     )
     const titleMatched = this.$db.bibliographyDao!.find(
       m => m.name === this.model.name
