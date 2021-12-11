@@ -89,7 +89,6 @@ export default class LibraryBooksListComponent extends Vue {
     this.libraryBookDao = this.$db.libraryDao.getBookDao(library)
     this.watcher = new DaoLibraryBookWatcher(this.libraryBookDao)
     this.isLoading = false
-    console.log(library)
     clearTimeout(this.timer)
   }
 
@@ -125,11 +124,9 @@ export default class LibraryBooksListComponent extends Vue {
   }
 
   findLibraryBook (bibliographyId: string) {
-    const resp = this.libraryBookDao?.findBookByBibliographyId(bibliographyId)
-    if (resp == null) {
-      return
-    }
-    this.$router.push(`/bibliography/${bibliographyId}`)
+    const book = this.libraryBookDao?.findBookByBibliographyId(bibliographyId)
+    if (book == null) { return }
+    this.$router.push(`/library/${this.libraryId}/books/${book.id}`)
   }
 }
 </script>

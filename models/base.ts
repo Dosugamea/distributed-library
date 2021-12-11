@@ -5,13 +5,15 @@ import { LogType } from '@/types/base/log'
  * ログモデル
 */
 class LogModel implements LogType {
+  readonly id: string
   readonly issuer: string
   readonly action: string
   readonly target: string
   readonly value: string | number
   readonly createdDateUnix: number
 
-  constructor (issuer: string, action: string, target: string, value: string | number, createdDateUnix: number) {
+  constructor (id: string, issuer: string, action: string, target: string, value: string | number, createdDateUnix: number) {
+    this.id = id
     this.issuer = issuer
     this.action = action
     this.target = target
