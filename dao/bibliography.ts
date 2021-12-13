@@ -65,8 +65,8 @@ class BibliographyDao extends IDaoBase<BibliographyModel> implements IDao<Biblio
     return await this.__isExist(id)
   }
 
-  async histories (model: BibliographyModel): Promise<LogModel[]> {
-    return await this.__histories(model)
+  histories (): LogModel[] {
+    return this.__histories()
   }
 }
 

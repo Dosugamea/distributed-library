@@ -72,8 +72,8 @@ class LibraryDao extends IDaoBase<LibraryModel> implements IDao<LibraryModel> {
     return await this.__isExist(id)
   }
 
-  async histories (model: LibraryModel): Promise<LogModel[]> {
-    return await this.__histories(model)
+  histories (): LogModel[] {
+    return this.__histories()
   }
 
   private async __verifyOwnerPermission (library: LibraryModel) {

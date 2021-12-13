@@ -12,6 +12,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
   #library: LibraryModel | undefined = undefined
   #bibliographies: BibliographyModel[] = []
   #issuer: string
+  #histories: LogModel[] = []
 
   constructor (gun: IGunChainReference<AppState>, library: LibraryModel, issuer: string) {
     super(gun.get('libraries').get(library.id).get('books'), 'library-book', issuer)
@@ -25,7 +26,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     )
     const me = this
     // @ts-ignore
-    me.#gun.map().get('bibliography').once(function (data: BibliographyModel, key) {
+    this.#gun.map().get('bibliography').once(function (data: BibliographyModel, key) {
       me.#bibliographies = me.#bibliographies.filter(data => data.id !== key)
       if (!data.isDeleted) {
         me.#bibliographies.push(data)
@@ -43,6 +44,17 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
       // @ts-ignore
       note, true, bibliography.id, {}, library.id, {}, false
     )
+  }
+
+  initWatcher (book: LibraryBookModel) {
+    const me = this
+    // @ts-ignore
+    this.#gun.get(book.id).get('histories').map().on(function (data: LogModel, key: string) {
+      if (data.id) {
+        me.#histories = me.#histories.filter(data => data.id !== key)
+        me.#histories.push(data)
+      }
+    })
   }
 
   async add (
@@ -183,8 +195,12 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     return await this.__get(id)
   }
 
-  async histories (model: LibraryBookModel): Promise<LogModel[]> {
-    return await this.__histories(model)
+  histories (): LogModel[] {
+    return this.#histories
+  }
+
+  findInHistories (bookId: string): LogModel[] {
+    return this.#histories.filter(data => data.value === bookId)
   }
 
   private async __verifyModeratorPermission () {

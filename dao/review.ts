@@ -61,8 +61,8 @@ class ReviewDao extends IDaoBase<ReviewModel> implements IDao<ReviewModel> {
     return await this.__isExist(id)
   }
 
-  async histories (model: ReviewModel): Promise<LogModel[]> {
-    return await this.__histories(model)
+  histories (): LogModel[] {
+    return this.__histories()
   }
 }
 

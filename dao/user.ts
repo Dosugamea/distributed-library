@@ -13,7 +13,7 @@ class UserDao extends IDaoUtil {
   #user: UserState | null = null
   #userId: string = ''
   #isLoggedIn: boolean = false
-  #waitForCreate: boolean = false
+  #histories: LogModel[] = []
 
   constructor (gun: IGunChainReference<AppState>) {
     super()
@@ -23,6 +23,7 @@ class UserDao extends IDaoUtil {
     // @ts-ignore
     this.#gun.on('auth', (_) => {
       this.#userRef.get('profile').once((user) => {
+        // 新規アカウント発行時
         if (!user) {
           const createdTime = this.getCurrentUnixTime()
           const newUserProfile: UserState = {
@@ -52,10 +53,19 @@ class UserDao extends IDaoUtil {
           )
           this.#user = newUserProfile
           this.#userId = newUserProfile.id
+        // 既存アカウントでのログイン時
         } else {
           this.#user = user as UserState
           this.#userId = user.id
         }
+        // 貸出/返却記録の監視
+        const me = this
+        this.#userRef.get('profile').get('borrowOrReturn').on(function (data: LogModel, key: string) {
+          if (data.id) {
+            me.#histories = me.#histories.filter(data => data.id !== key)
+            me.#histories.push(data)
+          }
+        })
         this.#isLoggedIn = true
       })
     })
@@ -164,16 +174,11 @@ class UserDao extends IDaoUtil {
     return user
   }
 
-  async histories (): Promise<LogModel[]> {
+  histories (): LogModel[] {
     if (!this.#user) {
       throw new Error('UserDao must be initialized first.')
     }
-    const logRef = this.#userRef.get('profile').get('histories')
-    const keys = await this.__keys(logRef)
-    const logs = await this.__shootPromiseMultiple<LogModel>(
-      logRef.once().map(), keys
-    )
-    return logs
+    return this.#histories
   }
 }
 

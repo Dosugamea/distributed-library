@@ -20,7 +20,7 @@ import { BibliographyModel } from '@/models/bibliography'
   count(): number
   get(id: string): Promise<T>
   isExist(id: string): Promise<boolean>
-  histories(model: T): Promise<LogModel[]>
+  histories(): LogModel[]
 }
 
 class IDaoUtil {
@@ -147,6 +147,7 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
   #issuer = ''
   #gun: IGunChainReference
   #elements: ContentType[] = []
+  #histories: LogModel[] = []
 
   constructor (gun: IGunChainReference, objName: string, issuer: string) {
     super()
@@ -161,6 +162,13 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
         if (!data.isDeleted) {
           me.#elements.push(data)
         }
+      }
+    })
+    // @ts-ignore
+    this.#gun.get('histories').map().on(function (data: LogModel, key: string) {
+      if (data.id) {
+        me.#histories = me.#histories.filter(data => data.id !== key)
+        me.#histories.push(data)
       }
     })
   }
@@ -271,13 +279,8 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
     return this.#elements.filter(query as any) as T[]
   }
 
-  protected async __histories (model: T): Promise<LogModel[]> {
-    const logRef = this.#gun.get(model.id).get('histories')
-    const keys = await this.__keys(logRef)
-    const logs = await this.__shootPromiseMultiple<LogModel>(
-      logRef.once().map(), keys
-    )
-    return logs
+  protected __histories (): LogModel[] {
+    return this.#histories
   }
 
   private addHistory (
