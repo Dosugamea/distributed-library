@@ -40,8 +40,8 @@
           貸出/返却履歴
         </p>
         <b-table
-          v-if="historyData != null"
-          :data="historyData"
+          v-if="elements != []"
+          :data="elements"
           :current-page.sync="historyPage"
           :per-page="5"
           :paginated="true"
@@ -57,8 +57,8 @@
           aria-page-label="Page"
           aria-current-label="Current page"
         >
-          <b-table-column v-slot="props" field="createdTimeUnix" label="記録時刻" sortable centered>
-            {{ new Date(props.row.createdTimeUnix).toLocaleDateString() }}
+          <b-table-column v-slot="props" field="createdDateUnix" label="記録時刻" sortable centered>
+            {{ new Date(props.row.createdDateUnix * 1000).toLocaleDateString() }}
           </b-table-column>
 
           <b-table-column v-slot="props" field="issuer" label="ユーザー名" sortable centered>
@@ -66,7 +66,7 @@
           </b-table-column>
 
           <b-table-column v-slot="props" field="action" label="操作内容" sortable centered>
-            {{ props.row.action }}
+            {{ logType(props.row.action, props.row.value) }}
           </b-table-column>
         </b-table>
         <p v-else>
@@ -114,6 +114,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { BibliographyModel } from '@/models/bibliography'
 import { LibraryBookModel, LibraryModel } from '@/models/library'
 import { LibraryBookDao } from '@/dao/libraryBook'
+import { DaoLibraryBookHistoryWatcher, DaoWatcherState } from '~/dao/watcher'
 import { LogModel } from '@/models/base'
 
 @Component({})
@@ -129,6 +130,7 @@ export default class BibliographyPage extends Vue {
   libraryBookDao: LibraryBookDao | null = null
   historyData: LogModel | null = null
   historyPage: number = 1
+  watcher: DaoLibraryBookHistoryWatcher | null = null
 
   loadFailed (reason: string) {
     alert(reason)
@@ -137,6 +139,16 @@ export default class BibliographyPage extends Vue {
     }
     this.isLoading = false
     this.$router.back()
+  }
+
+  beforeDestroy () {
+    if (this.watcher != null) {
+      this.watcher.destroy()
+    }
+  }
+
+  get elements () {
+    return DaoWatcherState.elements
   }
 
   get bibliographyImage () {
@@ -157,6 +169,19 @@ export default class BibliographyPage extends Vue {
       return '所蔵中'
     }
     return '貸出中'
+  }
+
+  logType (status: string, value: any) {
+    switch (status) {
+      case 'add':
+        return '蔵書登録'
+      case 'remove':
+        return '蔵書消去'
+      case 'edit':
+        return value === 'false' ? '本の貸出' : '本の返却'
+      default:
+        return '不明'
+    }
   }
 
   get libraryName () {
@@ -194,6 +219,8 @@ export default class BibliographyPage extends Vue {
     this.library = library
     this.bibliography = bibliography
     this.book = book
+    this.libraryBookDao.initWatcher(this.book)
+    this.watcher = new DaoLibraryBookHistoryWatcher(this.libraryBookDao)
     // 読み込み完了
     this.isLoading = false
     clearTimeout(this.timer)
