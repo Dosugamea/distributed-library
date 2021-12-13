@@ -145,7 +145,7 @@ export default class IndexComponent extends Vue {
       if (this.$db.userDao!.isLoggedIn) {
         this.$db.startupDao()
         this.openLoginForm = false
-        this.user = this.$db.userDao!.getSelfProfile()
+        this.user = Object.assign({}, this.$db.userDao!.getSelfProfile())
         this.$auth.loginWith('gun', this.user)
       }
       this.isLoading = false
@@ -155,7 +155,7 @@ export default class IndexComponent extends Vue {
   processLoggedIn () {
     this.$db.startupDao()
     this.openLoginForm = false
-    this.user = this.$db.userDao!.getSelfProfile()
+    this.user = Object.assign({}, this.$db.userDao!.getSelfProfile())
     this.$auth.loginWith('gun', this.user)
   }
 

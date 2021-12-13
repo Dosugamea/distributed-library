@@ -4,13 +4,12 @@
       <div class="columns has-text-centered">
         <div class="column is-4-desktop">
           <p class="is-size-4">
-            {{ $auth.user.name }}
+            {{ username }}
           </p>
         </div>
         <div class="column is-4-desktop">
-          <p>レビュー数: {{ $auth.user.reviewCount }}</p>
-          <p>借りた冊数: {{ $auth.user.borrowCount }}</p>
-          <p>返した冊数: {{ $auth.user.returnCount }}</p>
+          <p>借りた冊数: {{ counts.borrowCount }}</p>
+          <p>返した冊数: {{ counts.returnCount }}</p>
         </div>
         <div class="column is-4-desktop">
           <p>
@@ -26,7 +25,7 @@
       <div
         v-for="card in cards_list"
         :key="card.title"
-        class="column is-3-desktop is-6-touch"
+        class="column is-4-desktop is-6-touch"
       >
         <HomeCard
           :title="card.title"
@@ -71,7 +70,9 @@ export default class IndexComponent extends Vue {
   timer : NodeJS.Timer | null = null
   counts = {
     libraries: 0,
-    bibliographies: 0
+    bibliographies: 0,
+    borrowCount: 0,
+    returnCount: 0
   }
 
   cards_list = [
@@ -92,12 +93,6 @@ export default class IndexComponent extends Vue {
       subtitle: '連合に登録された貸出履歴 全てを一覧表示します',
       icon: 'history',
       to: '/borrow/list'
-    },
-    {
-      title: 'レビュー 一覧',
-      subtitle: '連合に登録されたレビュー 全てを一覧表示します',
-      icon: 'star',
-      to: '/review/list'
     }
   ]
 
@@ -119,10 +114,16 @@ export default class IndexComponent extends Vue {
   mounted () {
     this.timer = setInterval(() => {
       if (!this.$db) { return }
-      if (!this.$db.libraryDao || !this.$db.bibliographyDao) { return }
+      if (!this.$db.libraryDao || !this.$db.bibliographyDao || !this.$db.userDao) { return }
       this.counts.bibliographies = this.$db.bibliographyDao.count()
       this.counts.libraries = this.$db.libraryDao.count()
+      const user = this.$db.userDao.getSelfProfile()
+      if (user != null) {
+        this.counts.borrowCount = user.borrowCount
+        this.counts.returnCount = user.returnCount
+      }
     }, 500)
+    console.log(this.$db.userDao?.getSelfProfile())
   }
 
   beforeDestroy () {
@@ -137,6 +138,13 @@ export default class IndexComponent extends Vue {
     document.cookie = 'name=; expires=0'
     this.$db.userDao!.logout()
     location.reload()
+  }
+
+  get username () {
+    if (this.$auth.user === null) {
+      return ''
+    }
+    return this.$auth.user.name
   }
 }
 </script>
