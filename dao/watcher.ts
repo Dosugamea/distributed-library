@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { IDao } from './base'
 import { ContentType } from '~/types/base/content'
 import type { BibliographyModel } from '@/models/bibliography'
-import type { LibraryBookModel } from '@/models/library'
+import type { LogModel } from '@/models/base'
 
 type State<T extends ContentType> = {
   elements: T[]
@@ -16,16 +16,16 @@ const DaoWatcherMutations = {
   }
 }
 
-class DaoWatcherBase<T extends ContentType, U extends ContentType> {
-  protected dao: IDao<T>
+class DaoWatcherBase<U> {
+  protected dao: IDao<any>
   #timer: NodeJS.Timer | null = null
 
-  constructor (dao: IDao<T>) {
+  constructor (dao: IDao<any>) {
     this.dao = dao
     this.#timer = setInterval(() => {
       if (dao != null) {
         this.getElements().then((resp) => {
-          DaoWatcherMutations.setElements(resp)
+          DaoWatcherMutations.setElements(resp as unknown as ContentType[])
         })
       }
     }, 500)
@@ -49,7 +49,7 @@ class DaoWatcherBase<T extends ContentType, U extends ContentType> {
   }
 }
 
-class DaoWatcher<T extends ContentType> extends DaoWatcherBase<T, T> {
+class DaoWatcher<T extends ContentType> extends DaoWatcherBase<T> {
   getElements () : Promise<T[]> {
     return new Promise<T[]>((resolve, reject) => {
       try {
@@ -61,7 +61,7 @@ class DaoWatcher<T extends ContentType> extends DaoWatcherBase<T, T> {
   }
 }
 
-class DaoLibraryBookWatcher extends DaoWatcherBase<LibraryBookModel, BibliographyModel> {
+class DaoLibraryBookWatcher extends DaoWatcherBase<BibliographyModel> {
   getElements (): Promise<BibliographyModel[]> {
     return new Promise<BibliographyModel[]>((resolve, reject) => {
       try {
@@ -75,4 +75,16 @@ class DaoLibraryBookWatcher extends DaoWatcherBase<LibraryBookModel, Bibliograph
   }
 }
 
-export { DaoWatcher, DaoWatcherState, DaoLibraryBookWatcher }
+class DaoLibraryBookHistoryWatcher extends DaoWatcherBase<LogModel> {
+  getElements (): Promise<LogModel[]> {
+    return new Promise<LogModel[]>((resolve, reject) => {
+      try {
+        resolve(this.dao.histories())
+      } catch {
+        reject(new Error('Failed to get elements'))
+      }
+    })
+  }
+}
+
+export { DaoWatcher, DaoWatcherState, DaoLibraryBookWatcher, DaoLibraryBookHistoryWatcher }
