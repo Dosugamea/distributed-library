@@ -103,24 +103,15 @@ export default class LibraryBooksListComponent extends Vue {
   }
 
   get libraryName () {
-    if (this.library == null) {
-      return ''
-    }
-    return this.library.name
+    return this.library != null ? this.library.name : ''
   }
 
   get libraryNote () {
-    if (this.library == null) {
-      return ''
-    }
-    return this.library.note
+    return this.library != null ? this.library.note : ''
   }
 
   get libraryOwner () {
-    if (this.library == null) {
-      return ''
-    }
-    return this.library.owner
+    return this.library != null ? this.library.owner : ''
   }
 
   findLibraryBook (bibliographyId: string) {
