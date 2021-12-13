@@ -214,14 +214,18 @@ class IDaoBase<T extends ContentType> extends IDaoUtil {
     })
   }
 
-  protected __editBoolean (modelRef: IGunChainReference<boolean, any, any>, value: boolean): Promise<boolean> {
+  protected __editBoolean (
+    modelRef: IGunChainReference<boolean, any, any>,
+    value: boolean,
+    logToRef: IGunChainReference<any, any, any>
+  ): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       const me = this
       try {
         // @ts-ignore
         modelRef.put(value)
         // @ts-ignore
-        me.addHistory('edit', me.#objName, String(value), modelRef).then(function () {
+        me.addHistory('edit', me.#objName, String(value), logToRef).then(function () {
           resolve(true)
         })
       } catch (err) {
