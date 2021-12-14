@@ -245,6 +245,7 @@ export default class LibraryAddPage extends Vue {
       return
     }
     await this.libraryBookDao.borrowBook(book)
+    await this.$db.userDao!.borrowBook(book, this.targets.library, this.targets.bibliography)
     this.isLoading = false
     alert(`${this.libraryName}から${this.bibliographyName}を借りました`)
     this.$router.back()
