@@ -13,7 +13,7 @@
         <p class="subtitle has-text-white">
           P2P Integrated Library System Powered by GunDB
         </p>
-        <p v-if="!user" class="subtitle">
+        <p v-if="!isLoggedIn" class="subtitle">
           <b-button type="is-secondary" size="is-large" @click="openLoginForm = !openLoginForm">
             ログインして 本棚を開く
           </b-button>
@@ -22,7 +22,7 @@
     </section>
     <section class="container mt-5">
       <card
-        v-if="user"
+        v-if="isLoggedIn"
         title="Modern"
         icon="account"
       >
@@ -110,7 +110,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { UserState } from '@/types/userState'
 
 @Component({
   layout: 'top'
@@ -121,9 +120,9 @@ export default class IndexComponent extends Vue {
   username = ''
   password = ''
   isLoading = true
+  isLoggedIn = false
   openLoginForm = false
   isOpen = 0
-  user : UserState | null = null
   collapses = [
     {
       title: 'Distributed Library とは?',
@@ -145,8 +144,8 @@ export default class IndexComponent extends Vue {
       if (this.$db.userDao!.isLoggedIn) {
         this.$db.startupDao()
         this.openLoginForm = false
-        this.user = Object.assign({}, this.$db.userDao!.getSelfProfile())
-        this.$auth.loginWith('gun', this.user)
+        this.$auth.loginWith('gun', this.$db.userDao!.getSelfProfile())
+        this.isLoggedIn = true
       }
       this.isLoading = false
     }, 1500)
@@ -155,8 +154,8 @@ export default class IndexComponent extends Vue {
   processLoggedIn () {
     this.$db.startupDao()
     this.openLoginForm = false
-    this.user = Object.assign({}, this.$db.userDao!.getSelfProfile())
-    this.$auth.loginWith('gun', this.user)
+    this.$auth.loginWith('gun', this.$db.userDao!.getSelfProfile())
+    this.isLoggedIn = true
   }
 
   async loginUser () {
