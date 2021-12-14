@@ -143,7 +143,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     return await this.__remove(book)
   }
 
-  async rent (book: LibraryBookModel) {
+  async borrowBook (book: LibraryBookModel) {
     if (!book.id) {
       throw new Error('Invalid book model')
     }
@@ -161,6 +161,26 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
       throw new Error('The book is not available.')
     }
     return await this.__editBoolean(dbBookRef.get('rentable'), false, dbBookRef)
+  }
+
+  async returnBook (book: LibraryBookModel) {
+    if (!book.id) {
+      throw new Error('Invalid book model')
+    }
+    if (!this.#library) {
+      throw new Error('Invalid library model')
+    }
+    const dbBookRef = this.#gun.get(book.id)
+    const dbBook = await this.__shootPromise<LibraryBookModel>(
+      dbBookRef
+    )
+    if (!dbBook) {
+      throw new Error('Book was not found')
+    }
+    if (dbBook.rentable === true) {
+      throw new Error('The book is already available.')
+    }
+    return await this.__editBoolean(dbBookRef.get('rentable'), true, dbBookRef)
   }
 
   list () {
