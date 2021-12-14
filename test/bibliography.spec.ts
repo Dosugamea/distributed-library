@@ -105,7 +105,7 @@ describe('dao-bibliographiesクラスのテスト', () => {
   test('履歴を取得できる', async () => {
     const model = createModel()
     await dao.add(model)
-    const histories = await dao.histories(model)
+    const histories = await dao.histories()
     expect(histories.length).toBeGreaterThan(0)
   })
 
