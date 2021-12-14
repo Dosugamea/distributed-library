@@ -164,7 +164,10 @@ export default class IndexComponent extends Vue {
       await this.$db.userDao!.loginUser(this.username, this.password)
       this.processLoggedIn()
     } catch (e) {
-      console.error(e)
+      this.$buefy.snackbar.open({
+        message: `エラー: ${e}`,
+        type: 'is-warning'
+      })
     }
   }
 
@@ -175,7 +178,10 @@ export default class IndexComponent extends Vue {
       await this.$db.userDao!.loginUser(this.username, this.password)
       this.processLoggedIn()
     } catch (e) {
-      console.error(e)
+      this.$buefy.snackbar.open({
+        message: `エラー: ${e}`,
+        type: 'is-warning'
+      })
     }
   }
 }
