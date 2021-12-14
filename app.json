@@ -1,0 +1,27 @@
+{
+    "name": "distributed-library",
+    "stack": "heroku-18",
+    "website": "https://github.com/Dosugamea/distributed-library",
+    "repository": "https://github.com/Dosugamea/distributed-library",
+    "logo": "https://avatars.githubusercontent.com/u/17107514?s=400&u=04f2f5f095f03a15ec28adc8c651fc189422140a&v=4",
+    "keywords": ["node", "gun", "library"],
+    "description": "Distributed library powered by gunDB",
+    "env": {
+      "NPM_CONFIG_PRODUCTION": {
+        "description": "If you do not want default features, set to \"true\".",
+        "value": "false"
+      },
+      "HOST": {
+        "description": "The hostname to bind to.",
+        "value": "0.0.0.0"
+      },
+      "NODE_ENV": {
+        "description": "The environment development or production.",
+        "value": "production"
+      },
+      "PEERS": {
+        "description": "Comma-separated list of peer urls to connect to",
+        "required": false
+      }
+    }
+  }

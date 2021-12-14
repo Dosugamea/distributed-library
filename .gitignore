@@ -88,3 +88,7 @@ sw.*
 
 # Vim swap files
 *.swp
+radata-*
+radata/*
+gun.lnk
+memo.txt

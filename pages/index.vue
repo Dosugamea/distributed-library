@@ -1,53 +1,188 @@
 <template>
-  <section class="section">
-    <div class="columns is-mobile">
+  <div>
+    <b-loading
+      v-model="isLoading"
+      :is-full-page="true"
+      :can-cancel="false"
+    />
+    <section class="hero has-text-centered is-medium" style="background: linear-gradient(30deg, #5c3d31, #734c3a, #8a5b43, #a26c4c, #b97d54, #d18f5c, #e8a264, #ffb56b);">
+      <div class="hero-body">
+        <p class="title has-text-white">
+          Distributed Library
+        </p>
+        <p class="subtitle has-text-white">
+          P2P Integrated Library System Powered by GunDB
+        </p>
+        <p v-if="!isLoggedIn" class="subtitle">
+          <b-button type="is-secondary" size="is-large" @click="openLoginForm = !openLoginForm">
+            ログインして 本棚を開く
+          </b-button>
+        </p>
+      </div>
+    </section>
+    <section class="container mt-5">
       <card
-        title="Free"
-        icon="github"
-      >
-        Open source on <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
-
-      <card
-        title="Responsive"
-        icon="cellphone-link"
-      >
-        <b class="has-text-grey">
-          Every
-        </b> component is responsive
-      </card>
-
-      <card
+        v-if="isLoggedIn"
         title="Modern"
-        icon="alert-decagram"
+        icon="account"
       >
-        Built with <a href="https://vuejs.org/">
-          Vue.js
-        </a> and <a href="http://bulma.io/">
-          Bulma
-        </a>
+        ログインに成功しました。
+        リダイレクトします...
       </card>
+      <b-collapse
+        v-for="(collapse, index) of collapses"
+        :key="index"
+        class="card"
+        animation="slide"
+        :open="isOpen == index"
+        @open="isOpen = index"
+      >
+        <template #trigger="props">
+          <div
+            class="card-header"
+            role="button"
+          >
+            <p class="card-header-title">
+              {{ collapse.title }}
+            </p>
+            <a class="card-header-icon">
+              <b-icon :icon="props.open ? 'menu-down' : 'menu-up'" />
+            </a>
+          </div>
+        </template>
+        <div class="card-content">
+          <div class="content">
+            {{ collapse.text }}
+          </div>
+        </div>
+      </b-collapse>
+    </section>
+    <b-modal v-model="openLoginForm">
+      <form action="">
+        <div class="modal-card" style="width: auto">
+          <header class="modal-card-head">
+            <p class="modal-card-title">
+              ユーザーログイン
+            </p>
+            <button
+              type="button"
+              class="delete"
+              @click="$emit('close')"
+            />
+          </header>
+          <section class="modal-card-body">
+            <b-field label="ユーザー名">
+              <b-input
+                v-model="username"
+                type="text"
+                placeholder="Your username"
+                required
+              />
+            </b-field>
 
-      <card
-        title="Lightweight"
-        icon="arrange-bring-to-front"
-      >
-        No other internal dependency
-      </card>
-    </div>
-  </section>
+            <b-field label="パスワード">
+              <b-input
+                v-model="password"
+                type="password"
+                password-reveal
+                placeholder="Your password"
+                required
+              />
+            </b-field>
+          </section>
+          <footer class="modal-card-foot">
+            <b-button
+              label="ログイン"
+              type="is-primary"
+              @click="loginUser"
+            />
+            <b-button
+              label="アカウント作成"
+              type="is-secondary"
+              @click="createUser"
+            />
+          </footer>
+        </div>
+      </form>
+    </b-modal>
+  </div>
 </template>
 
-<script>
-import Card from '~/components/Card'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
 
-export default {
-  name: 'HomePage',
+@Component({
+  layout: 'top'
+})
+export default class IndexComponent extends Vue {
+  auth = false
+  name = 'HomePage'
+  username = ''
+  password = ''
+  isLoading = true
+  isLoggedIn = false
+  openLoginForm = false
+  isOpen = 0
+  collapses = [
+    {
+      title: 'Distributed Library とは?',
+      text: 'みんなの本棚をシェアする本のシェアリングコミュニティです。'
+    },
+    {
+      title: 'どうやって使うの?',
+      text: '(後で書く)'
+    },
+    {
+      title: 'どうやって本棚をシェアするの?',
+      text: '(後で書く)'
+    }
+  ]
 
-  components: {
-    Card
+  mounted () {
+    this.$db.initDao()
+    setTimeout(() => {
+      if (this.$db.userDao!.isLoggedIn) {
+        this.$db.startupDao()
+        this.openLoginForm = false
+        this.$auth.loginWith('gun', this.$db.userDao!.getSelfProfile())
+        this.isLoggedIn = true
+      }
+      this.isLoading = false
+    }, 1500)
+  }
+
+  processLoggedIn () {
+    this.$db.startupDao()
+    this.openLoginForm = false
+    this.$auth.loginWith('gun', this.$db.userDao!.getSelfProfile())
+    this.isLoggedIn = true
+  }
+
+  async loginUser () {
+    this.$db.initDao()
+    try {
+      await this.$db.userDao!.loginUser(this.username, this.password)
+      this.processLoggedIn()
+    } catch (e) {
+      this.$buefy.snackbar.open({
+        message: `エラー: ${e}`,
+        type: 'is-warning'
+      })
+    }
+  }
+
+  async createUser () {
+    this.$db.initDao()
+    try {
+      await this.$db.userDao!.createUser(this.username, this.password)
+      await this.$db.userDao!.loginUser(this.username, this.password)
+      this.processLoggedIn()
+    } catch (e) {
+      this.$buefy.snackbar.open({
+        message: `エラー: ${e}`,
+        type: 'is-warning'
+      })
+    }
   }
 }
 </script>

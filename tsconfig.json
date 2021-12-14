@@ -21,13 +21,14 @@
       ],
       "@/*": [
         "./*"
-      ]
+      ],
     },
     "types": [
       "@nuxt/types",
-      "@nuxtjs/axios",
       "@nuxt/content",
-      "@types/node"
+      "@types/node",
+      "@types/jest",
+      "buefy/types"
     ]
   },
   "exclude": [
