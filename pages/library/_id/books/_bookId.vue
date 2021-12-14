@@ -302,28 +302,36 @@ export default class BibliographyPage extends Vue {
     clearTimeout(this.timer)
   }
 
-  async rentBook () {
+  initBookChange () {
     this.isLoading = true
     this.showConfirm = false
+    this.showReturnConfirm = false
+  }
+
+  endBookChange () {
+    this.isLoading = false
+  }
+
+  async rentBook () {
+    this.initBookChange()
     if (this.book == null || this.libraryBookDao == null || this.library == null || this.bibliography == null) {
       return
     }
     await this.libraryBookDao.borrowBook(this.book)
     await this.$db.userDao!.borrowBook(this.book, this.library, this.bibliography)
     this.book.rentable = false
-    this.isLoading = false
+    this.endBookChange()
   }
 
   async returnBook () {
-    this.isLoading = true
-    this.showConfirm = false
+    this.initBookChange()
     if (this.book == null || this.libraryBookDao == null || this.library == null || this.bibliography == null) {
       return
     }
     await this.libraryBookDao.returnBook(this.book)
     await this.$db.userDao!.returnBook(this.book, this.library, this.bibliography)
     this.book.rentable = true
-    this.isLoading = false
+    this.endBookChange()
   }
 }
 </script>
