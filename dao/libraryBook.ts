@@ -27,6 +27,9 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     const me = this
     // @ts-ignore
     this.#gun.map().get('bibliography').once(function (data: BibliographyModel, key) {
+      if (!data.id) {
+        return
+      }
       me.#bibliographies = me.#bibliographies.filter(data => data.id !== key)
       if (!data.isDeleted) {
         me.#bibliographies.push(data)
@@ -223,7 +226,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     return this.#histories.filter(data => data.value === bookId)
   }
 
-  private async __verifyModeratorPermission () {
+  private __verifyModeratorPermission () {
     if (!this.#library) {
       throw new Error('Invalid library model')
     }
@@ -231,16 +234,7 @@ class LibraryBookDao extends IDaoBase<LibraryBookModel> implements IDao<LibraryB
     if (!owner) {
       throw new Error('Library owner is not found')
     }
-    const adminsRef = this.#topGun.get('libraries').get(this.#library.id).get('admins')
-    const obj = await this.__shootPromise<object>(adminsRef)
-    let admins: string[] = []
-    // @ts-ignore
-    if (obj === 'aaa') {
-      const keys = await this.__keys(adminsRef)
-      admins = await this.__shootPromiseMultiple<string>(
-        adminsRef.once().map(), keys
-      )
-    }
+    const admins: string[] = []
     if (!(owner + admins).includes(this.#issuer)) {
       throw new Error("You can't modify this library")
     }
