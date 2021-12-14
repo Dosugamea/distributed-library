@@ -219,8 +219,6 @@ export default class BibliographyPage extends Vue {
     this.displayData.発売日 = new Date(bibliography.publishedDateUnix * 1000).toJSON().slice(0, 10)
     this.displayData.ISBN = String(bibliography.isbn)
     this.displayData.メモ = bibliography.note
-    this.displayData.総読者数 = String(0)
-    this.displayData.総レビュー数 = String(0)
     this.isLoading = false
     clearTimeout(this.timer)
   }
