@@ -43,8 +43,17 @@
           maxlength="300"
         />
       </b-field>
-      <input type="submit" class="button is-primary is-large" value="本棚を追加する">
+      <input type="submit" class="button is-primary is-large" value="蔵書を追加する">
     </form>
+    <div class="mt-4 has-text-centered">
+      <b-button
+        tag="router-link"
+        to="/bibliography/add"
+        type="is-secondary"
+        size="is-small"
+        label="書誌追加画面へ移動"
+      />
+    </div>
   </section>
 </template>
 
