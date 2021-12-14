@@ -6,8 +6,8 @@
       :can-cancel="false"
     />
     <div class="box">
-      <div class="columns is-vcentered is-justify-content-space-around">
-        <div class="is-4">
+      <div class="columns is-vcentered is-justify-content-space-around has-text-centered">
+        <div class="is-4 has-text-centered">
           <b-icon
             icon="bookshelf"
             size="is-large"
@@ -21,15 +21,22 @@
             {{ libraryNote }}
           </p>
         </div>
-        <div class="is-4">
+        <div class="mt-1 is-4 has-text-centered">
           <p class="subtitle">
             作成者: {{ libraryOwner }}
           </p>
         </div>
+        <b-button
+          v-if="isOwner"
+          class="is-primary mt-1"
+          size="is-medium"
+          label="蔵書を追加"
+          @click="jumpAddBook"
+        />
       </div>
     </div>
     <ElementList
-      title="本棚の蔵書一覧"
+      title="蔵書一覧"
       icon="book"
       :elements="elements"
     >
@@ -84,12 +91,17 @@ export default class LibraryBooksListComponent extends Vue {
       alert('データ取得がタイムアウトしました')
       this.loadFailed()
     }, 5 * 1000)
-    const library = await this.$db.libraryDao.get(this.libraryId)
-    this.library = library
-    this.libraryBookDao = this.$db.libraryDao.getBookDao(library)
-    this.watcher = new DaoLibraryBookWatcher(this.libraryBookDao)
-    this.isLoading = false
-    clearTimeout(this.timer)
+    try {
+      const library = await this.$db.libraryDao.get(this.libraryId)
+      this.library = library
+      this.libraryBookDao = this.$db.libraryDao.getBookDao(library)
+      this.watcher = new DaoLibraryBookWatcher(this.libraryBookDao)
+      this.isLoading = false
+      clearTimeout(this.timer)
+    } catch {
+      alert('指定された本棚は存在しません')
+      this.loadFailed()
+    }
   }
 
   beforeDestroy () {
@@ -112,6 +124,14 @@ export default class LibraryBooksListComponent extends Vue {
 
   get libraryOwner () {
     return this.library != null ? this.library.owner : ''
+  }
+
+  get isOwner () {
+    return this.$db.userDao?.userId === this.library?.owner
+  }
+
+  jumpAddBook () {
+    this.$router.push(`/library/${this.libraryId}/books/add`)
   }
 
   findLibraryBook (bibliographyId: string) {
