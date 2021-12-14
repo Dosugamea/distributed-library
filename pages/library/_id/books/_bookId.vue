@@ -19,6 +19,18 @@
             <p class="is-size-3">
               {{ bibliography.name }}
             </p>
+            <div v-for="(value, key, index) in displayData" :key="index" class="mt-3 columns is-justify-content-space-between">
+              <div class="column is-4">
+                <p class="has-text-weight-bold is-size-5">
+                  {{ key }}
+                </p>
+              </div>
+              <div class="column is-4">
+                <p class="is-size-5">
+                  {{ value }}
+                </p>
+              </div>
+            </div>
             <p class="is-size-4">
               {{ rentableStatus }}
             </p>
@@ -28,6 +40,14 @@
                 type="is-primary is-large"
                 :disabled="isLoading"
                 @click="showConfirm = true"
+              />
+            </p>
+            <p v-if="isBorrowing" class="is-size-4">
+              <b-button
+                label="この本を返す"
+                type="is-primary is-large"
+                :disabled="isLoading"
+                @click="showReturnConfirm = true"
               />
             </p>
           </div>
@@ -106,6 +126,38 @@
         </div>
       </form>
     </b-modal>
+    <b-modal v-model="showReturnConfirm">
+      <form action="">
+        <div class="modal-card" style="width: auto">
+          <header class="modal-card-head">
+            <p class="modal-card-title">
+              本を返す
+            </p>
+          </header>
+          <section class="modal-card-body">
+            <p>
+              {{ libraryName }} に
+              {{ bibliographyName }} を 返しましたか?
+            </p>
+            <p>
+              (この下の返すを押すと 返却記録が確定します)
+            </p>
+          </section>
+          <footer class="modal-card-foot">
+            <b-button
+              label="返す"
+              type="is-primary"
+              @click="returnBook"
+            />
+            <b-button
+              label="キャンセル"
+              type="is-secondary"
+              @click="showReturnConfirm = false"
+            />
+          </footer>
+        </div>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -121,7 +173,9 @@ import { LogModel } from '@/models/base'
 export default class BibliographyPage extends Vue {
   isLoading = true
   showConfirm = false
+  showReturnConfirm = false
   timer: NodeJS.Timeout | null = null
+  displayData: { [key: string]: string } = {}
   libraryId = this.$route.params.id
   bookId = this.$route.params.bookId
   library: LibraryModel | null = null
@@ -169,6 +223,21 @@ export default class BibliographyPage extends Vue {
       return '所蔵中'
     }
     return '貸出中'
+  }
+
+  get isBorrowing () {
+    if (this.$db.userDao == null) {
+      return false
+    }
+    const histories = this.$db.userDao.borrowOrReturn().filter(
+      log => log.target === this.bookId
+    ).sort(
+      (a, b) => b.createdDateUnix - a.createdDateUnix
+    )
+    if (histories.length === 0) {
+      return false
+    }
+    return histories[0].action === 'borrow'
   }
 
   logType (status: string, value: any) {
@@ -221,6 +290,13 @@ export default class BibliographyPage extends Vue {
     this.book = book
     this.libraryBookDao.initWatcher(this.book)
     this.watcher = new DaoLibraryBookHistoryWatcher(this.libraryBookDao)
+    this.displayData.カテゴリ = bibliography.category
+    this.displayData.著者 = bibliography.author
+    this.displayData.出版社 = bibliography.publisher
+    this.displayData.発売日 = new Date(bibliography.publishedDateUnix * 1000).toJSON().slice(0, 10)
+    this.displayData.ISBN = bibliography.isbn ? String(bibliography.isbn) : '無し'
+    this.displayData.書誌メモ = bibliography.note ? bibliography.note : '無し'
+    this.displayData.蔵書メモ = book.note ? book.note : '無し'
     // 読み込み完了
     this.isLoading = false
     clearTimeout(this.timer)
@@ -229,11 +305,24 @@ export default class BibliographyPage extends Vue {
   async rentBook () {
     this.isLoading = true
     this.showConfirm = false
-    if (this.book == null || this.libraryBookDao == null) {
+    if (this.book == null || this.libraryBookDao == null || this.library == null || this.bibliography == null) {
       return
     }
-    await this.libraryBookDao.rent(this.book)
+    await this.libraryBookDao.borrowBook(this.book)
+    await this.$db.userDao!.borrowBook(this.book, this.library, this.bibliography)
     this.book.rentable = false
+    this.isLoading = false
+  }
+
+  async returnBook () {
+    this.isLoading = true
+    this.showConfirm = false
+    if (this.book == null || this.libraryBookDao == null || this.library == null || this.bibliography == null) {
+      return
+    }
+    await this.libraryBookDao.returnBook(this.book)
+    await this.$db.userDao!.returnBook(this.book, this.library, this.bibliography)
+    this.book.rentable = true
     this.isLoading = false
   }
 }
