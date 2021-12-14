@@ -2,7 +2,9 @@ import type { IGunChainReference } from 'gun/types/chain'
 import type { AppState } from '@/types/appState'
 import type { UserState } from '@/types/userState'
 import { LogModel } from '@/models/base'
+import { LibraryBookModel, LibraryModel } from '@/models/library'
 import { IDaoUtil } from '@/dao/base'
+import { BibliographyModel } from '~/models/bibliography'
 
 /**
  * This is user data access object.
@@ -10,15 +12,19 @@ import { IDaoUtil } from '@/dao/base'
 class UserDao extends IDaoUtil {
   #gun: IGunChainReference<AppState>
   #userRef: IGunChainReference
+  userRef: IGunChainReference
   #user: UserState | null = null
   #userId: string = ''
   #isLoggedIn: boolean = false
+  #borrowOrReturn: LogModel[] = []
   #histories: LogModel[] = []
+  #libraries: LibraryModel[] = []
 
   constructor (gun: IGunChainReference<AppState>) {
     super()
     this.#gun = gun
     this.#userRef = this.#gun.user()
+    this.userRef = this.#userRef
     this.#userRef.recall({ sessionStorage: true })
     // @ts-ignore
     this.#gun.on('auth', (_) => {
@@ -60,10 +66,22 @@ class UserDao extends IDaoUtil {
         }
         // 貸出/返却記録の監視
         const me = this
-        this.#userRef.get('profile').get('borrowOrReturn').on(function (data: LogModel, key: string) {
+        this.#userRef.get('profile').get('histories').map().on(function (data: LogModel, key: string) {
           if (data.id) {
             me.#histories = me.#histories.filter(data => data.id !== key)
             me.#histories.push(data)
+          }
+        })
+        this.#userRef.get('profile').get('borrowOrReturn').map().on(function (data: LogModel, key: string) {
+          if (data.id) {
+            me.#borrowOrReturn = me.#borrowOrReturn.filter(data => data.id !== key)
+            me.#borrowOrReturn.push(data)
+          }
+        })
+        this.#userRef.get('profile').get('libraries').map().on(function (data: LibraryModel, key: string) {
+          if (data.id) {
+            me.#libraries = me.#libraries.filter(data => data.id !== key)
+            me.#libraries.push(data)
           }
         })
         this.#isLoggedIn = true
@@ -139,24 +157,63 @@ class UserDao extends IDaoUtil {
     })
   }
 
-  private __addLog (fieldName: string, logRef: IGunChainReference<Record<string, LogModel>>) {
+  private __addHistory (
+    action: string,
+    target: string,
+    value: string,
+    fieldName: string
+  ): Promise<boolean> {
+    const logTime = this.getCurrentUnixTime()
+    const log = new LogModel(
+      this.getNewId(), this.#userId, action, target, value, logTime
+    )
+    const me = this
     return new Promise<boolean>((resolve, reject) => {
-      setTimeout(() => {
-        reject(new Error('Adding log time-outed'))
-      }, 5000)
-      const time = this.getCurrentUnixTime()
-      this.#userRef.get('profile').get(fieldName).get(time).put(logRef, () => {
+      try {
+        me.#userRef.get('profile').get(fieldName).get(log.id).put(log)
         resolve(true)
-      })
+      } catch (e) {
+        reject(new Error(`Failed to add history: ${e}`))
+      }
     })
   }
 
-  borrowBook (logRef: IGunChainReference<Record<string, LogModel>>) {
-    return this.__addLog('borrowOrReturn', logRef)
+  private async __addCount (fieldName: string) {
+    const currentCount = await this.__shootPromise<number>(
+      this.#userRef.get('profile').get(fieldName)
+    )
+    console.log(currentCount)
+    if (currentCount !== undefined) {
+      // @ts-ignore
+      this.#userRef.get('profile').get(fieldName).put(currentCount + 1)
+    }
   }
 
-  returnBook (logRef: IGunChainReference<Record<string, LogModel>>) {
-    return this.__addLog('borrowOrReturn', logRef)
+  async createLibrary (library: LibraryModel) {
+    const libraryRef = this.#gun.get('libraries').get(library.id)
+    this.#userRef.get('profile').get('libraries').get(library.id).put(libraryRef)
+    await this.__addCount('libraryCount')
+    await this.__addHistory('add', 'library', library.id, 'histories')
+  }
+
+  async borrowBook (book: LibraryBookModel, library: LibraryModel, bibliography: BibliographyModel) {
+    await this.__addCount('borrowCount')
+    await this.__addHistory(
+      'borrow',
+      book.id,
+      `${book.bibliographyId}-${library.id}-${library.name}-${bibliography.id}-${bibliography.name}`,
+      'borrowOrReturn'
+    )
+  }
+
+  async returnBook (book: LibraryBookModel, library: LibraryModel, bibliography: BibliographyModel) {
+    await this.__addCount('returnCount')
+    await this.__addHistory(
+      'return',
+      book.id,
+      `${book.bibliographyId}-${library.id}-${library.name}-${bibliography.id}-${bibliography.name}`,
+      'borrowOrReturn'
+    )
   }
 
   getSelfProfile (): UserState | null {
@@ -179,6 +236,20 @@ class UserDao extends IDaoUtil {
       throw new Error('UserDao must be initialized first.')
     }
     return this.#histories
+  }
+
+  libraries (): LibraryModel[] {
+    if (!this.#user) {
+      throw new Error('UserDao must be initialized first.')
+    }
+    return this.#libraries
+  }
+
+  borrowOrReturn (): LogModel[] {
+    if (!this.#user) {
+      throw new Error('UserDao must be initialized first.')
+    }
+    return this.#borrowOrReturn
   }
 }
 

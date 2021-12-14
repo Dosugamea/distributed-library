@@ -68,6 +68,7 @@ export default class LibraryAddPage extends Vue {
       this.$db.userDao!.userId
     )
     await this.$db.libraryDao!.add(newModel)
+    await this.$db.userDao!.createLibrary(newModel)
     this.$buefy.snackbar.open({
       message: '登録に成功しました',
       type: 'is-success'
