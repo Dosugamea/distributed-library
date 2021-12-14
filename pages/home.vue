@@ -37,7 +37,7 @@
       <div
         v-for="card in cards_add"
         :key="card.title"
-        class="column is-6-desktop is-12-touch"
+        class="column is-12-desktop is-12-touch"
       >
         <HomeCard
           :title="card.title"
@@ -102,12 +102,6 @@ export default class IndexComponent extends Vue {
       subtitle: '連合に 新しい本棚を追加します',
       icon: 'bookshelf',
       to: '/library/add'
-    },
-    {
-      title: '書誌 登録',
-      subtitle: '連合に 書誌を追加します',
-      icon: 'book',
-      to: '/bibliography/add'
     }
   ]
 
