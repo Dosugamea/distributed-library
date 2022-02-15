@@ -29,7 +29,7 @@
     "nuxt-purgecss": "^1.0.0",
     "quagga": "^0.12.1",
     "recursive-diff": "^1.0.8",
-    "sass-loader": "^10",
+    "sass-loader": "^12",
     "short-uuid": "^4.2.0",
     "vuex-module-decorators": "^1.0.1",
     "vuex-persistedstate": "^4.1.0"
