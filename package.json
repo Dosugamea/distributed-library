@@ -22,7 +22,7 @@
     "gun": "^0.2020.1235",
     "gun-schema": "^0.1.0",
     "gun-util": "^0.0.17",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.1",
     "nuxt": "^2.15.8",
     "nuxt-buefy": "^0.4.10",
     "nuxt-property-decorator": "^2.9.1",
